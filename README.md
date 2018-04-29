@@ -80,18 +80,18 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
 
 #### Configure
 
-- Replace `applicationId` with your own unique id in [app/build.gradle](app/build.gradle#L12)
+- Replace `applicationId` with your own unique id in [app/build.gradle](app/build.gradle#L17)
 - Create a Firebase project https://console.firebase.google.com
 - Select `Add Firebase to your Android app` and fill in the form
 - Download the config file `google-services.json` and move it to your [Android app module root directory](app/)
 - In the Firebase Authentication page, enable sign-in methods, then create your first admin user
 - In the Firebase project settings, select `ADD APP` and `Add Firebase to your web app`
-- Copy and replace the config values in [index.js](firebase/hosting/index.js#L4-L10)
+- Copy and replace the config values in [index.js](firebase/hosting/index.js#L6-L12)
 - Verify the configuration of each module
-  + Android: [Store.kt](app/src/main/java/fr/smarquis/appstore/Store.kt#L11-20)
-  + Web: [index.js](firebase/hosting/index.js#L11-23)
+  + Android: [Store.kt](app/src/main/java/fr/smarquis/appstore/Store.kt#L11-L20)
+  + Web: [index.js](firebase/hosting/index.js#L13-L25)
   + Firebase Database: use your own domain
-    * [database-private.rules.json (read access)](firebase/database/database-private.rules.json#L19-20)
+    * [database-private.rules.json (read access)](firebase/database/database-private.rules.json#L19-L20)
     <details>
     <summary>Database schema</summary>
 
@@ -123,8 +123,8 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
 
     </details>
   + Firebase Storage: use your own domain
-    * [storage-private.rules (images)](firebase/storage/storage-private.rules#L6-7)
-    * [storage-private.rules (apks)](firebase/storage/storage-private.rules#L21-22)
+    * [storage-private.rules (images)](firebase/storage/storage-private.rules#L6-L7)
+    * [storage-private.rules (apks)](firebase/storage/storage-private.rules#L21-L22)
     <details>
     <summary>Storage schema</summary>
 
@@ -155,8 +155,8 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
     firebase database:update /admins update.json
     ```
   + Firebase Storage, add admin `uid`
-    * [storage-private.rules (images)](firebase/storage/storage-private.rules#L8-9)
-    * [storage-private.rules (apks)](firebase/storage/storage-private.rules#L23-24)
+    * [storage-private.rules (images)](firebase/storage/storage-private.rules#L8-L9)
+    * [storage-private.rules (apks)](firebase/storage/storage-private.rules#L23-L24)
 
 #### Deploy
 
