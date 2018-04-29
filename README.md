@@ -4,7 +4,7 @@
 <h3 align="center">Internal App Store</h3>
 <p align="center">
   Manage your own internal Android App Store.<br>
-  <a href=""><strong>Web app</strong></a> • <a href=""><strong>Android app</strong></a>
+  <a href="https://public-app-store.firebaseapp.com/"><strong>Web app</strong></a> • <a href="https://github.com/SimonMarquis/InternalAppStore/releases"><strong>Android app</strong></a>
 </p>
 
 <br>
