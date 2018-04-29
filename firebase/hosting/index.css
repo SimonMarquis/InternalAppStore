@@ -1,0 +1,125 @@
+/* Copyright 2018 Simon Marquis */
+
+html {
+  width:100vw;
+  overflow-x:hidden;
+}
+
+body {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+@media (min-width: 48em) {
+  .container {
+    max-width: 46rem;
+  }
+}
+
+/* Material icons sizes */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-20 { font-size: 20px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Add effects on Cards */
+.card-selectable {
+  cursor: pointer;
+}
+.card-selectable:hover {
+  background-color: #f8f9fa;
+}
+.card-selectable:active {
+  background-color: #e9ecef;
+}
+
+/* Empty divs should not be displayed */
+[data-app-versions]:empty, p[data-app-description]:empty, p[data-version-description]:empty {
+  display: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.user-select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+.no-wrap-ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
+  display: inline-block;
+}
+
+.drop-ignore-children * {
+  pointer-events: none;
+}
+
+.remove-bottom-margin-on-last-item > :last-child {
+  margin-bottom: 0px;
+}
+
+@-webkit-keyframes spinner-grow {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes spinner-grow {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+.spinner-grow {
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+  text-indent: -999em;
+  background-color: currentColor;
+  border-radius: 50%;
+  -webkit-animation-name: spinner-grow;
+  animation-name: spinner-grow;
+  -webkit-animation-duration: .75s;
+  animation-duration: .75s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+
+/* Remove ugly blue tint of dropdown items */
+.dropdown-item:active {
+  background-color: #e9ecef;
+}

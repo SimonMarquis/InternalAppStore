@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">App Store</string>
+
+    <!--region Applications-->
+    <string name="applications_subtitle_anonymous">anonymous</string>
+    <string name="applications_subtitle_unverified">(unverified)</string>
+
+    <string name="applications_menu_sign_in">Sign in</string>
+    <string name="applications_menu_send_verification_email">Send verification email</string>
+    <string name="applications_menu_refresh">Refresh</string>
+    <string name="applications_menu_sign_out">Sign out</string>
+    <string name="applications_menu_invalidate_cache">Invalidate cache</string>
+    <string name="applications_menu_notification_settings">Notification settings</string>
+
+    <string name="applications_toast_verify_inbox">Unverified email, check your inbox</string>
+    <string name="applications_toast_not_allowed">"¯\_(ツ)_/¯\nYou are not allowed here!"</string>
+
+    <string name="applications_toast_verification_email_sent">Check your inbox to verify your account</string>
+    <string name="applications_toast_verification_email_error">Unable to send verification email</string>
+
+    <string name="item_application_installed">Installed • %1$s</string>
+    <!--endregion-->
+
+    <!--region Versions-->
+    <string name="versions_header_installed_info">Installed • %1$s • %2$d</string>
+
+    <string name="versions_toast_application_installed">Application installed!</string>
+    <string name="versions_toast_application_not_installed">Application not installed!</string>
+    <string name="versions_toast_application_removed">Application removed</string>
+    <string name="versions_toast_application_open_error">Unable to open this version</string>
+    <string name="versions_toast_link_to_clipboard">Link copied to clipboard</string>
+    <string name="versions_toast_link_error">Unable to start this link:</string>
+
+    <string name="versions_menu_info">App info</string>
+    <string name="versions_menu_start">Start</string>
+    <string name="versions_menu_stop">Stop</string>
+    <string name="versions_menu_delete">Delete</string>
+    <string name="versions_menu_play_store">Play Store</string>
+    <string name="versions_menu_notification_settings">Notification settings</string>
+
+    <string name="item_version_downloading">Downloading…</string>
+    <string name="item_version_installing">Installing…</string>
+    <string name="item_version_opening">Opening…</string>
+    <!--endregion-->
+
+</resources>

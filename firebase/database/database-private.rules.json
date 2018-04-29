@@ -1,0 +1,96 @@
+{
+  "rules": {
+    "admins": {
+      "$uid": {}
+    },
+    "checks": {
+      "admin": {
+        ".read": "root.child('admins').hasChild(auth.uid)"
+      },
+      "emailVerified": {
+        ".read": "auth.token.email_verified == true"
+      },
+      "emailNotVerified": {
+        ".read": "auth.token.email_verified == false"
+      },
+    },
+    "store": {
+      ".write": "root.child('admins').hasChild(auth.uid)",
+      // Grant read access (provider, uid, token.email, etc.) with enumeration, regex, etc.
+      ".read": "auth.token.email.endsWith('@domain.com') && auth.token.email_verified == true",
+      "applications": {
+        "$application_id": {
+          // PUSH/UPDATE if has fields ['description', 'name', 'packageName']
+          ".validate": "newData.hasChildren(['description', 'name', 'packageName'])",
+          "description": {
+            ".validate": "newData.isString()"
+          },
+          "image": {
+            ".validate": "newData.isString()"
+          },
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0"
+          },
+          "packageName": {
+            // PackageName regex
+            ".validate": "newData.isString() && newData.val().matches(/^([A-Za-z]{1}[A-Za-z\\d_]*\\.)*[A-Za-z][A-Za-z\\d_]*$/)"
+          },
+          "link_1": {
+            ".validate": "newData.hasChildren(['name', 'uri']) && newData.child('name').isString() && newData.child('uri').isString()"
+          },
+          "link_2": {
+            ".validate": "newData.hasChildren(['name', 'uri']) && newData.child('name').isString() && newData.child('uri').isString()"
+          },
+          "link_3": {
+            ".validate": "newData.hasChildren(['name', 'uri']) && newData.child('name').isString() && newData.child('uri').isString()"
+          },
+          "link_4": {
+            ".validate": "newData.hasChildren(['name', 'uri']) && newData.child('name').isString() && newData.child('uri').isString()"
+          },
+          "silent": {
+            ".validate": "newData.val() == null || newData.isBoolean()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "versions": {
+        "$application_id": {
+          "$version_id": {
+            // PUSH/UPDATE if application_id exists and has fields ['description', 'name', 'timestamp']
+            ".validate": "root.child('store').child('applications').child($application_id).exists() && newData.hasChildren(['description', 'name', 'timestamp'])",
+            "apkRef": {
+              ".validate": "newData.isString()"
+            },
+            "apkGeneration": {
+              ".validate": "newData.isNumber()"
+            },
+            "apkUrl": {
+              ".validate": "newData.isString()"
+            },
+            "description": {
+              ".validate": "newData.isString()"
+            },
+            "name": {
+              // Semver regex
+              ".validate": "newData.isString() && newData.val().matches(/^(\\d+)(\\.(\\d+)(\\.(\\d+))?)?(-(.+))?$/)"
+            },
+            "timestamp": {
+              ".validate": "newData.isNumber()"
+            },
+            "silent": {
+              ".validate": "newData.val() == null || newData.isBoolean()"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      },
+      "$other": {
+        ".validate": false
+      }
+    }
+  }
+}

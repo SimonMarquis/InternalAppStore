@@ -1,0 +1,38 @@
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /applications {
+      match /{applicationId} {
+        match /image {
+          allow read: if  // User domain
+                          request.auth.token.email.matches('^@domain\\.com$') && request.auth.token.email_verified && !request.auth.token.email in [ '' ];
+          allow write: if // Admin uids
+                          request.auth.uid in [ ]
+                          &&
+                            (
+                              // DELETE
+                              request.resource == null
+                              // PUT/UPDATE with these restrictions
+                              || (request.resource.size <= 2 * 1024 * 1024 && request.resource.contentType.matches('image/.*'))
+                            )
+                          ;
+        }
+        match /versions {
+          match /{versionId} {
+            allow read: if  // User domain
+                            request.auth.token.email.matches('^@domain\\.com$') && request.auth.token.email_verified && !request.auth.token.email in [ '' ];
+            allow write: if // Admin uids
+                            request.auth.uid in [ ]
+                            &&
+                              (
+                                // DELETE
+                                request.resource == null
+                                // PUT/UPDATE with these restrictions
+                                || (request.resource.size <= 100 * 1024 * 1024 && request.resource.contentType == 'application/vnd.android.package-archive')
+                              )
+                            ;
+          }
+        }
+      }
+    }
+  }
+}

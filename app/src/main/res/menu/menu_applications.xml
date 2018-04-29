@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_action_signin"
+        android:title="@string/applications_menu_sign_in" />
+
+    <item
+        android:id="@+id/menu_action_send_verification_email"
+        android:title="@string/applications_menu_send_verification_email"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/menu_action_refresh"
+        android:title="@string/applications_menu_refresh"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/menu_action_invalidate_cache"
+        android:title="@string/applications_menu_invalidate_cache" />
+
+    <item
+        android:id="@+id/menu_action_notification_settings"
+        android:title="@string/applications_menu_notification_settings" />
+
+    <item
+        android:id="@+id/menu_action_signout"
+        android:title="@string/applications_menu_sign_out" />
+
+</menu>

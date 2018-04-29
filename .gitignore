@@ -41,13 +41,13 @@ captures/
 
 # Keystore files
 # Uncomment the following line if you do not want to check your keystore files in.
-#*.jks
+*.jks
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)
-# google-services.json
+google-services.json
 
 ### Windows
 ### https://raw.githubusercontent.com/github/gitignore/master/Global/Windows.gitignore
@@ -113,5 +113,5 @@ Temporary Items
 
 # Local config
 **/.firebaserc
-**/database-perso.rules.json
-**/storage-perso.rules
+**/database-local.rules.json
+**/storage-local.rules

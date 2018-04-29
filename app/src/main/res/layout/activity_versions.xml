@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout_versions_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    tools:context="fr.smarquis.appstore.VersionsActivity"
+    tools:ignore="Overdraw">
+
+    <!-- Background will lead to overdraw but prevent ugly black fading transition of the header -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:elevation="@dimen/material_elevation_app_bar"
+        tools:ignore="UnusedAttribute">
+
+        <include layout="@layout/layout_application_header" />
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="@dimen/activity_responsive_width"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1">
+
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/contentLoadingProgressBar_versions"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_versions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbarSize="@dimen/material_baseline_grid_0.5x"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbarThumbVertical="@color/colorAccent"
+            android:scrollbars="vertical"
+            android:smoothScrollbar="true"
+            tools:listitem="@layout/item_version" />
+
+    </FrameLayout>
+
+</LinearLayout>

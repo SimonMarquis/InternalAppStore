@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/material_baseline_grid_7.5x"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/material_baseline_grid_2x"
+    android:paddingRight="@dimen/material_baseline_grid_2x">
+
+    <ImageView
+        android:id="@+id/imageView_application_icon"
+        android:layout_width="@dimen/material_baseline_grid_5x"
+        android:layout_height="@dimen/material_baseline_grid_5x"
+        android:layout_marginEnd="@dimen/material_baseline_grid_2x"
+        android:layout_marginRight="@dimen/material_baseline_grid_2x"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/avatars" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_application_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/textView_application_installed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="12sp"
+            tools:text="Installed • 1.2.3" />
+
+    </LinearLayout>
+
+</LinearLayout>

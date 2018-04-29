@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+
+    <dimen name="material_elevation_app_bar">4dp</dimen>
+
+    <dimen name="material_baseline_grid_0.5x">4dp</dimen>
+    <dimen name="material_baseline_grid_1x">8dp</dimen>
+    <dimen name="material_baseline_grid_1.5x">12dp</dimen>
+    <dimen name="material_baseline_grid_2x">16dp</dimen>
+    <dimen name="material_baseline_grid_2.5x">20dp</dimen>
+    <dimen name="material_baseline_grid_3x">24dp</dimen>
+    <dimen name="material_baseline_grid_3.5x">28dp</dimen>
+    <dimen name="material_baseline_grid_4x">32dp</dimen>
+    <dimen name="material_baseline_grid_4.5x">36dp</dimen>
+    <dimen name="material_baseline_grid_5x">40dp</dimen>
+    <dimen name="material_baseline_grid_5.5x">44dp</dimen>
+    <dimen name="material_baseline_grid_6x">48dp</dimen>
+    <dimen name="material_baseline_grid_6.5x">52dp</dimen>
+    <dimen name="material_baseline_grid_7x">56dp</dimen>
+    <dimen name="material_baseline_grid_7.5x">60dp</dimen>
+    <dimen name="material_baseline_grid_8x">64dp</dimen>
+    <dimen name="material_baseline_grid_8.5x">68dp</dimen>
+    <dimen name="material_baseline_grid_9x">72dp</dimen>
+    <dimen name="material_baseline_grid_9.5x">76dp</dimen>
+    <dimen name="material_baseline_grid_10x">80dp</dimen>
+    <dimen name="material_baseline_grid_11x">88dp</dimen>
+    <dimen name="material_baseline_grid_12x">96dp</dimen>
+
+</resources>

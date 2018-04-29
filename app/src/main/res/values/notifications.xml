@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--region Applications-->
+    <string name="notification_channel_new_applications_id" translatable="false">channel_new_applications</string>
+    <string name="notification_channel_new_applications_name">New applications</string>
+    <item name="notification_new_application_id" type="id" />
+    <string name="notification_new_application_title">A new application is available</string>
+    <!--endregion-->
+
+    <!--region Versions-->
+    <string name="notification_channel_new_versions_id" translatable="false">channel_new_versions_%s</string>
+    <item name="notification_new_version_id" type="id" />
+    <string name="notification_new_version_title">A new version is available</string>
+    <!--endregion-->
+
+</resources>

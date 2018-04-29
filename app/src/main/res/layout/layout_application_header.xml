@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/activity_responsive_width"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:paddingLeft="@dimen/material_baseline_grid_2x"
+    android:paddingRight="@dimen/material_baseline_grid_2x"
+    android:paddingTop="@dimen/material_baseline_grid_1x"
+    tools:showIn="@layout/activity_versions">
+
+    <ImageView
+        android:id="@+id/imageView_header_icon"
+        android:layout_width="@dimen/material_baseline_grid_12x"
+        android:layout_height="@dimen/material_baseline_grid_12x"
+        tools:ignore="ContentDescription"
+        tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/textView_header_installedInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/material_baseline_grid_1x"
+        android:layout_marginLeft="@dimen/material_baseline_grid_2x"
+        android:layout_marginStart="@dimen/material_baseline_grid_2x"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="?android:attr/textColorTertiary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/textView_header_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView_header_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Installed • 1.2.3 • 10203000"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/textView_header_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/material_baseline_grid_2x"
+        android:layout_marginStart="@dimen/material_baseline_grid_2x"
+        android:autoLink="all"
+        android:ellipsize="end"
+        android:fadingEdgeLength="@dimen/material_baseline_grid_1x"
+        android:maxLines="6"
+        android:requiresFadingEdge="vertical"
+        android:scrollbars="vertical"
+        android:textIsSelectable="true"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/barrier_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView_header_icon"
+        app:layout_constraintTop_toBottomOf="@+id/textView_header_installedInfo"
+        tools:text="@tools:sample/lorem/random" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="imageView_header_icon,textView_header_description" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_baseline_grid_1x"
+        app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadingEdge="horizontal"
+        android:fadingEdgeLength="@dimen/material_baseline_grid_1x"
+        android:requiresFadingEdge="horizontal"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/space">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/button_header_link1"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                tools:text="Link 1" />
+
+            <Button
+                android:id="@+id/button_header_link2"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                tools:text="Link 2" />
+
+            <Button
+                android:id="@+id/button_header_link3"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                tools:text="Link 3" />
+
+            <Button
+                android:id="@+id/button_header_link4"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                tools:text="Link 4" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</android.support.constraint.ConstraintLayout>
