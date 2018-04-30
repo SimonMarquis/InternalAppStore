@@ -224,7 +224,6 @@ class ApplicationsActivity : AppCompatActivity() {
                     startListening()
                 }
             }
-
         })
     }
 
@@ -236,7 +235,6 @@ class ApplicationsActivity : AppCompatActivity() {
 
     private fun registerListeners() {
         applicationAdapter?.registerAdapterDataObserver(dataObserver)
-        applicationAdapter?.startListening()
         PackageIntentFilter.register(this, packageIntentFilterReceiver)
     }
 
