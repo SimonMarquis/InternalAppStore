@@ -146,6 +146,8 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
   cd firebase
   # Initialize Firebase (login popup)
   firebase login
+  # Set the default Firebase project
+  firebase use --add
   ```
 - Add your first admin user (`uid` found in Firebase Authentication page)
   + Firebase Database, add admin `uid`
@@ -160,15 +162,15 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
 
 #### Deploy
 
-- Sync, build and install Android module from Android Studio
 - Test web app on your machine http://localhost:5000
   ```bash
   firebase serve
   ```
-- Finally, deploy all Firebase modules (database, storage, hosting, functions)
+- Deploy all Firebase modules (database, storage, hosting, functions)
   ```bash
   firebase deploy
   ```
+- Sync, build and install Android module from Android Studio
 
 ## Settings
 
@@ -176,7 +178,7 @@ A lot of settings can be tweaked in both web and Android apps
 - Store icons and titles
 - Firebase auth providers
 - Maximum apk size
-- Public with admin write access
+- Admin write access
 - Store visibility (private or public)
 - …
 

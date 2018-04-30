@@ -4,7 +4,7 @@ service firebase.storage {
       match /{applicationId} {
         match /image {
           allow read: if  // User domain
-                          request.auth.token.email.matches('^@domain\\.com$') && request.auth.token.email_verified && !request.auth.token.email in [ '' ];
+                          request.auth.token.email.matches('.*@domain\\.com$') && request.auth.token.email_verified;
           allow write: if // Admin uids
                           request.auth.uid in [ ]
                           &&
@@ -19,7 +19,7 @@ service firebase.storage {
         match /versions {
           match /{versionId} {
             allow read: if  // User domain
-                            request.auth.token.email.matches('^@domain\\.com$') && request.auth.token.email_verified && !request.auth.token.email in [ '' ];
+                            request.auth.token.email.matches('.*@domain\\.com$') && request.auth.token.email_verified;
             allow write: if // Admin uids
                             request.auth.uid in [ ]
                             &&
