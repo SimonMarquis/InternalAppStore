@@ -2015,27 +2015,36 @@ function HtmlSanitizer(escape, tags, css, urls) {
       a: HtmlSanitizer.mergeMap(globalAttributes, {
         href: url_sanitizer
       }),
-      img: HtmlSanitizer.mergeMap(globalAttributes, {
-        alt: unconstrainted,
-        height: unconstrainted,
-        src: url_sanitizer,
-        width: unconstrainted
-      }),
+      b: globalAttributes,
+      big: globalAttributes,
+      blockquote: globalAttributes,
+      br: globalAttributes,
+      cite: globalAttributes,
+      div: globalAttributes,
+      em: globalAttributes,
       h1: globalAttributes,
       h2: globalAttributes,
       h3: globalAttributes,
       h4: globalAttributes,
       h5: globalAttributes,
       h6: globalAttributes,
-      p: globalAttributes,
-      div: globalAttributes,
-      span: globalAttributes,
-      br: globalAttributes,
-      b: globalAttributes,
       i: globalAttributes,
+      img: HtmlSanitizer.mergeMap(globalAttributes, {
+        alt: unconstrainted,
+        height: unconstrainted,
+        src: url_sanitizer,
+        width: unconstrainted
+      }),
+      li: globalAttributes,
+      p: globalAttributes,
       u: globalAttributes,
       ul: globalAttributes,
-      li: globalAttributes
+      small: globalAttributes,
+      span: globalAttributes,
+      strike: globalAttributes,
+      strong: globalAttributes,
+      sub: globalAttributes,
+      sup: globalAttributes
     };
   }
 }
