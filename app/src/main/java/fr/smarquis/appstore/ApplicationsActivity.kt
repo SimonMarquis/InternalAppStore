@@ -288,7 +288,7 @@ class ApplicationsActivity : AppCompatActivity() {
             R.id.menu_action_notification_settings -> {
                 MessagingService.createOrUpdateNewApplicationsNotificationChannel(this)
                 val channelId = getString(R.string.notification_channel_new_applications_id)
-                safeStartActivityForResult(Utils.notificationSettingsIntent(this, channelId, false), REQUEST_CODE_NOTIFICATION_SETTINGS)
+                safeStartActivityForResult(Utils.notificationSettingsIntent(this, channelId, true), REQUEST_CODE_NOTIFICATION_SETTINGS)
                 true
             }
             else -> super.onOptionsItemSelected(item)
