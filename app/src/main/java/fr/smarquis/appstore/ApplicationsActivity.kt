@@ -143,7 +143,6 @@ class ApplicationsActivity : AppCompatActivity() {
     }
 
     private fun checkStoreAccess(sendEmailVerification: Boolean = false, reloadUser: Boolean = false) {
-        Log.e(TAG, "checkStoreAccess(sendEmailVerification:$sendEmailVerification, reloadUser:$reloadUser)")
         updateSubtitle()
         invalidateOptionsMenu()
 
@@ -159,16 +158,13 @@ class ApplicationsActivity : AppCompatActivity() {
 
         Firebase.database.store().addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError?) {
-                Log.e(TAG, "checkStoreAccess onCancelled($error) \n${error?.message}\n${error?.details}")
                 when (error?.code) {
                     DatabaseError.PERMISSION_DENIED -> {
                         Firebase.unsubscribeFromStore()
                         val currentUser = Firebase.auth.currentUser
                         when {
                             currentUser == null -> {
-                                Log.e(TAG, "checkStoreAccess currentUser is null")
                                 if (Store.ALLOW_ANONYMOUS) {
-                                    Log.e(TAG, "Signing user anonymously")
                                     signInAnonymously()
                                     return
                                 } else {
@@ -188,7 +184,6 @@ class ApplicationsActivity : AppCompatActivity() {
                                 if (Store.ALLOW_UNVERIFIED_EMAIL) {
                                     Log.e(TAG, "Unverified user should be authorized")
                                 } else {
-                                    Log.e(TAG, "User email not verified, reloadUser:$reloadUser, sendEmailVerification:$sendEmailVerification")
                                     if (sendEmailVerification) {
                                         sendVerificationEmail(currentUser)
                                         return
@@ -217,7 +212,6 @@ class ApplicationsActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(snapshot: DataSnapshot?) {
-                Log.e(TAG, "checkStoreAccess onDataChange(success)")
                 Firebase.subscribeToStore()
                 applicationAdapter?.apply {
                     stopListening()
