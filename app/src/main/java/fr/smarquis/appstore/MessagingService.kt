@@ -64,18 +64,16 @@ class MessagingService : FirebaseMessagingService() {
         }
         Log.d(TAG, "onMessageReceived($remoteMessage)")
         val data = remoteMessage.data
-        if (data.isNotEmpty()) {
-            val type = data["type"]
-            when (type) {
-                "new_application" -> onNewApplication(data)
-                "new_version" -> onNewVersion(data)
-                else -> Log.e(TAG, "$TAG: Unknown message type [$type]")
-            }
+        when (data["type"]) {
+            "new_application" -> onNewApplication(remoteMessage)
+            "new_version" -> onNewVersion(remoteMessage)
+            else -> Log.e(TAG, "$TAG: Unknown message type [${data["type"]}]")
         }
     }
 
-    private fun onNewApplication(data: Map<String, String>) {
-        Log.d(TAG, "onNewApplication($data)")
+    private fun onNewApplication(msg: RemoteMessage) {
+        Log.d(TAG, "onNewApplication()")
+        val data = msg.data
         val applicationKey = data["applicationKey"] ?: return
         val applicationName = data["applicationName"]
         val applicationPackageName = data["applicationPackageName"]
@@ -84,14 +82,15 @@ class MessagingService : FirebaseMessagingService() {
 
         val intent = VersionsActivity.intent(this, application)
         val pendingIntent = TaskStackBuilder.create(this).addNextIntentWithParentStack(intent).getPendingIntent(applicationKey.hashCode(), PendingIntent.FLAG_ONE_SHOT)
-        val notificationBuilder = createNotificationBuilder(getString(R.string.notification_channel_new_applications_id), getString(R.string.notification_new_application_title), applicationName, pendingIntent)
+        val notificationBuilder = createNotificationBuilder(getString(R.string.notification_channel_new_applications_id), getString(R.string.notification_new_application_title), applicationName, msg.sentTime, pendingIntent)
 
         createOrUpdateNewApplicationsNotificationChannel(this)
         notifyWithImage(applicationKey, R.id.notification_new_application_id, notificationBuilder, application.findImageReference())
     }
 
-    private fun onNewVersion(data: Map<String, String>) {
-        Log.d(TAG, "onNewVersion($data)")
+    private fun onNewVersion(msg: RemoteMessage) {
+        Log.d(TAG, "onNewVersion()")
+        val data = msg.data
         val applicationKey = data["applicationKey"] ?: return
         val applicationName = data["applicationName"]
         val applicationPackageName = data["applicationPackageName"]
@@ -103,13 +102,14 @@ class MessagingService : FirebaseMessagingService() {
         val intent = VersionsActivity.intent(this, application, versionKey)
         val pendingIntent = TaskStackBuilder.create(this).addNextIntentWithParentStack(intent).getPendingIntent(versionKey.hashCode(), PendingIntent.FLAG_ONE_SHOT)
         val channelId = getString(R.string.notification_channel_new_versions_id, applicationKey)
-        val notificationBuilder = createNotificationBuilder(channelId, getString(R.string.notification_new_version_title), "$applicationName • $versionName", pendingIntent)
+        val notificationBuilder = createNotificationBuilder(channelId, getString(R.string.notification_new_version_title), "$applicationName • $versionName", msg.sentTime, pendingIntent)
 
         createOrUpdateNewVersionsNotificationChannel(this, channelId, applicationName)
         notifyWithImage(applicationKey, R.id.notification_new_version_id, notificationBuilder, application.findImageReference())
     }
 
-    private fun createNotificationBuilder(channelId: String, title: String, text: String?, pendingIntent: PendingIntent?): NotificationCompat.Builder {
+    private fun createNotificationBuilder(channelId: String, title: String, text: String?, timestamp: Long, pendingIntent: PendingIntent?): NotificationCompat.Builder {
+        val now = System.currentTimeMillis()
         return NotificationCompat.Builder(this, channelId)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
@@ -118,6 +118,7 @@ class MessagingService : FirebaseMessagingService() {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setContentIntent(pendingIntent)
+                .setWhen(if (timestamp <= 0) now else Math.min(timestamp, now))
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true)
                 .setLocalOnly(true)
