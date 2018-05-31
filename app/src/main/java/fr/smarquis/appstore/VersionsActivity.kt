@@ -87,15 +87,15 @@ class VersionsActivity : AppCompatActivity() {
     private lateinit var contentLoadingProgressBar: ContentLoadingProgressBar
 
     private val applicationValueEventListener: ValueEventListener = object : ValueEventListener {
-        override fun onCancelled(error: DatabaseError?) {
-            error?.let {
+        override fun onCancelled(error: DatabaseError) {
+            error.let {
                 Log.w(TAG, "Error fetching application ${application?.key}\n${it.message}\n${it.details}", error.toException())
                 Toast.makeText(this@VersionsActivity, it.message, LENGTH_LONG).show()
                 finish()
             }
         }
 
-        override fun onDataChange(snapshot: DataSnapshot?) {
+        override fun onDataChange(snapshot: DataSnapshot) {
             ApplicationAdapter.SAFE_PARSER(snapshot).let {
                 if (it == null) {
                     Toast.makeText(applicationContext, R.string.versions_toast_application_removed, Toast.LENGTH_SHORT).show()
@@ -160,7 +160,7 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     private fun registerListeners(application: Application) {
-        firebaseApplicationDatabaseRef = Firebase.database.application(application.key)
+        firebaseApplicationDatabaseRef = Firebase.database.application(application.key.orEmpty())
         firebaseApplicationDatabaseRef?.addValueEventListener(applicationValueEventListener)
         versionAdapter?.registerAdapterDataObserver(dataObserver)
         versionAdapter?.startListening()

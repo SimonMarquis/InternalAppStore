@@ -157,8 +157,8 @@ class ApplicationsActivity : AppCompatActivity() {
         }
 
         Firebase.database.store().addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError?) {
-                when (error?.code) {
+            override fun onCancelled(error: DatabaseError) {
+                when (error.code) {
                     DatabaseError.PERMISSION_DENIED -> {
                         Firebase.unsubscribeFromStore()
                         val currentUser = Firebase.auth.currentUser
@@ -208,10 +208,10 @@ class ApplicationsActivity : AppCompatActivity() {
                         }
                     }
                 }
-                Toast.makeText(this@ApplicationsActivity, "${error?.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@ApplicationsActivity, error.message, Toast.LENGTH_LONG).show()
             }
 
-            override fun onDataChange(snapshot: DataSnapshot?) {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 Firebase.subscribeToStore()
                 applicationAdapter?.apply {
                     stopListening()

@@ -45,7 +45,7 @@ fun FirebaseDatabase.store(): DatabaseReference = reference.child("store")
 
 fun FirebaseDatabase.applications(): DatabaseReference = store().child("applications")
 
-fun FirebaseDatabase.application(key: String?): DatabaseReference = applications().child(key)
+fun FirebaseDatabase.application(key: String): DatabaseReference = applications().child(key)
 
 fun FirebaseDatabase.versions(): DatabaseReference = store().child("versions")
 
