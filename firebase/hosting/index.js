@@ -1621,7 +1621,7 @@ AppStore.prototype.uiShowLogin = function() {
   );
 
   AppStore.CONFIG.firebaseUi.callbacks = {
-    signInSuccess: (currentUser, credential, redirectUrl) => {
+    signInSuccessWithAuthResult: (authResult, redirectUrl) => {
       Ui.show(this.ui.loader);
       return false;
     },
