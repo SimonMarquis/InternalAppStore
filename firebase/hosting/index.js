@@ -669,7 +669,7 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
       this.uiApplicationModalCommit(modal, key, app)
     );
     modal.silent.addEventListener("click", event => {
-      const btn = modal.elt;
+      const btn = modal.silent;
       const icon = modal.silent.firstElementChild;
       if (btn.hasAttribute("data-app-silent-flag")) {
         btn.removeAttribute("data-app-silent-flag");
@@ -942,7 +942,7 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
       this.uiVersionModalCommit(modal, applicationKey, undefined, undefined)
     );
     modal.silent.addEventListener("click", event => {
-      const btn = modal.elt;
+      const btn = modal.silent;
       const icon = modal.silent.firstElementChild;
       if (btn.hasAttribute("data-version-silent-flag")) {
         btn.removeAttribute("data-version-silent-flag");
