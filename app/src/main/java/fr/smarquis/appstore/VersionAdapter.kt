@@ -1,8 +1,8 @@
 package fr.smarquis.appstore
 
-import android.support.v4.util.ArrayMap
-import android.support.v7.util.SortedList
-import android.support.v7.widget.util.SortedListAdapterCallback
+import androidx.collection.ArrayMap
+import androidx.recyclerview.widget.SortedList
+import androidx.recyclerview.widget.SortedListAdapterCallback
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,6 +1,6 @@
 package fr.smarquis.appstore
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.View
 import android.view.View.*

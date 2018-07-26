@@ -8,8 +8,8 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.*
 import android.provider.Settings
-import android.support.v4.content.pm.PackageInfoCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.pm.PackageInfoCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.text.Spanned
 

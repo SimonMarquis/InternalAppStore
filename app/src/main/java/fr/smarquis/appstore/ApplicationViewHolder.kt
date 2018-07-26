@@ -1,11 +1,11 @@
 package fr.smarquis.appstore
 
-import android.support.v4.util.Pair
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_application.view.*
 
 class ApplicationViewHolder(

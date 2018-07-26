@@ -1,9 +1,9 @@
 package fr.smarquis.appstore
 
 import android.annotation.SuppressLint
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.app.ActivityManager
-import android.arch.lifecycle.Lifecycle.State.STARTED
+import androidx.lifecycle.Lifecycle.State.STARTED
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -12,14 +12,14 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build.VERSION_CODES.N
 import android.os.Bundle
-import android.support.design.widget.Snackbar.LENGTH_LONG
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.util.Pair
-import android.support.v4.view.ViewCompat
-import android.support.v4.widget.ContentLoadingProgressBar
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannedString
 import android.util.Log
 import android.view.Menu

@@ -8,11 +8,11 @@ import android.graphics.Bitmap
 import android.os.Build.VERSION_CODES.O
 import android.os.Handler
 import android.os.Looper
-import android.support.annotation.WorkerThread
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat.IMPORTANCE_NONE
-import android.support.v4.app.TaskStackBuilder
-import android.support.v4.content.ContextCompat
+import androidx.annotation.WorkerThread
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat.IMPORTANCE_NONE
+import androidx.core.app.TaskStackBuilder
+import androidx.core.content.ContextCompat
 import android.util.Log
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
