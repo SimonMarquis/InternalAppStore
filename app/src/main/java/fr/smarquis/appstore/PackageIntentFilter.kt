@@ -1,6 +1,6 @@
 package fr.smarquis.appstore
 
-import android.app.Activity
+import android.support.v7.app.AppCompatActivity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -32,11 +32,11 @@ class PackageIntentFilter {
             }
         }
 
-        fun register(activity: Activity, receiver: BroadcastReceiver) {
+        fun register(activity: AppCompatActivity, receiver: BroadcastReceiver) {
             activity.registerReceiver(receiver, INTENT_FILTER)
         }
 
-        fun unregister(activity: Activity, receiver: BroadcastReceiver) {
+        fun unregister(activity: AppCompatActivity, receiver: BroadcastReceiver) {
             activity.unregisterReceiver(receiver)
         }
     }

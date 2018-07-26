@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.*
 import android.provider.Settings
+import android.support.v4.content.pm.PackageInfoCompat
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.Spanned
@@ -38,9 +39,9 @@ class Utils {
             }
         }
 
-        fun applicationVersionCode(context: Context, packageName: String): Int {
+        fun applicationVersionCode(context: Context, packageName: String): Long {
             return try {
-                context.packageManager.getPackageInfo(packageName, 0).versionCode
+                PackageInfoCompat.getLongVersionCode(context.packageManager.getPackageInfo(packageName, 0))
             } catch (e: PackageManager.NameNotFoundException) {
                 0
             }

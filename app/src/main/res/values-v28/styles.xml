@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.AppStore" parent="Base.V28.Theme.AppStore" />
+
+    <style name="Base.V28.Theme.AppStore" parent="Base.V27.Theme.AppStore">
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+</resources>

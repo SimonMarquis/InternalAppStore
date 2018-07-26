@@ -1,7 +1,7 @@
 package fr.smarquis.appstore
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.support.v7.app.AppCompatActivity
 import android.app.ActivityManager
 import android.arch.lifecycle.Lifecycle.State.STARTED
 import android.content.ClipData
@@ -17,7 +17,6 @@ import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
 import android.support.v4.view.ViewCompat
 import android.support.v4.widget.ContentLoadingProgressBar
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -472,7 +471,7 @@ class VersionsActivity : AppCompatActivity() {
                 VersionRequest.Action.UNINSTALL -> if (!isApplicationInstalled(application)) updateApplication(application)
                 VersionRequest.Action.INSTALL -> {
                     when (resultCode) {
-                        Activity.RESULT_OK -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_installed), Color.GREEN), LENGTH_LONG).show()
+                        AppCompatActivity.RESULT_OK -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_installed), Color.GREEN), LENGTH_LONG).show()
                         else -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_not_installed), Color.RED), LENGTH_LONG).show()
                     }
                     if (version?.status == INSTALLING) {

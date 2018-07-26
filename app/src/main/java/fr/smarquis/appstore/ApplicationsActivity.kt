@@ -1,6 +1,6 @@
 package fr.smarquis.appstore
 
-import android.app.Activity
+import android.support.v7.app.AppCompatActivity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,6 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.widget.ContentLoadingProgressBar
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -336,13 +335,13 @@ class ApplicationsActivity : AppCompatActivity() {
         when (requestCode) {
             REQUEST_CODE_AUTO_SIGN_IN -> {
                 when (resultCode) {
-                    Activity.RESULT_OK -> checkStoreAccess(sendEmailVerification = true, reloadUser = true)
+                    AppCompatActivity.RESULT_OK -> checkStoreAccess(sendEmailVerification = true, reloadUser = true)
                     else -> finish()
                 }
             }
             REQUEST_CODE_MANUAL_SIGN_IN -> {
                 when (resultCode) {
-                    Activity.RESULT_OK -> checkStoreAccess(sendEmailVerification = true, reloadUser = true)
+                    AppCompatActivity.RESULT_OK -> checkStoreAccess(sendEmailVerification = true, reloadUser = true)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)

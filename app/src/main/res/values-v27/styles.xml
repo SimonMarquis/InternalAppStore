@@ -4,7 +4,6 @@
     <style name="Theme.AppStore" parent="Base.V27.Theme.AppStore" />
 
     <style name="Base.V27.Theme.AppStore" parent="Base.V23.Theme.AppStore">
-        <item name="android:windowLightNavigationBar">true</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
 
