@@ -8,10 +8,10 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.*
 import android.provider.Settings
-import androidx.core.content.pm.PackageInfoCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.text.Spanned
+import androidx.core.content.pm.PackageInfoCompat
+import androidx.recyclerview.widget.RecyclerView
 
 
 class Utils {

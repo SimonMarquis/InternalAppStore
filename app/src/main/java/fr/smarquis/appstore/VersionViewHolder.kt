@@ -1,11 +1,11 @@
 package fr.smarquis.appstore
 
-import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.View
 import android.view.View.*
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import fr.smarquis.appstore.Version.Status.*
 import kotlinx.android.synthetic.main.item_version.view.*
 

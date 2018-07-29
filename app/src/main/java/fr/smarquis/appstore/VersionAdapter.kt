@@ -1,11 +1,11 @@
 package fr.smarquis.appstore
 
-import androidx.collection.ArrayMap
-import androidx.recyclerview.widget.SortedList
-import androidx.recyclerview.widget.SortedListAdapterCallback
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.collection.ArrayMap
+import androidx.recyclerview.widget.SortedList
+import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.firebase.ui.common.ChangeEventType
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
