@@ -1,5 +1,8 @@
 package fr.smarquis.appstore
 
+import androidx.annotation.Keep
+
+@Keep
 data class Version(
         var key: String? = null,
         val name: String? = null,

@@ -2,7 +2,9 @@ package fr.smarquis.appstore
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.Keep
 
+@Keep
 data class Application(
         var key: String? = null,
         val name: String? = null,

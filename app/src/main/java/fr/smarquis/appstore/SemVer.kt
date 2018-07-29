@@ -1,10 +1,12 @@
 package fr.smarquis.appstore
 
+import androidx.annotation.Keep
 import java.lang.NullPointerException
 
 /**
  * Inspired by https://github.com/swiftzer/semver
  */
+@Keep
 data class SemVer(
         val major: Int = 0,
         val minor: Int = 0,
