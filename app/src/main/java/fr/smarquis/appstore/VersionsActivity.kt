@@ -100,7 +100,7 @@ class VersionsActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, R.string.versions_toast_application_removed, Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    MessagingService.createOrUpdateNewVersionsNotificationChannel(this@VersionsActivity, getString(R.string.notification_channel_new_versions_id, it.key), it.name)
+                    Notifications.createOrUpdateNewVersionsNotificationChannel(this@VersionsActivity, it)
                     updateApplication(it)
                 }
             }
@@ -143,12 +143,11 @@ class VersionsActivity : AppCompatActivity() {
         updateApplication(application)
     }
 
-
     override fun onStart() {
         super.onStart()
         application?.key?.let {
-            MessagingService.cancelNotification(this, it, R.id.notification_new_application_id)
-            MessagingService.cancelNotification(this, it, R.id.notification_new_version_id)
+            Notifications.cancel(this, it, R.id.notification_new_application_id)
+            Notifications.cancel(this, it, R.id.notification_new_version_id)
         }
     }
 
@@ -172,7 +171,6 @@ class VersionsActivity : AppCompatActivity() {
         versionAdapter?.unregisterAdapterDataObserver(dataObserver)
         versionAdapter?.stopListening()
     }
-
 
     private fun initUi(application: Application) {
         ViewCompat.setTransitionName(findViewById(R.id.imageView_header_icon), application.imageTransitionName())
@@ -526,7 +524,7 @@ class VersionsActivity : AppCompatActivity() {
             R.id.menu_action_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
             R.id.menu_action_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
             R.id.menu_action_notification_settings -> {
-                safeStartActivity(Utils.notificationSettingsIntent(this, getString(R.string.notification_channel_new_versions_id, application?.key)))
+                application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
             }
             else -> return super.onOptionsItemSelected(item)
         }

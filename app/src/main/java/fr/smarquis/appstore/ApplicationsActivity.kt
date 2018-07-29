@@ -58,7 +58,7 @@ class ApplicationsActivity : AppCompatActivity() {
         private fun updateNotificationChannels(positionStart: Int, itemCount: Int) {
             for (index in positionStart until positionStart + itemCount) {
                 applicationAdapter?.getItem(index)?.let {
-                    MessagingService.createOrUpdateNewVersionsNotificationChannel(this@ApplicationsActivity, getString(R.string.notification_channel_new_versions_id, it.key), it.name)
+                    Notifications.createOrUpdateNewVersionsNotificationChannel(this@ApplicationsActivity, it)
                 }
             }
         }
@@ -285,7 +285,7 @@ class ApplicationsActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_action_notification_settings -> {
-                MessagingService.createOrUpdateNewApplicationsNotificationChannel(this)
+                Notifications.createOrUpdateNewApplicationsNotificationChannel(this)
                 val channelId = getString(R.string.notification_channel_new_applications_id)
                 safeStartActivityForResult(Utils.notificationSettingsIntent(this, channelId, true), REQUEST_CODE_NOTIFICATION_SETTINGS)
                 true
@@ -307,7 +307,7 @@ class ApplicationsActivity : AppCompatActivity() {
 
     private fun wipeAndExit() {
         Firebase.unsubscribeFromStore()
-        MessagingService.cancelAllNotifications(this@ApplicationsActivity)
+        Notifications.cancelAll(this@ApplicationsActivity)
         invalidateCache {
             // Force exit to prevent Firebase database in-memory cache
             if (Utils.isAtLeast(Build.VERSION_CODES.KITKAT)) {
