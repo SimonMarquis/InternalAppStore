@@ -3,6 +3,7 @@ package fr.smarquis.appstore
 import android.text.format.DateUtils
 import android.view.View
 import android.view.View.*
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,13 +18,19 @@ class VersionViewHolder(
     private val name: TextView = v.textView_version_name
     private val timestamp: TextView = v.textView_version_timestamp
     private val description: TextView = v.textView_version_description
+    private val size: TextView = v.textView_version_size
     private val progress: ProgressBar = v.progressBar_version
+    private val type: ImageView = v.imageView_version_type
 
     private var version: Version? = null
 
     init {
         itemView.setOnClickListener(this)
         itemView.setOnLongClickListener(this)
+    }
+
+    companion object {
+        const val UNKNOWN_SIZE = "⋯" /*•••*/ /*∙∙∙*/ /*···*/
     }
 
     fun bind(version: Version) {
@@ -42,6 +49,17 @@ class VersionViewHolder(
     }
 
     fun renderProgress() {
+        size.text = version?.apkSizeBytesDisplay ?: UNKNOWN_SIZE
+
+        val resourceId = when {
+            version?.status == DOWNLOADING -> R.drawable.ic_cloud_sync_16dp
+            version?.hasApkUrl() ?: false -> R.drawable.ic_cloud_search_16dp
+            version?.hasApkRef() ?: false && version?.apkFileAvailable?.not() ?: false -> R.drawable.ic_cloud_download_16dp
+            version?.hasApkRef() ?: false && version?.apkFileAvailable ?: false -> R.drawable.ic_cloud_check_16dp
+            else -> R.drawable.ic_cloud_alert_16dp
+        }
+        type.setImageResource(resourceId)
+
         when (version?.status) {
             DEFAULT -> {
                 progress.progress = 0

@@ -1,59 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/material_baseline_grid_2x"
     android:paddingLeft="@dimen/material_baseline_grid_4x"
+    android:paddingTop="@dimen/material_baseline_grid_2x"
     android:paddingRight="@dimen/material_baseline_grid_4x"
-    android:paddingTop="@dimen/material_baseline_grid_2x">
+    android:paddingBottom="@dimen/material_baseline_grid_2x">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textView_version_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/colorAccent"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/barrier2"
+        app:layout_constraintEnd_toEndOf="@+id/barrier3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1.2.3" />
 
-        <TextView
-            android:id="@+id/textView_version_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="1.2.3" />
+    <TextView
+        android:id="@+id/textView_version_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SmallSp"
+        tools:text="1 day ago" />
 
-        <TextView
-            android:id="@+id/textView_version_timestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/colorTextSecondary"
-            android:textSize="12sp"
-            tools:text="1 day ago" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textView_version_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_version_type"
+        app:layout_constraintTop_toBottomOf="@+id/textView_version_timestamp"
+        tools:ignore="SmallSp"
+        tools:text="123 MiB" />
+
+    <ImageView
+        android:id="@+id/imageView_version_type"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_version_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView_version_size"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_cloud_check_16dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="textView_version_size,textView_version_name"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="46dp" />
 
     <ProgressBar
         android:id="@+id/progressBar_version"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:max="100"
         android:maxHeight="@dimen/material_baseline_grid_2x"
         android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/barrier2"
         tools:visibility="visible" />
 
     <TextView
         android:id="@+id/textView_version_description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar_version"
         tools:text="@tools:sample/lorem/random" />
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="textView_version_size,textView_version_timestamp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="352dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

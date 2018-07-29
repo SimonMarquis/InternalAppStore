@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.database.DataSnapshot
@@ -49,6 +50,8 @@ import fr.smarquis.appstore.Version.Status.*
 import fr.smarquis.appstore.VersionRequest.Companion.create
 import java.io.File
 import java.lang.ref.WeakReference
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
 
 class VersionsActivity : AppCompatActivity() {
 
@@ -108,16 +111,13 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     private val dataObserver: RecyclerView.AdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
+
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             super.onItemRangeInserted(positionStart, itemCount)
             contentLoadingProgressBar.hide()
 
-            // Restore active downloads (progress and complete)
             for (position in positionStart until positionStart + itemCount) {
-                val version = versionAdapter?.getItem(position) ?: continue
-                version.getActiveDownloadTask()?.apply { DownloadProgressListener.update(snapshot, version, versionAdapter) }
-                        ?.addOnProgressListener(DownloadProgressListener(this@VersionsActivity, version))
-                        ?.addOnCompleteListener(DownloadCompleteListener(this@VersionsActivity, version, primary = false))
+                refreshVersionProperties(versionAdapter?.getItem(position) ?: continue)
             }
         }
     }
@@ -127,6 +127,8 @@ class VersionsActivity : AppCompatActivity() {
             updateApplication(application)
         }
     }
+
+    private val executor by lazy { Executors.newSingleThreadExecutor() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -186,12 +188,16 @@ class VersionsActivity : AppCompatActivity() {
         versionAdapter = VersionAdapter(
                 query = Firebase.database.versions(application.key.orEmpty()),
                 callback = object : VersionAdapter.Callback {
+                    override fun onItemChanged(version: Version) {
+                        refreshVersionProperties(version)
+                    }
+
                     override fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder) {
-                        downloadVersion(application, version, false)
+                        downloadVersion(version, false)
                     }
 
                     override fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean {
-                        downloadVersion(application, version, true)
+                        downloadVersion(version, true)
                         return true
                     }
                 }
@@ -223,6 +229,24 @@ class VersionsActivity : AppCompatActivity() {
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, orientation))
         }
+    }
+
+    private fun refreshVersionProperties(version: Version) {
+        // Restore active downloads and check for file size and apk file availability
+        val activity = this@VersionsActivity
+        version.getActiveDownloadTask()?.apply { DownloadProgressListener.update(snapshot, version, versionAdapter) }
+                ?.addOnProgressListener(DownloadProgressListener(activity, version))
+                ?.addOnCompleteListener(DownloadCompleteListener(activity, version, primary = false))
+        if (!version.hasApkRef()) return
+
+        val context = applicationContext
+        val fileSizeTask = Firebase.storage.getReference(version.apkRef!!).metadata.addOnSuccessListener(activity) { version.apkSizeBytes = it.sizeBytes }
+        val fileAvailabilityTask = Tasks.call(executor, Callable {
+            ApkFileProvider.apkFile(context, version).let {
+                version.apkFileAvailable = it.exists() && it.length() > 0
+            }
+        })
+        Tasks.whenAllComplete(fileSizeTask, fileAvailabilityTask).addOnCompleteListener(activity) { versionAdapter?.updateVersionProgress(version) }
     }
 
     private fun updateApplication(application: Application?): Boolean {
@@ -310,8 +334,7 @@ class VersionsActivity : AppCompatActivity() {
         }
     }
 
-    private fun downloadVersion(application: Application, version: Version, force: Boolean) {
-        Log.d("APK Download", "downloadVersion(${application.name}, ${version.name}, force=$force)")
+    private fun downloadVersion(version: Version, force: Boolean) {
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, Bundle().apply {
             putString(FirebaseAnalytics.Param.ITEM_ID, version.key)
             putString(FirebaseAnalytics.Param.ITEM_NAME, version.name)
@@ -328,10 +351,8 @@ class VersionsActivity : AppCompatActivity() {
             }
         }
 
-        val apkRef = version.apkRef
-        val apkUrl = version.apkUrl
         when {
-            !apkRef.isNullOrBlank() && apkRef != null -> {
+            version.hasApkRef() -> {
                 val apkFile = ApkFileProvider.apkFile(applicationContext, version)
                 // Install apk if it's already downloaded
                 if (apkFile.exists() && apkFile.length() > 0 && !force) {
@@ -348,14 +369,12 @@ class VersionsActivity : AppCompatActivity() {
 
                 val tmpFile = ApkFileProvider.tempApkFile(applicationContext, version)
 
-                Log.d("APK Download", "Files: tmp:${tmpFile.path}, ${tmpFile.exists()} apk:${apkFile.path}, ${apkFile.exists()}")
-
-                Firebase.storage.getReference(apkRef).getFile(tmpFile)
+                Firebase.storage.getReference(version.apkRef!!).getFile(tmpFile)
                         .addOnProgressListener(DownloadProgressListener(this, version))
                         .addOnCompleteListener(DownloadCompleteListener(this, version, primary = true))
             }
-            !apkUrl.isNullOrBlank() -> {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(apkUrl))
+            version.hasApkUrl() -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(version.apkUrl))
                 if (intent.isSafe(this)) {
                     version.updateStatus(OPENING)
                     versionAdapter?.updateVersionProgress(version)
@@ -420,6 +439,7 @@ class VersionsActivity : AppCompatActivity() {
                     }
                 }
                 activityReference.get()?.let {
+                    version.apkFileAvailable = true
                     if (it.lifecycle.currentState.isAtLeast(STARTED)) {
                         it.installVersion(version, apkFile)
                     }

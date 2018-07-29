@@ -2,6 +2,9 @@ package fr.smarquis.appstore
 
 import androidx.annotation.Keep
 import com.google.firebase.database.DataSnapshot
+import com.jakewharton.byteunits.BinaryByteUnit
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 @Keep
 data class Version(
@@ -23,6 +26,9 @@ data class Version(
 
         fun parse(dataSnapshot: DataSnapshot) = SAFE_PARSER(dataSnapshot)
 
+        val DECIMAL_FORMAT_LONG = (NumberFormat.getNumberInstance() as DecimalFormat).apply { maximumFractionDigits = 2 }
+        val DECIMAL_FORMAT_SHORT = (NumberFormat.getNumberInstance() as DecimalFormat).apply { maximumFractionDigits = 0 }
+
     }
 
     val semver by lazy { SemVer.parse(name) }
@@ -39,6 +45,21 @@ data class Version(
     }
 
     var status: Status = Status.DEFAULT
+
+    var apkSizeBytes: Long? = null
+        set(bytes) {
+            field = bytes
+            apkSizeBytesDisplay = when {
+                bytes == null || bytes == 0L -> null
+                BinaryByteUnit.BYTES.toMebibytes(bytes) < 1L -> BinaryByteUnit.format(bytes, DECIMAL_FORMAT_SHORT)
+                else -> BinaryByteUnit.format(bytes, DECIMAL_FORMAT_LONG)
+            }
+        }
+
+    var apkSizeBytesDisplay: String? = null
+        private set
+
+    var apkFileAvailable: Boolean = false
 
     /**
      * Keep track of progress when #status is #DOWNLOADING
@@ -57,6 +78,10 @@ data class Version(
             else -> compared
         }
     }
+
+    fun hasApkRef(): Boolean = !apkRef.isNullOrBlank()
+
+    fun hasApkUrl(): Boolean = !apkUrl.isNullOrBlank()
 
 }
 

@@ -28,6 +28,7 @@ class VersionAdapter(
     interface Callback {
         fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder)
         fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean
+        fun onItemChanged(version: Version)
     }
 
     private val sortedListCallback = object : SortedListAdapterCallback<Version>(this) {
@@ -72,11 +73,13 @@ class VersionAdapter(
             }
             ChangeEventType.CHANGED, ChangeEventType.MOVED -> {
                 lut[version.key]?.let {
-                    val indexOf = sortedList.indexOf(it)
-                    Log.d("Version", "onChildChanged indexOf:$indexOf")
-                    sortedList.updateItemAt(indexOf, version)
+                    sortedList.updateItemAt(sortedList.indexOf(it), version)
                 }
                 lut[version.key] = version
+
+                if (type == ChangeEventType.CHANGED) {
+                    callback.onItemChanged(version)
+                }
             }
         }
     }
