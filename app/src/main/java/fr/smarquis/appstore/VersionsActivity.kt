@@ -122,11 +122,11 @@ class VersionsActivity : AppCompatActivity() {
         }
     }
 
-    private val packageIntentFilterReceiver = PackageIntentFilter.receiver({ _: String, packageName: String ->
+    private val packageIntentFilterReceiver = PackageIntentFilter.receiver { _: String, packageName: String ->
         if (packageName == application?.packageName) {
             updateApplication(application)
         }
-    })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

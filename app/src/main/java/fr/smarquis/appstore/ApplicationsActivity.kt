@@ -64,7 +64,7 @@ class ApplicationsActivity : AppCompatActivity() {
         }
     }
 
-    private val packageIntentFilterReceiver = PackageIntentFilter.receiver({ _: String, packageName: String -> applicationAdapter?.onPackageChanged(packageName) })
+    private val packageIntentFilterReceiver = PackageIntentFilter.receiver { _: String, packageName: String -> applicationAdapter?.onPackageChanged(packageName) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,9 +188,9 @@ class ApplicationsActivity : AppCompatActivity() {
                                         return
                                     }
                                     if (reloadUser) {
-                                        currentUser.getIdToken(true).addOnSuccessListener(this@ApplicationsActivity, {
-                                            currentUser.reload().addOnSuccessListener(this@ApplicationsActivity, { checkStoreAccess() })
-                                        })
+                                        currentUser.getIdToken(true).addOnSuccessListener(this@ApplicationsActivity) {
+                                            currentUser.reload().addOnSuccessListener(this@ApplicationsActivity) { checkStoreAccess() }
+                                        }
                                     } else {
                                         Toast.makeText(this@ApplicationsActivity, getString(R.string.applications_toast_verify_inbox), Toast.LENGTH_LONG).show()
                                     }
@@ -222,8 +222,8 @@ class ApplicationsActivity : AppCompatActivity() {
 
     private fun signInAnonymously() {
         Firebase.auth.signInAnonymously()
-                .addOnSuccessListener(this@ApplicationsActivity, { Log.d("Store", "signInAnonymously:SUCCESS").also { checkStoreAccess() } })
-                .addOnFailureListener(this@ApplicationsActivity, { exception -> Log.e("Store", "signInAnonymously:FAILURE", exception) })
+                .addOnSuccessListener(this@ApplicationsActivity) { Log.d("Store", "signInAnonymously:SUCCESS").also { checkStoreAccess() } }
+                .addOnFailureListener(this@ApplicationsActivity) { exception -> Log.e("Store", "signInAnonymously:FAILURE", exception) }
     }
 
     private fun registerListeners() {
@@ -274,9 +274,9 @@ class ApplicationsActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_action_refresh -> {
-                Firebase.auth.currentUser?.getIdToken(true)?.addOnSuccessListener(this@ApplicationsActivity, {
-                    Firebase.auth.currentUser?.reload()?.addOnSuccessListener(this@ApplicationsActivity, { checkStoreAccess() })
-                })
+                Firebase.auth.currentUser?.getIdToken(true)?.addOnSuccessListener(this@ApplicationsActivity) {
+                    Firebase.auth.currentUser?.reload()?.addOnSuccessListener(this@ApplicationsActivity) { checkStoreAccess() }
+                }
                 true
             }
             R.id.menu_action_invalidate_cache -> {
@@ -299,10 +299,10 @@ class ApplicationsActivity : AppCompatActivity() {
         ApkFileProvider.invalidate(applicationContext)
         val glide = GlideApp.get(applicationContext)
         glide.clearMemory()
-        AsyncTask.execute({
+        AsyncTask.execute {
             glide.clearDiskCache()
             runOnUiThread(action)
-        })
+        }
     }
 
     private fun wipeAndExit() {
@@ -321,13 +321,13 @@ class ApplicationsActivity : AppCompatActivity() {
     }
 
     private fun sendVerificationEmail(currentUser: FirebaseUser) {
-        currentUser.sendEmailVerification().addOnCompleteListener(this@ApplicationsActivity, { task: Task<Void> ->
+        currentUser.sendEmailVerification().addOnCompleteListener(this@ApplicationsActivity) { task: Task<Void> ->
             if (task.isSuccessful) {
                 Toast.makeText(this@ApplicationsActivity, R.string.applications_toast_verification_email_sent, Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(this@ApplicationsActivity, R.string.applications_toast_verification_email_error, Toast.LENGTH_LONG).show()
             }
-        })
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

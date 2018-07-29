@@ -32,14 +32,14 @@ class ApkFileProvider : FileProvider() {
 
         fun invalidate(context: Context) {
             val filter = FileFilter { it.endsWith(".apk") }
-            AsyncTask.execute({ delete(context, filter) })
+            AsyncTask.execute { delete(context, filter) }
         }
 
         fun cleanUp(context: Context) {
             val time = Date().time
             val month = TimeUnit.DAYS.toMillis(30)
             val filter = FileFilter { it.endsWith(".apk") && time - it.lastModified() > month }
-            AsyncTask.execute({ delete(context, filter) })
+            AsyncTask.execute { delete(context, filter) }
         }
 
         private fun delete(context: Context, fileFilter: FileFilter?) {

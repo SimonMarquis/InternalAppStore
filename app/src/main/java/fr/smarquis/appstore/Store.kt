@@ -27,14 +27,14 @@ class Store : Application() {
     }
 
     fun clearFilesCacheAndDatabases(action: (() -> Unit)? = null) {
-        AsyncTask.execute({
+        AsyncTask.execute {
             cacheDir.deleteRecursively()
             filesDir.deleteRecursively()
             for (database in databaseList()) {
                 deleteDatabase(database)
             }
             action?.let { Handler(Looper.getMainLooper()).post(it) }
-        })
+        }
     }
 
 }
