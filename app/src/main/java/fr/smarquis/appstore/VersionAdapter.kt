@@ -19,14 +19,8 @@ class VersionAdapter(
 ) : FirebaseRecyclerAdapter<Version, VersionViewHolder>(recyclerOptions(query)) {
 
     companion object {
-        private val PARSER: (DataSnapshot) -> Version = { snapshot ->
-            snapshot.getValue(Version::class.java)?.apply {
-                key = snapshot.key
-            }!!
-        }
 
-        private fun recyclerOptions(query: DatabaseReference) = FirebaseRecyclerOptions.Builder<Version>().setQuery(query, VersionAdapter.PARSER).build()
-
+        private fun recyclerOptions(query: DatabaseReference) = FirebaseRecyclerOptions.Builder<Version>().setQuery(query) { Version.parse(it)!! }.build()
 
         val PAYLOAD_PROGRESS_CHANGED = Any()
     }
@@ -66,9 +60,7 @@ class VersionAdapter(
     }
 
     override fun onChildChanged(type: ChangeEventType, snapshot: DataSnapshot, newIndex: Int, oldIndex: Int) {
-        val version = PARSER(snapshot)
-        Log.d("Version", "onChildChanged type:${type.name} newIndex:$newIndex oldIndex:$oldIndex ${version.key} ${version.name}")
-
+        val version = Version.parse(snapshot) ?: return
         when (type) {
             ChangeEventType.ADDED -> {
                 lut[version.key] = version

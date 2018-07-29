@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.Query
 
@@ -18,18 +17,7 @@ class ApplicationAdapter(
 
     companion object {
 
-        val SAFE_PARSER: (DataSnapshot?) -> Application? = { snapshot ->
-            snapshot?.getValue(Application::class.java)?.apply {
-                key = snapshot.key
-            }
-        }
-        private val PARSER: (DataSnapshot) -> Application = { snapshot ->
-            snapshot.getValue(Application::class.java)?.apply {
-                key = snapshot.key
-            }!!
-        }
-
-        private fun recyclerOptions(query: Query) = FirebaseRecyclerOptions.Builder<Application>().setQuery(query, ApplicationAdapter.PARSER).build()
+        private fun recyclerOptions(query: Query) = FirebaseRecyclerOptions.Builder<Application>().setQuery(query) { Application.parse(it)!! }.build()
 
         val PAYLOAD_PACKAGE_CHANGED = Any()
 

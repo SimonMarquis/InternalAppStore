@@ -95,7 +95,7 @@ class VersionsActivity : AppCompatActivity() {
         }
 
         override fun onDataChange(snapshot: DataSnapshot) {
-            ApplicationAdapter.SAFE_PARSER(snapshot).let {
+            Application.parse(snapshot).let {
                 if (it == null) {
                     Toast.makeText(applicationContext, R.string.versions_toast_application_removed, Toast.LENGTH_SHORT).show()
                     finish()

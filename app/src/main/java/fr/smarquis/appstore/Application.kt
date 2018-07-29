@@ -3,6 +3,7 @@ package fr.smarquis.appstore
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
+import com.google.firebase.database.DataSnapshot
 
 @Keep
 data class Application(
@@ -55,6 +56,15 @@ data class Application(
 
             override fun newArray(size: Int) = arrayOfNulls<Application?>(size)
         }
+
+        private val SAFE_PARSER: (DataSnapshot) -> Application? = { snapshot ->
+            snapshot.getValue(Application::class.java)?.apply {
+                key = snapshot.key
+            }
+        }
+
+        fun parse(dataSnapshot: DataSnapshot) = SAFE_PARSER(dataSnapshot)
+
     }
 
 }

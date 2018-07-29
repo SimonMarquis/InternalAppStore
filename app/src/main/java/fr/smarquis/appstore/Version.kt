@@ -1,6 +1,7 @@
 package fr.smarquis.appstore
 
 import androidx.annotation.Keep
+import com.google.firebase.database.DataSnapshot
 
 @Keep
 data class Version(
@@ -13,6 +14,17 @@ data class Version(
         val apkUrl: String? = null) : Comparable<Version> {
 
     private val semver by lazy { SemVer.parse(name) }
+    companion object {
+
+        private val SAFE_PARSER: (DataSnapshot) -> Version? = { snapshot ->
+            snapshot.getValue(Version::class.java)?.apply {
+                key = snapshot.key
+            }
+        }
+
+        fun parse(dataSnapshot: DataSnapshot) = SAFE_PARSER(dataSnapshot)
+
+    }
 
     val descriptionToHtml by lazy {
         Utils.parseHtml(description)
