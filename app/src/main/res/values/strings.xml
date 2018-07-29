@@ -36,7 +36,7 @@
     <string name="versions_menu_info">App info</string>
     <string name="versions_menu_start">Start</string>
     <string name="versions_menu_stop">Stop</string>
-    <string name="versions_menu_delete">Delete</string>
+    <string name="versions_menu_uninstall">Uninstall</string>
     <string name="versions_menu_play_store">Play Store</string>
     <string name="versions_menu_notification_settings">Notification settings</string>
 

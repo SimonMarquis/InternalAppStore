@@ -513,7 +513,7 @@ class VersionsActivity : AppCompatActivity() {
         menu?.findItem(R.id.menu_action_info)?.isVisible = applicationInstalled
         menu?.findItem(R.id.menu_action_start)?.isVisible = applicationInstalled && Utils.getLaunchIntent(applicationContext, packageName).isSafe(this) == true
         menu?.findItem(R.id.menu_action_stop)?.isVisible = applicationInstalled
-        menu?.findItem(R.id.menu_action_delete)?.isVisible = applicationInstalled
+        menu?.findItem(R.id.menu_action_uninstall)?.isVisible = applicationInstalled
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -523,7 +523,7 @@ class VersionsActivity : AppCompatActivity() {
             R.id.menu_action_start -> application?.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it)) }
             R.id.menu_action_stop -> application?.packageName?.let { (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it) }
             R.id.menu_action_info -> application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
-            R.id.menu_action_delete -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
+            R.id.menu_action_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
             R.id.menu_action_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
             R.id.menu_action_notification_settings -> {
                 safeStartActivity(Utils.notificationSettingsIntent(this, getString(R.string.notification_channel_new_versions_id, application?.key)))

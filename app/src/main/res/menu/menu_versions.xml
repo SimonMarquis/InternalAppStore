@@ -16,8 +16,8 @@
         android:id="@+id/menu_action_stop"
         android:title="@string/versions_menu_stop" />
     <item
-        android:id="@+id/menu_action_delete"
-        android:title="@string/versions_menu_delete" />
+        android:id="@+id/menu_action_uninstall"
+        android:title="@string/versions_menu_uninstall" />
     <item
         android:id="@+id/menu_action_store"
         android:title="@string/versions_menu_play_store" />
