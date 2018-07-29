@@ -13,7 +13,6 @@ data class Version(
         val apkGeneration: Long? = null,
         val apkUrl: String? = null) : Comparable<Version> {
 
-    private val semver by lazy { SemVer.parse(name) }
     companion object {
 
         private val SAFE_PARSER: (DataSnapshot) -> Version? = { snapshot ->
@@ -25,6 +24,8 @@ data class Version(
         fun parse(dataSnapshot: DataSnapshot) = SAFE_PARSER(dataSnapshot)
 
     }
+
+    val semver by lazy { SemVer.parse(name) }
 
     val descriptionToHtml by lazy {
         Utils.parseHtml(description)

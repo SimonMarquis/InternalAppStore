@@ -95,4 +95,6 @@ fun Application.loadImageInto(imageView: ImageView, glide: GlideRequests) {
     glide.load(findImageReference()).apply(DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS).into(imageView)
 }
 
+fun Application.isMyself(context: Context) = context.packageName == packageName
+
 //endregion
