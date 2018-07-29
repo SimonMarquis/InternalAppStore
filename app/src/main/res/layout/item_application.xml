@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/material_baseline_grid_7.5x"
@@ -13,38 +14,43 @@
         android:id="@+id/imageView_application_icon"
         android:layout_width="@dimen/material_baseline_grid_5x"
         android:layout_height="@dimen/material_baseline_grid_5x"
-        android:layout_marginEnd="@dimen/material_baseline_grid_2x"
-        android:layout_marginRight="@dimen/material_baseline_grid_2x"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textView_application_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textView_application_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:layout_marginStart="@dimen/material_baseline_grid_2x"
+        android:layout_marginLeft="@dimen/material_baseline_grid_2x"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        app:layout_constraintBottom_toTopOf="@+id/textView_application_installed"
+        app:layout_constraintStart_toEndOf="@+id/imageView_application_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="@tools:sample/full_names" />
 
-        <TextView
-            android:id="@+id/textView_application_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            tools:text="@tools:sample/full_names" />
-
-        <TextView
-            android:id="@+id/textView_application_installed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/colorTextSecondary"
-            android:textSize="12sp"
-            tools:text="Installed • 1.2.3" />
-
-    </LinearLayout>
-
-</LinearLayout>
+    <TextView
+        android:id="@+id/textView_application_installed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/material_baseline_grid_2x"
+        android:layout_marginLeft="@dimen/material_baseline_grid_2x"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView_application_icon"
+        app:layout_constraintTop_toBottomOf="@+id/textView_application_title"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Installed • 1.2.3" />
+</androidx.constraintlayout.widget.ConstraintLayout>
