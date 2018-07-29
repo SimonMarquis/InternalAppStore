@@ -154,7 +154,6 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        Log.d(TAG, "onDestroy()")
         unregisterListeners()
         super.onDestroy()
     }
@@ -396,7 +395,6 @@ class VersionsActivity : AppCompatActivity() {
         private val activityReference: WeakReference<VersionsActivity> = WeakReference(activity)
 
         override fun onProgress(task: FileDownloadTask.TaskSnapshot?) {
-            Log.d("DownloadProgress", "onProgress(${task?.bytesTransferred} / ${task?.totalByteCount})")
             update(task, version, activityReference.get()?.versionAdapter)
         }
 
@@ -426,7 +424,6 @@ class VersionsActivity : AppCompatActivity() {
 
         override fun onComplete(task: Task<FileDownloadTask.TaskSnapshot>) {
             if (task.isSuccessful) {
-                Log.d("DownloadComplete", "onSuccess(${version.key}, ${version.name})")
                 val tmpFile = ApkFileProvider.tempApkFile(appContext, version)
                 val apkFile = ApkFileProvider.apkFile(appContext, version)
                 // Only the primary listener should move the file to avoid corrupted file
@@ -482,7 +479,6 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("Version", "onActivityResult($requestCode, $resultCode, $data)")
         VersionRequest.extract(requestCode)?.let {
             val version = it.version
             when (it.action) {

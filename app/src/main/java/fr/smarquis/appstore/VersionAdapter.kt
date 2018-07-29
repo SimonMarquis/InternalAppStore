@@ -105,7 +105,6 @@ class VersionAdapter(
 
 
     override fun onBindViewHolder(holder: VersionViewHolder, position: Int, payloads: MutableList<Any>) {
-        Log.d("ViewHolder", "onBindViewHolder($position)")
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
         } else {
@@ -128,7 +127,6 @@ class VersionAdapter(
 
 
     fun updateVersionProgress(version: Version) {
-        Log.d("VersionAdapter", "updateVersionProgress(${version.key} ${version.name})")
         val indexOf = sortedList.indexOf(version)
         if (indexOf != SortedList.INVALID_POSITION) {
             sortedList.get(indexOf).apply {

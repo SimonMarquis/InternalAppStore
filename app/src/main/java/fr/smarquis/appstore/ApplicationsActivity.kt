@@ -1,6 +1,5 @@
 package fr.smarquis.appstore
 
-import androidx.appcompat.app.AppCompatActivity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -8,17 +7,18 @@ import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import androidx.core.widget.ContentLoadingProgressBar
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.Task
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseUser
@@ -331,7 +331,6 @@ class ApplicationsActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d(TAG, "onActivityResult(requestCode:$requestCode, resultCode:$resultCode, data:$data)")
         when (requestCode) {
             REQUEST_CODE_AUTO_SIGN_IN -> {
                 when (resultCode) {
