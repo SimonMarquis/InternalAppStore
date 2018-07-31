@@ -206,6 +206,11 @@ AppStore.prototype.uiInitApplications = function() {
     this.uiOnApplicationAdded(snapshot);
     this.applications.set(snapshot.key, snapshot.val());
     this.uiAppendApplication(snapshot.key, snapshot.val());
+    if (snapshot.key == window.location.pathname.substr(1)) {
+      window.setTimeout(() => {
+        this.uiShowApplicationDetails(snapshot.key);
+      }, 250);
+    }
   });
   this.databaseRefs.applicationsByName.on("child_changed", snapshot => {
     this.applications.set(snapshot.key, snapshot.val());
@@ -243,9 +248,7 @@ AppStore.prototype.uiAppendApplicationCard = function(key, app) {
   this.uiInsertApplicationCard(card, this.ui.applicationsCards);
   card
     .querySelector(".card")
-    .addEventListener("click", event =>
-      this.uiShowApplicationDetails(key, app)
-    );
+    .addEventListener("click", event => this.uiShowApplicationDetails(key));
 };
 
 AppStore.prototype.uiInsertApplicationCard = function(card, root) {
@@ -563,6 +566,11 @@ AppStore.prototype.uiUpdateApplicationDetails = function(details, key, app) {
 };
 
 AppStore.prototype.uiShowApplicationCards = function(key, callback) {
+  if (key) {
+    history.replaceState(null, null, "/");
+  }
+  Ui.resetTitle();
+  Ui.resetFavicon();
   Ui.show(this.ui.applicationsCards);
   if (key) {
     $(document.getElementById(this.ids.ofApplicationDetails(key))).slideUp(
@@ -579,6 +587,14 @@ AppStore.prototype.uiShowApplicationCards = function(key, callback) {
 };
 
 AppStore.prototype.uiShowApplicationDetails = function(key) {
+  const app = this.applications.get(key);
+  if (!app) {
+    return;
+  }
+
+  history.replaceState(key, null, key);
+  Ui.updateTitle(app.name);
+  Ui.updateFavicon(app.image);
   $(this.ui.applicationsCards)
     .parent()
     .slideUp();
@@ -1700,6 +1716,46 @@ Ui.empty = function(...elements) {
   for (let e of elements) {
     while (e && e.firstChild) {
       e.removeChild(e.firstChild);
+    }
+  }
+};
+
+Ui.title = function() {
+  return document.querySelector("head > title");
+};
+
+Ui.updateTitle = function(string) {
+  const title = Ui.title();
+  if (!title.hasAttribute("value")) {
+    title.setAttribute("value", title.textContent);
+  }
+  title.textContent = string;
+};
+
+Ui.resetTitle = function() {
+  const title = Ui.title();
+  if (title.hasAttribute("value")) {
+    title.textContent = title.getAttribute("value");
+  }
+};
+
+Ui.favicon = function(src) {
+  return document.querySelectorAll("link[rel=icon]");
+};
+
+Ui.updateFavicon = function(src) {
+  for (let favicon of Ui.favicon()) {
+    if (!favicon.hasAttribute("_href")) {
+      favicon.setAttribute("_href", favicon.getAttribute("href"));
+    }
+    favicon.setAttribute("href", src);
+  }
+};
+
+Ui.resetFavicon = function() {
+  for (let favicon of Ui.favicon()) {
+    if (favicon.hasAttribute("_href")) {
+      favicon.setAttribute("href", favicon.getAttribute("_href"));
     }
   }
 };
