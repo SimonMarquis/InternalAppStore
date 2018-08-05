@@ -1943,11 +1943,9 @@ class SemVer {
   }
 }
 
-try {
-  SemVer.REGEX = /^(?<major>\d+)(?:\.(?<minor>\d+)(?:\.(?<patch>\d+))?)?(?:-(?<label>.+))?$/;
-} catch (error) {
-  SemVer.REGEX = /^(\d+)(?:\.(\d+)(?:\.(\d+))?)?(?:-(.+))?$/;
-}
+/* Named capture group is not supported everywhere... */
+/* /^(?<major>\d+)(?:\.(?<minor>\d+)(?:\.(?<patch>\d+))?)?(?:-(?<label>.+))?$/ */
+SemVer.REGEX = /^(\d+)(?:\.(\d+)(?:\.(\d+))?)?(?:-(.+))?$/;
 
 function TimeAgo() {}
 
