@@ -50,13 +50,19 @@ AppStore.prototype.initInternalData = function(snapshot) {
   this.applications = {
     _data: [],
     get: key => this.applications._data[key],
-    set: (key, value) => (this.applications._data[key] = value),
+    set: (key, value) => {
+      value.key = key;
+      this.applications._data[key] = value;
+    },
     delete: key => delete this.applications._data[key]
   };
   this.versions = {
     _data: [],
     get: key => this.versions._data[key],
-    set: (key, value) => (this.versions._data[key] = value),
+    set: (key, value) => {
+      value.key = key;
+      this.versions._data[key] = value;
+    },
     delete: key => delete this.versions._data[key]
   };
 };
