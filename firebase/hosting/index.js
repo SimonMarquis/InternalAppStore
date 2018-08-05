@@ -1631,11 +1631,6 @@ AppStore.prototype.onUserLoggedOut = function() {
 
 AppStore.prototype.uiShowLogin = function() {
   Ui.show(this.ui.authContainer);
-  Ui.hide(
-    this.ui.applicationsCards,
-    ...appStore.ui.applicationsDetails.children
-  );
-
   AppStore.CONFIG.firebaseUi.callbacks = {
     signInSuccessWithAuthResult: (authResult, redirectUrl) => {
       Ui.show(this.ui.loader);
