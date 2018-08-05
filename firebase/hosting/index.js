@@ -1664,7 +1664,7 @@ AppStore.prototype.sendPasswordResetEmail = function() {
 };
 
 window.onload = function() {
-  window.appStore = new AppStore();
+  window.store = new AppStore();
 };
 
 /* Utils */
