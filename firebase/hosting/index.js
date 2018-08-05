@@ -41,6 +41,7 @@ function AppStore() {
   this.initUserInterface();
   this.initInternalData();
   this.initFirebase();
+  this.initRouter();
 
   Utils.preventDefaultDrop();
   Utils.initTimestampTimer();
@@ -206,16 +207,77 @@ AppStore.prototype.initFirebase = function() {
   this.auth.onAuthStateChanged(user => this.onAuthStateChanged(user));
 };
 
+AppStore.prototype.initRouter = function() {
+  window.addEventListener("popstate", event => this.routerPopstate(event));
+};
+
+AppStore.prototype.routerPopstate = function(event) {
+  var state = event.state;
+  if (state && state.view == "app") {
+    this.routerShowApp(state.key);
+  } else {
+    this.routerShowRoot();
+  }
+};
+
+AppStore.prototype.routerGoBack = function() {
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    this.routerShowRoot();
+  }
+};
+
+AppStore.prototype.routerShouldDeeplink = function(key) {
+  const state = window.history.state;
+  return (
+    state && (state.view == "root" || state.view == "app") && state.key == key
+  );
+};
+
+AppStore.prototype.routerShowRoot = function(key, callback) {
+  const currentState = window.history.state;
+  if (currentState) {
+    window.history.replaceState(currentState, null, "/");
+    this.uiShowApplicationCards(key, callback);
+    return;
+  }
+  const state = {
+    view: "root",
+    key: window.location.pathname.substr(1)
+  };
+  window.history.replaceState(state, null, state.key);
+  this.uiShowApplicationCards(key, callback);
+};
+
+AppStore.prototype.routerShowApp = function(key) {
+  const app = this.applications.get(key);
+  if (!app) {
+    this.routerShowRoot();
+    return;
+  }
+  const state = {
+    view: "app",
+    key: key
+  };
+  if ((window.history.state || {}).view == "app") {
+    window.history.replaceState(state, null, state.key);
+  } else {
+    window.history.pushState(state, null, state.key);
+  }
+  this.uiShowApplicationDetails(app.key);
+};
+
 AppStore.prototype.uiInitApplications = function() {
   this.databaseRefs.applicationsByName.off();
   this.databaseRefs.applicationsByName.on("child_added", snapshot => {
     this.uiOnApplicationAdded(snapshot);
-    this.applications.set(snapshot.key, snapshot.val());
-    this.uiAppendApplication(snapshot.key, snapshot.val());
-    if (snapshot.key == window.location.pathname.substr(1)) {
-      window.setTimeout(() => {
-        this.uiShowApplicationDetails(snapshot.key);
-      }, 250);
+    const key = snapshot.key;
+    const app = snapshot.val();
+    this.applications.set(key, app);
+    this.uiAppendApplication(key, app);
+    if (this.routerShouldDeeplink(key)) {
+      this.routerShowApp(key);
     }
   });
   this.databaseRefs.applicationsByName.on("child_changed", snapshot => {
@@ -254,7 +316,7 @@ AppStore.prototype.uiAppendApplicationCard = function(key, app) {
   this.uiInsertApplicationCard(card, this.ui.applicationsCards);
   card
     .querySelector(".card")
-    .addEventListener("click", event => this.uiShowApplicationDetails(key));
+    .addEventListener("click", event => this.routerShowApp(key));
 };
 
 AppStore.prototype.uiInsertApplicationCard = function(card, root) {
@@ -298,9 +360,7 @@ AppStore.prototype.uiAppendApplicationDetails = function(key, app) {
   this.ui.applicationsDetails.appendChild(details);
   details
     .querySelector("[data-app-back]")
-    .addEventListener("click", event =>
-      this.uiShowApplicationCards(key, undefined)
-    );
+    .addEventListener("click", event => this.routerGoBack());
   const edit = details.querySelector("[data-app-action-edit]");
   const add = details.querySelector("[data-app-action-add-version]");
   const drop = details.querySelector("[data-app-image-drop]");
@@ -572,9 +632,6 @@ AppStore.prototype.uiUpdateApplicationDetails = function(details, key, app) {
 };
 
 AppStore.prototype.uiShowApplicationCards = function(key, callback) {
-  if (key) {
-    history.replaceState(null, null, "/");
-  }
   Ui.resetTitle();
   Ui.resetFavicon();
   Ui.show(this.ui.applicationsCards);
@@ -598,7 +655,6 @@ AppStore.prototype.uiShowApplicationDetails = function(key) {
     return;
   }
 
-  history.replaceState(key, null, key);
   Ui.updateTitle(app.name);
   Ui.updateFavicon(app.image);
   $(this.ui.applicationsCards)
@@ -1122,7 +1178,7 @@ AppStore.prototype.uiOnApplicationRemoved = function(snapshot) {
   if (details) {
     // restore the application list if details are currently on screen
     if (!Ui.isHidden(details)) {
-      this.uiShowApplicationCards(key, () => details.remove());
+      this.routerShowRoot(key, () => details.remove());
     } else {
       details.remove();
     }
@@ -1518,7 +1574,6 @@ AppStore.prototype.uiUpdateUserNavigationMenu = function(user) {
 };
 
 AppStore.prototype.onUserLoggedIn = function(user) {
-  console.log("onUserLoggedIn", user, JSON.stringify(user));
   const ensureUserIsAllowed = user => {
     if (user.isAnonymous && !AppStore.CONFIG.allowAnonymousUsers) {
       user.isAllowed = false;
@@ -1601,7 +1656,7 @@ AppStore.prototype.onUserLoggedIn = function(user) {
 
   const renderUserInterface = user => {
     Ui.hide(this.ui.authContainer, this.ui.loader);
-    this.uiShowApplicationCards();
+    this.routerShowRoot();
     this.uiInitApplications();
     return Promise.resolve(user);
   };
@@ -1623,7 +1678,7 @@ AppStore.prototype.onUserLoggedOut = function() {
       .then(snapshot => {
         this.updateInternalData(snapshot);
         Ui.hide(this.ui.authContainer, this.ui.loader);
-        this.uiShowApplicationCards();
+        this.routerShowRoot();
         this.uiInitApplications();
       })
       .catch(error => this.uiShowLogin());
