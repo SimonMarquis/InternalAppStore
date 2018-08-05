@@ -116,6 +116,7 @@ AppStore.prototype.initUserInterface = function() {
   };
 
   this.ui = {
+    logo: document.getElementById("logo"),
     loader: document.getElementById("loader"),
     authContainer: document.getElementById("firebaseui-auth-container"),
     applicationsCards: document.getElementById("apps-cards"),
@@ -138,6 +139,10 @@ AppStore.prototype.initUserInterface = function() {
     ofVersionModal: key => `version_modal_${key}`
   };
 
+  this.ui.logo.addEventListener("click", () => {
+    window.history.pushState(null, null, "/");
+    document.location.reload(true);
+  });
   this.ui.newAppCard
     .querySelector(".card")
     .addEventListener("click", () => this.uiShowApplicationModal());
