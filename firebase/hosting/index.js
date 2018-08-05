@@ -604,6 +604,9 @@ AppStore.prototype.uiShowApplicationDetails = function(key) {
   $(this.ui.applicationsCards)
     .parent()
     .slideUp();
+  $(this.ui.applicationsDetails)
+    .children()
+    .slideUp();
   $("#" + this.ids.ofApplicationDetails(key)).slideDown();
 };
 
