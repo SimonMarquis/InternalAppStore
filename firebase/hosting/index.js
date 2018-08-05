@@ -578,6 +578,9 @@ AppStore.prototype.uiShowApplicationCards = function(key, callback) {
   Ui.resetTitle();
   Ui.resetFavicon();
   Ui.show(this.ui.applicationsCards);
+  $(this.ui.applicationsCards)
+    .parent()
+    .slideDown();
   if (key) {
     $(document.getElementById(this.ids.ofApplicationDetails(key))).slideUp(
       callback
@@ -587,9 +590,6 @@ AppStore.prototype.uiShowApplicationCards = function(key, callback) {
       .children()
       .slideUp();
   }
-  $(this.ui.applicationsCards)
-    .parent()
-    .slideDown();
 };
 
 AppStore.prototype.uiShowApplicationDetails = function(key) {
