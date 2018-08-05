@@ -476,7 +476,7 @@ AppStore.prototype.uiUpdateVersion = function(
   const description = root.querySelector("[data-version-description]");
   description.innerHTML = version.description
     ? HtmlSanitizer.sanitize(version.description)
-    : null;
+    : "";
   const internalLinks = description.querySelectorAll("a");
   for (let i = 0; i < internalLinks.length; i++) {
     const link = internalLinks[i];
@@ -533,7 +533,7 @@ AppStore.prototype.uiUpdateApplicationDetails = function(details, key, app) {
   details.querySelector("[data-app-name]").textContent = app.name;
   details.querySelector("[data-app-description]").innerHTML = app.description
     ? HtmlSanitizer.sanitize(app.description)
-    : null;
+    : "";
   const packageName = details.querySelector("[data-app-package-name]");
   if (packageName.childElementCount == 0) {
     const packageLink = Ui.inflate(this.templates.applicationLinkOutline)
@@ -657,7 +657,7 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
     modal.packageName.value = app.packageName;
     modal.description.innerHTML = app.description
       ? HtmlSanitizer.sanitize(app.description)
-      : null;
+      : "";
     modal.link1name.value = app.link_1 ? app.link_1.name : null;
     modal.link1uri.value = app.link_1 ? app.link_1.uri : null;
     modal.link2name.value = app.link_2 ? app.link_2.name : null;
@@ -933,7 +933,7 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
     modal.name.value = version.name;
     modal.description.innerHTML = version.description
       ? HtmlSanitizer.sanitize(version.description)
-      : null;
+      : "";
     updateTimestamp(version.timestamp);
 
     if (version.apkRef) {
