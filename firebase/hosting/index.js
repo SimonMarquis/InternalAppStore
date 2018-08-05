@@ -1972,11 +1972,10 @@ class SemVer {
     if (!result) {
       throw new Error(`Invalid input: [${string}]`);
     }
-    const groups = result.groups;
-    this.major = Number(groups ? groups.major : result[1]) || 0;
-    this.minor = Number(groups ? groups.minor : result[3]) || 0;
-    this.patch = Number(groups ? groups.patch : result[5]) || 0;
-    this.label = (groups ? groups.label : result[7]) || "";
+    this.major = Number(result[1]) || 0;
+    this.minor = Number(result[2]) || 0;
+    this.patch = Number(result[3]) || 0;
+    this.label = result[4] || "";
   }
 
   isGreaterThan(version) {
