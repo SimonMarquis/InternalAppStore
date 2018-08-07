@@ -133,7 +133,7 @@ class VersionsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val application: Application? = intent.extras.getParcelable(EXTRA_APPLICATION)
+        val application: Application? = intent?.extras?.getParcelable(EXTRA_APPLICATION)
         if (application?.key == null) {
             finish()
             return

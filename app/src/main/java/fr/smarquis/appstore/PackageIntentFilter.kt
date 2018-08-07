@@ -23,9 +23,10 @@ class PackageIntentFilter {
         fun receiver(block: (action: String, packageName: String) -> Unit): BroadcastReceiver {
             return object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
-                    intent.data.schemeSpecificPart?.let {
-                        if (INTENT_FILTER.hasAction(intent.action)) {
-                            block(intent.action, it)
+                    val action = intent.action ?: return
+                    intent.data?.schemeSpecificPart?.let {
+                        if (INTENT_FILTER.hasAction(action)) {
+                            block(action, it)
                         }
                     }
                 }
