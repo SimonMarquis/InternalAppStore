@@ -34,7 +34,7 @@
     <div class="col-sm-4">
       <div class="card m-2 card-selectable">
         <div style="width: 100px; height: 100px; margin: 10px auto;">
-          <img class="card-img" data-app-image>
+          <img class="card-img" data-app-image onload="this.style.display=''" onerror="this.style.display='none'">
         </div>
         <div class="card-footer text-truncate text-center">
           <small class="text-muted" data-app-name></small>
@@ -59,7 +59,7 @@
               <div class="col-sm-3 text-center" data-app-image-drop>
                 <div class="spinner-grow text-secondary" data-app-image-drop-spinner hidden style="position: absolute;">
                 </div>
-                <img class="card-img w-100 h-100" style="max-width: 150px;" draggable="false" data-app-image drop-zone>
+                <img class="card-img w-100 h-100" style="max-width: 150px;" draggable="false" data-app-image drop-zone onload="this.style.display=''" onerror="this.style.display='none'">
               </div>
               <div class="col-sm-9 remove-bottom-margin-on-last-item">
                 <p data-app-description class="pre-wrap"></p>
