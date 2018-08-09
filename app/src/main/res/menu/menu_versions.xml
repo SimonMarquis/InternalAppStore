@@ -10,9 +10,6 @@
         app:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
     <item
-        android:id="@+id/menu_action_start"
-        android:title="@string/versions_menu_start" />
-    <item
         android:id="@+id/menu_action_stop"
         android:title="@string/versions_menu_stop" />
     <item

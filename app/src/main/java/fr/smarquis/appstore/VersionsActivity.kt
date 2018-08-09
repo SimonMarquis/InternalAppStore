@@ -17,11 +17,14 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.HorizontalScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.Px
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.net.toUri
 import androidx.core.text.bold
@@ -35,9 +38,11 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.database.DataSnapshot
@@ -85,8 +90,11 @@ class VersionsActivity : AppCompatActivity() {
     private var versionAdapter: VersionAdapter? = null
     private var application: Application? = null
 
+    private lateinit var constraintLayout: ConstraintLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var contentLoadingProgressBar: ContentLoadingProgressBar
+    private lateinit var links: HorizontalScrollView
+    private lateinit var fab: FloatingActionButton
 
     private val applicationValueEventListener: ValueEventListener = object : ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
@@ -129,6 +137,33 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     private val executor by lazy { Executors.newSingleThreadExecutor() }
+
+    private val fabVisibilityChangedListener by lazy {
+        object : FloatingActionButton.OnVisibilityChangedListener() {
+            override fun onShown(view: FloatingActionButton?) {
+                updatePadding(true)
+            }
+
+            override fun onHidden(view: FloatingActionButton?) {
+                updatePadding(false)
+            }
+
+            @Px
+            private val baselineGrid = resources.getDimensionPixelSize(R.dimen.material_baseline_grid_1x)
+
+            @SuppressLint("PrivateResource")
+            @Px
+            private val fabSizeMini = resources.getDimensionPixelSize(com.google.android.material.R.dimen.design_fab_size_mini)
+
+            private fun updatePadding(visible: Boolean) {
+                if (ViewCompat.isLaidOut(constraintLayout)) TransitionManager.beginDelayedTransition(constraintLayout as ViewGroup)
+                val recyclerViewTopPadding = if (visible) baselineGrid else 0
+                recyclerView.setPadding(0, recyclerViewTopPadding, 0, 0)
+                val linksRightPadding = if (visible) fabSizeMini else 0
+                links.setPadding(0, 0, linksRightPadding, 0)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,6 +210,7 @@ class VersionsActivity : AppCompatActivity() {
 
     private fun initUi(application: Application) {
         ViewCompat.setTransitionName(findViewById(R.id.imageView_header_icon), application.imageTransitionName())
+        constraintLayout = findViewById(R.id.constraintLayout)
         recyclerView = findViewById(R.id.recyclerView_versions)
         contentLoadingProgressBar = findViewById(R.id.contentLoadingProgressBar_versions)
         contentLoadingProgressBar.show()
@@ -228,6 +264,11 @@ class VersionsActivity : AppCompatActivity() {
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, orientation))
         }
+
+        links = findViewById(R.id.horizontalScrollView_header)
+        fab = findViewById(R.id.floatingActionButton)
+        fab.setOnClickListener { _ -> application.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it)) } }
+        fab.hide()
     }
 
     private fun refreshVersionProperties(version: Version) {
@@ -258,6 +299,7 @@ class VersionsActivity : AppCompatActivity() {
         updateAppIcon(application)
         updateAppDescription(application)
         updateAppLinks(application)
+        updateFab(application)
         invalidateOptionsMenu()
         return true
     }
@@ -330,6 +372,14 @@ class VersionsActivity : AppCompatActivity() {
                     true
                 }
             } else null)
+        }
+    }
+
+    private fun updateFab(application: Application) {
+        if (isApplicationInstalled(application) && Utils.getLaunchIntent(applicationContext, packageName).isSafe(this)) {
+            fab.show(fabVisibilityChangedListener)
+        } else {
+            fab.hide(fabVisibilityChangedListener)
         }
     }
 
@@ -525,7 +575,6 @@ class VersionsActivity : AppCompatActivity() {
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val applicationInstalled = isApplicationInstalled(application)
         menu?.findItem(R.id.menu_action_info)?.isVisible = applicationInstalled
-        menu?.findItem(R.id.menu_action_start)?.isVisible = applicationInstalled && Utils.getLaunchIntent(applicationContext, packageName).isSafe(this) == true
         menu?.findItem(R.id.menu_action_stop)?.isVisible = applicationInstalled
         menu?.findItem(R.id.menu_action_uninstall)?.isVisible = applicationInstalled
         return super.onPrepareOptionsMenu(menu)
@@ -534,7 +583,6 @@ class VersionsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> supportFinishAfterTransition()
-            R.id.menu_action_start -> application?.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it)) }
             R.id.menu_action_stop -> application?.packageName?.let { (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it) }
             R.id.menu_action_info -> application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
             R.id.menu_action_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
