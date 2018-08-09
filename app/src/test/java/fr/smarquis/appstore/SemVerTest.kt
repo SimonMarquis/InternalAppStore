@@ -74,17 +74,8 @@ class SemVerTest {
     @Test
     fun compareTo() {
         assert(VERSION_1_2_3_SNAPSHOT.compareTo(VERSION_1_2_3_SNAPSHOT) == 0)
-
-        val v1_2_3 = SemVer(1, 2, 3)
-        val v3_2_1 = SemVer(3, 2, 1)
-
-        assert(v1_2_3 < v3_2_1)
-
-
+        assert(SemVer(1, 2, 3) < SemVer(3, 2, 1))
         assert(VERSION_1_2_3_SNAPSHOT.compareTo(VERSION_1_2_3_SNAPSHOT) == 0)
-
-        val v1 = SemVer(1)
-        val v1_alpha = SemVer(1, label = "alpha")
-        assert(v1 > v1_alpha)
+        assert(SemVer(1) > SemVer(1, label = "alpha"))
     }
 }
