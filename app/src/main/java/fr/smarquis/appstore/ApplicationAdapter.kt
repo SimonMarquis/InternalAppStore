@@ -3,6 +3,7 @@ package fr.smarquis.appstore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.DatabaseError
@@ -10,7 +11,7 @@ import com.google.firebase.database.Query
 
 class ApplicationAdapter(
         query: Query,
-        private val glide: GlideRequests,
+        private val glide: RequestManager,
         private val callback: Callback
 
 ) : FirebaseRecyclerAdapter<Application, ApplicationViewHolder>(recyclerOptions(query)) {

@@ -6,12 +6,13 @@ import android.widget.TextView
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.RequestManager
 import kotlinx.android.synthetic.main.item_application.view.*
 
 class ApplicationViewHolder(
         v: View,
         private val callback: ApplicationAdapter.Callback,
-        private val glide: GlideRequests
+        private val glide: RequestManager
 ) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
     private val title: TextView = v.textView_application_title
@@ -54,7 +55,7 @@ class ApplicationViewHolder(
         application?.let { callback.onItemClicked(it, this) }
     }
 
-    fun unbind(glide: GlideRequests) {
+    fun unbind(glide: RequestManager) {
         glide.clear(image)
     }
 

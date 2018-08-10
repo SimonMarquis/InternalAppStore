@@ -3,10 +3,14 @@ package fr.smarquis.appstore
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
+import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.StorageReference
+import java.io.InputStream
 
 class Store : android.app.Application() {
 
@@ -27,6 +31,7 @@ class Store : android.app.Application() {
         Firebase.auth.addAuthStateListener { Firebase.analytics.setUserId(it.currentUser?.uid) }
         ApkFileProvider.cleanUp(this)
         checkForSelfUpdate()
+        injectFirebaseImageLoader()
     }
 
     fun clearFilesCacheAndDatabases(action: (() -> Unit)? = null) {
@@ -74,6 +79,10 @@ class Store : android.app.Application() {
                 }
             }
         })
+    }
+
+    private fun injectFirebaseImageLoader() {
+        Glide.get(this).registry.append(StorageReference::class.java, InputStream::class.java, FirebaseImageLoader.Factory())
     }
 
 }

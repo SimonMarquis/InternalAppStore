@@ -12,6 +12,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.messaging.RemoteMessage
@@ -119,8 +122,9 @@ class Notifications {
             }
             val width = context.resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
             val height = context.resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_height)
+            val requestOptions = RequestOptions().override(width, height).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop()
             Handler(Looper.getMainLooper()).post {
-                GlideApp.with(context).asBitmap().apply(DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS).override(width, height).load(image)
+                Glide.with(context).asBitmap().apply(requestOptions).load(image)
                         .into(object : SimpleTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 val notification = notificationBuilder.setLargeIcon(resource).build()

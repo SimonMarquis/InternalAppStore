@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
@@ -79,7 +80,6 @@ fun AppCompatActivity.safeStartActivityForResult(intent: Intent?, requestCode: I
 
 fun Application.imageTransitionName(): String = "image_$key"
 
-
 fun Application.findImageReference(): Any {
     val reference = image ?: "applications/$key/image"
     return Firebase.storage.with(reference) ?: reference
@@ -91,7 +91,7 @@ val DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS = RequestOptions()
         .centerCrop()
         .placeholder(R.drawable.item_application_icon_placeholder)
 
-fun Application.loadImageInto(imageView: ImageView, glide: GlideRequests) {
+fun Application.loadImageInto(imageView: ImageView, glide: RequestManager) {
     glide.load(findImageReference()).apply(DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS).into(imageView)
 }
 

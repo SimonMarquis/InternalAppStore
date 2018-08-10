@@ -39,6 +39,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
+import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -312,7 +313,7 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     private fun updateAppIcon(application: Application) {
-        application.loadImageInto(findViewById(R.id.imageView_header_icon), GlideApp.with(this))
+        application.loadImageInto(findViewById(R.id.imageView_header_icon), Glide.with(this))
     }
 
     private fun updateAppDescription(application: Application) {

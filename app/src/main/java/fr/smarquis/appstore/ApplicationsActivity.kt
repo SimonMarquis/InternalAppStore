@@ -19,6 +19,7 @@ import androidx.core.widget.ContentLoadingProgressBar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.Task
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseUser
@@ -102,7 +103,7 @@ class ApplicationsActivity : AppCompatActivity() {
 
         applicationAdapter = ApplicationAdapter(
                 query = Firebase.database.applications().orderByChild("name"),
-                glide = GlideApp.with(this),
+                glide = Glide.with(this),
                 callback = object : ApplicationAdapter.Callback {
                     override fun onItemClicked(application: Application, applicationViewHolder: ApplicationViewHolder) {
                         Firebase.analytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, Bundle().apply {
@@ -297,7 +298,7 @@ class ApplicationsActivity : AppCompatActivity() {
     private fun invalidateCache(action: () -> Unit) {
         Firebase.storage.reference.cancelActiveDownloadTasks()
         ApkFileProvider.invalidate(applicationContext)
-        val glide = GlideApp.get(applicationContext)
+        val glide = Glide.get(applicationContext)
         glide.clearMemory()
         AsyncTask.execute {
             glide.clearDiskCache()
