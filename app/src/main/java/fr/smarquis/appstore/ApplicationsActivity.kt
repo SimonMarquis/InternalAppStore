@@ -121,6 +121,8 @@ class ApplicationsActivity : AppCompatActivity() {
             adapter = applicationAdapter
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, orientation))
+            // Artificially increase the max recycled view to avoid shared transition animation glitch
+            recycledViewPool.setMaxRecycledViews(0 /*default view type*/, 20)
         }
     }
 
