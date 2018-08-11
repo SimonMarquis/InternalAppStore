@@ -3,13 +3,6 @@
 /* Copyright 2018 Simon Marquis */
 
 AppStore.CONFIG = {
-  firebase: {
-    apiKey: "AIzaSyAoDK-x4GdGCRXA2f_ajG30L0pmnyB2WwU",
-    authDomain: "public-app-store.firebaseapp.com",
-    databaseURL: "https://public-app-store.firebaseio.com",
-    projectId: "public-app-store",
-    storageBucket: "public-app-store.appspot.com"
-  },
   allowAnonymousUsers: false,
   allowUnverifiedEmail: false,
   firebaseUi: {
@@ -161,8 +154,8 @@ AppStore.prototype.initUserInterface = function() {
 };
 
 AppStore.prototype.initFirebase = function() {
-  firebase.initializeApp(AppStore.CONFIG.firebase);
-
+  // On-Demand Firebase SDK Auto-configuration
+  // https://firebase.googleblog.com/2017/04/easier-configuration-for-firebase-on-web.html
   this.database = firebase.database();
   this.databaseRefs = {};
   this.databaseRefs.store = this.database.ref("store");
