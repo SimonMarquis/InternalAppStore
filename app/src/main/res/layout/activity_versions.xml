@@ -10,7 +10,7 @@
     tools:ignore="Overdraw">
 
     <include
-        android:id="@+id/include"
+        android:id="@+id/includeHeader"
         layout="@layout/layout_application_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
+        app:layout_constraintTop_toBottomOf="@+id/includeHeader" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_versions"
@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include"
+        app:layout_constraintTop_toBottomOf="@+id/includeHeader"
         tools:listitem="@layout/item_version" />
 
     <Space
@@ -66,11 +66,11 @@
         android:focusable="true"
         android:src="@drawable/ic_launch_24dp"
         android:visibility="gone"
+        app:elevation="@dimen/material_baseline_grid_1x"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView_versions"
         app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
         app:layout_constraintTop_toTopOf="@+id/recyclerView_versions"
-        app:elevation="@dimen/material_baseline_grid_1x"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

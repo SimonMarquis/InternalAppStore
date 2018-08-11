@@ -1,6 +1,7 @@
 package fr.smarquis.appstore
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.ActivityManager
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -8,16 +9,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION_CODES.N
 import android.os.Bundle
 import android.text.SpannedString
+import android.transition.Transition
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.HorizontalScrollView
 import android.widget.TextView
@@ -177,6 +177,7 @@ class VersionsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_versions)
         initUi(application)
+        initCircularReveal()
         registerListeners(application)
         updateApplication(application)
     }
@@ -270,6 +271,45 @@ class VersionsActivity : AppCompatActivity() {
         fab = findViewById(R.id.floatingActionButton)
         fab.setOnClickListener { _ -> application.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it)) } }
         fab.hide()
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun initCircularReveal() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return
+        }
+        val header = findViewById<View>(R.id.includeHeader).apply {
+            // Initially visible, laid out for shared element transition, then invisible
+            post { visibility = View.INVISIBLE }
+        }
+        val center = findViewById<View>(R.id.view_center_icon)
+        window.sharedElementEnterTransition?.addListener(object : Transition.TransitionListener {
+
+            private var activityTransitionFlag: Boolean = false
+
+            override fun onTransitionStart(p0: Transition?) {
+                header.visibility = VISIBLE
+                val radiusInvisible = 0F
+                val radiusVisible = Math.hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
+                val start = if (activityTransitionFlag) radiusVisible else radiusInvisible
+                val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
+                val duration = resources.getInteger(if (activityTransitionFlag) android.R.integer.config_shortAnimTime else android.R.integer.config_mediumAnimTime).toLong()
+                ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).setDuration(duration).start()
+                if (activityTransitionFlag) {
+                    window.sharedElementEnterTransition?.removeListener(this)
+                } else {
+                    activityTransitionFlag = true
+                }
+            }
+
+            override fun onTransitionResume(p0: Transition?) {}
+
+            override fun onTransitionPause(p0: Transition?) {}
+
+            override fun onTransitionCancel(p0: Transition?) {}
+
+            override fun onTransitionEnd(p0: Transition?) {}
+        })
     }
 
     private fun refreshVersionProperties(version: Version) {
