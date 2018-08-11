@@ -293,7 +293,7 @@ class VersionsActivity : AppCompatActivity() {
                 val radiusVisible = Math.hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
                 val start = if (activityTransitionFlag) radiusVisible else radiusInvisible
                 val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
-                val duration = resources.getInteger(if (activityTransitionFlag) android.R.integer.config_shortAnimTime else android.R.integer.config_mediumAnimTime).toLong()
+                val duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
                 ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).setDuration(duration).start()
                 if (activityTransitionFlag) {
                     window.sharedElementEnterTransition?.removeListener(this)
