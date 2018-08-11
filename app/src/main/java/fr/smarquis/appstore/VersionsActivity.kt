@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.annotation.Px
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.addListener
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.net.toUri
 import androidx.core.text.bold
@@ -288,13 +289,15 @@ class VersionsActivity : AppCompatActivity() {
             private var activityTransitionFlag: Boolean = false
 
             override fun onTransitionStart(p0: Transition?) {
-                header.visibility = VISIBLE
                 val radiusInvisible = 0F
                 val radiusVisible = Math.hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
                 val start = if (activityTransitionFlag) radiusVisible else radiusInvisible
                 val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
-                val duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-                ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).setDuration(duration).start()
+                ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
+                    duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                    startDelay = if (activityTransitionFlag) 0 else resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+                    addListener(onStart = { header.visibility = VISIBLE })
+                }.start()
                 if (activityTransitionFlag) {
                     window.sharedElementEnterTransition?.removeListener(this)
                 } else {
