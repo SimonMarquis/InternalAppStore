@@ -22,6 +22,7 @@
         android:layout_height="0dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
         android:overScrollMode="ifContentScrolls"
         android:scrollbarSize="@dimen/material_baseline_grid_0.5x"
         android:scrollbarStyle="outsideOverlay"
