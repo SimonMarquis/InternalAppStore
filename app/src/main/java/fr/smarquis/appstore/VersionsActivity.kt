@@ -240,6 +240,7 @@ class VersionsActivity : AppCompatActivity() {
                     }
                 }
         ).apply {
+            setHasStableIds(true)
             // Scroll to the highlighted version
             intent.extras?.getString(EXTRA_HIGHLIGHT_VERSION_KEY)?.let {
                 intent.extras?.remove(EXTRA_HIGHLIGHT_VERSION_KEY)

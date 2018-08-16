@@ -31,6 +31,8 @@ class VersionAdapter(
         fun onItemChanged(version: Version)
     }
 
+    private val stableIds = HashMap<String, Long>()
+
     private val sortedListCallback = object : SortedListAdapterCallback<Version>(this) {
 
         override fun areItemsTheSame(item1: Version?, item2: Version?): Boolean {
@@ -89,6 +91,10 @@ class VersionAdapter(
     override fun getItemCount(): Int = sortedList.size()
 
     override fun getItemViewType(position: Int): Int = R.layout.item_version
+
+    override fun getItemId(position: Int): Long {
+        return stableIds.getOrPut(getItem(position).key.orEmpty()) { stableIds.size.toLong() }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VersionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_version, parent, false)

@@ -28,6 +28,8 @@ class ApplicationAdapter(
         fun onItemClicked(application: Application, applicationViewHolder: ApplicationViewHolder)
     }
 
+    private val stableIds = HashMap<String, Long>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = layoutInflater.inflate(R.layout.item_application, parent, false)
@@ -49,6 +51,10 @@ class ApplicationAdapter(
                 PAYLOAD_PACKAGE_CHANGED -> holder.renderText()
             }
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        return stableIds.getOrPut(getItem(position).key.orEmpty()) { stableIds.size.toLong() }
     }
 
     override fun onViewRecycled(holder: ApplicationViewHolder) {
