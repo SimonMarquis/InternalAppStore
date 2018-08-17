@@ -113,9 +113,7 @@ class ApplicationsActivity : AppCompatActivity() {
                         VersionsActivity.start(this@ApplicationsActivity, application, applicationViewHolder.sharedElement())
                     }
                 }
-        ).apply {
-            setHasStableIds(true)
-        }
+        )
 
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView_applications).apply {
             val orientation = RecyclerView.VERTICAL
