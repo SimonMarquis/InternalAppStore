@@ -579,9 +579,10 @@ class VersionsActivity : AppCompatActivity() {
             when (it.action) {
                 VersionRequest.Action.UNINSTALL -> if (!isApplicationInstalled(application)) updateApplication(application)
                 VersionRequest.Action.INSTALL -> {
-                    when (resultCode) {
-                        AppCompatActivity.RESULT_OK -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_installed), Color.GREEN), LENGTH_LONG).show()
-                        else -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_not_installed), Color.RED), LENGTH_LONG).show()
+                    when {
+                        resultCode == RESULT_OK -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_installed), Color.GREEN), LENGTH_LONG).show()
+                        resultCode == RESULT_CANCELED || !isApplicationInstalled(application) -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_not_installed), Color.RED), LENGTH_LONG).show()
+                        else -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_not_installed_uninstall_first), Color.RED), LENGTH_LONG).show()
                     }
                     if (version?.status == INSTALLING) {
                         version.updateStatus(DEFAULT)
