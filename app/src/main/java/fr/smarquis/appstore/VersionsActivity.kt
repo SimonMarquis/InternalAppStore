@@ -22,6 +22,8 @@ import android.widget.Button
 import android.widget.HorizontalScrollView
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
+import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.Px
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +47,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -110,7 +111,7 @@ class VersionsActivity : AppCompatActivity() {
         override fun onDataChange(snapshot: DataSnapshot) {
             Application.parse(snapshot).let {
                 if (it == null) {
-                    Toast.makeText(applicationContext, R.string.versions_toast_application_removed, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, R.string.versions_toast_application_removed, LENGTH_SHORT).show()
                     finish()
                 } else {
                     Notifications.createOrUpdateNewVersionsNotificationChannel(this@VersionsActivity, it)
@@ -404,7 +405,7 @@ class VersionsActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, text, LENGTH_SHORT).show()
                     } else {
                         safeStartActivity(intent)
                     }
@@ -413,7 +414,7 @@ class VersionsActivity : AppCompatActivity() {
             setOnLongClickListener(if (link?.uri != null) {
                 View.OnLongClickListener {
                     (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip = ClipData.newPlainText(packageName, link.uri)
-                    Toast.makeText(context, getString(R.string.versions_toast_link_to_clipboard), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.versions_toast_link_to_clipboard), LENGTH_SHORT).show()
                     true
                 }
             } else null)
@@ -475,7 +476,7 @@ class VersionsActivity : AppCompatActivity() {
                     val requestCode = create(VersionRequest.Action.OPEN, version)
                     safeStartActivityForResult(intent, requestCode)
                 } else {
-                    Toast.makeText(this, R.string.versions_toast_application_open_error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.versions_toast_application_open_error, LENGTH_SHORT).show()
                 }
             }
             else -> Log.e("APK Download", "No apk file to download")
@@ -543,7 +544,7 @@ class VersionsActivity : AppCompatActivity() {
                 activityReference.get()?.let {
                     it.versionAdapter?.updateVersionProgress(version)
                     if (exception != null) {
-                        Toast.makeText(it, "${exception.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(it, "${exception.message}", LENGTH_LONG).show()
                     }
                 }
             }
