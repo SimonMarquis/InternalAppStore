@@ -438,9 +438,9 @@ class VersionsActivity : AppCompatActivity() {
 
     private fun downloadVersion(version: Version, force: Boolean) {
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, Bundle().apply {
-            putString(FirebaseAnalytics.Param.ITEM_ID, version.key)
-            putString(FirebaseAnalytics.Param.ITEM_NAME, version.name)
-            putString(FirebaseAnalytics.Param.CONTENT_TYPE, "apk")
+            putString(FirebaseAnalytics.Param.ITEM_ID, "${version.name} (${version.key})")
+            putString(FirebaseAnalytics.Param.ITEM_NAME, "${application?.packageName} ${version.name} (${version.key})")
+            putString(FirebaseAnalytics.Param.CONTENT_TYPE, application?.packageName ?: "unknown")
         })
 
         // Cancel the current active download task if forced
