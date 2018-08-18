@@ -15,7 +15,11 @@ class Firebase {
 
         val app: FirebaseApp by lazy { FirebaseApp.getInstance()!! }
 
-        val analytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(app.applicationContext) }
+        val analytics: FirebaseAnalytics by lazy {
+            FirebaseAnalytics.getInstance(app.applicationContext).apply {
+                setAnalyticsCollectionEnabled(Store.ANALYTICS_COLLECTION)
+            }
+        }
 
         val database: FirebaseDatabase by lazy {
             FirebaseDatabase.getInstance(app).apply {
