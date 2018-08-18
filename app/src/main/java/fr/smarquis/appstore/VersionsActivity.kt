@@ -285,40 +285,43 @@ class VersionsActivity : AppCompatActivity() {
             // SharedElementTransition is not run when Activity is recreated during configuration change
             return
         }
-        val header = findViewById<View>(R.id.includeHeader).apply {
-            // Initially visible, laid out for shared element transition, then invisible
-            post { visibility = View.INVISIBLE }
-        }
-        val center = findViewById<View>(R.id.view_center_icon)
-        window.sharedElementEnterTransition?.addListener(object : Transition.TransitionListener {
-
-            private var activityTransitionFlag: Boolean = false
-
-            override fun onTransitionStart(p0: Transition?) {
-                val radiusInvisible = 0F
-                val radiusVisible = Math.hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
-                val start = if (activityTransitionFlag) radiusVisible else radiusInvisible
-                val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
-                ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
-                    duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-                    startDelay = if (activityTransitionFlag) 0 else resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-                    addListener(onStart = { header.visibility = VISIBLE })
-                }.start()
-                if (activityTransitionFlag) {
-                    window.sharedElementEnterTransition?.removeListener(this)
-                } else {
-                    activityTransitionFlag = true
-                }
+        // assuming sharedElementEnterTransition and sharedElementReturnTransition are the same
+        window.sharedElementEnterTransition?.let { enterTransition ->
+            val header = findViewById<View>(R.id.includeHeader).apply {
+                // Initially visible, laid out for shared element transition, then invisible
+                post { visibility = View.INVISIBLE }
             }
+            val center = findViewById<View>(R.id.view_center_icon)
+            enterTransition.addListener(object : Transition.TransitionListener {
 
-            override fun onTransitionResume(p0: Transition?) {}
+                private var activityTransitionFlag: Boolean = false
 
-            override fun onTransitionPause(p0: Transition?) {}
+                override fun onTransitionStart(p0: Transition?) {
+                    val radiusInvisible = 0F
+                    val radiusVisible = Math.hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
+                    val start = if (activityTransitionFlag) radiusVisible else radiusInvisible
+                    val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
+                    ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
+                        duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                        startDelay = if (activityTransitionFlag) 0 else resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+                        addListener(onStart = { header.visibility = VISIBLE })
+                    }.start()
+                    if (activityTransitionFlag) {
+                        window.sharedElementEnterTransition?.removeListener(this)
+                    } else {
+                        activityTransitionFlag = true
+                    }
+                }
 
-            override fun onTransitionCancel(p0: Transition?) {}
+                override fun onTransitionResume(p0: Transition?) {}
 
-            override fun onTransitionEnd(p0: Transition?) {}
-        })
+                override fun onTransitionPause(p0: Transition?) {}
+
+                override fun onTransitionCancel(p0: Transition?) {}
+
+                override fun onTransitionEnd(p0: Transition?) {}
+            })
+        }
     }
 
     private fun refreshVersionProperties(version: Version) {
