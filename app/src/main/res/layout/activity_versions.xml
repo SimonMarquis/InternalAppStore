@@ -65,7 +65,7 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_launch_24dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:elevation="@dimen/material_baseline_grid_1x"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView_versions"

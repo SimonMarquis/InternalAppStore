@@ -168,6 +168,8 @@ class VersionsActivity : AppCompatActivity() {
         }
     }
 
+    private var isCircularRevealPending = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -273,7 +275,6 @@ class VersionsActivity : AppCompatActivity() {
         links = findViewById(R.id.horizontalScrollView_header)
         fab = findViewById(R.id.floatingActionButton)
         fab.setOnClickListener { _ -> application.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it)) } }
-        fab.hide()
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -287,6 +288,7 @@ class VersionsActivity : AppCompatActivity() {
         }
         // assuming sharedElementEnterTransition and sharedElementReturnTransition are the same
         window.sharedElementEnterTransition?.let { enterTransition ->
+            isCircularRevealPending = true
             val header = findViewById<View>(R.id.includeHeader).apply {
                 // Initially visible, laid out for shared element transition, then invisible
                 post { visibility = View.INVISIBLE }
@@ -304,7 +306,12 @@ class VersionsActivity : AppCompatActivity() {
                     ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
                         duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
                         startDelay = if (activityTransitionFlag) 0 else resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-                        addListener(onStart = { header.visibility = VISIBLE })
+                        addListener(
+                                onStart = { header.visibility = VISIBLE },
+                                onEnd = { _ ->
+                                    isCircularRevealPending = false
+                                    application?.let { updateFab(it) }
+                                })
                     }.start()
                     if (activityTransitionFlag) {
                         window.sharedElementEnterTransition?.removeListener(this)
@@ -430,7 +437,13 @@ class VersionsActivity : AppCompatActivity() {
 
     private fun updateFab(application: Application) {
         if (isApplicationInstalled(application) && Utils.getLaunchIntent(applicationContext, packageName).isSafe(this)) {
-            fab.show(fabVisibilityChangedListener)
+            if (isCircularRevealPending) {
+                // Force setting the RecyclerView top padding before items are added
+                // This will prevent the RecyclerView to appear scrolled down by the amount of top padding
+                recyclerView.setPadding(0, resources.getDimensionPixelSize(R.dimen.material_baseline_grid_1x), 0, 0)
+            } else {
+                fab.show(fabVisibilityChangedListener)
+            }
         } else {
             fab.hide(fabVisibilityChangedListener)
         }
