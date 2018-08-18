@@ -179,7 +179,7 @@ class VersionsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_versions)
         initUi(application)
-        initCircularReveal()
+        initCircularReveal(savedInstanceState)
         registerListeners(application)
         updateApplication(application)
     }
@@ -277,8 +277,12 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun initCircularReveal() {
+    private fun initCircularReveal(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return
+        }
+        if (savedInstanceState != null) {
+            // SharedElementTransition is not run when Activity is recreated during configuration change
             return
         }
         val header = findViewById<View>(R.id.includeHeader).apply {
