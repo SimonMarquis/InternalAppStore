@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.messaging.RemoteMessage
 
@@ -114,6 +113,7 @@ class Notifications {
                     .setLocalOnly(true)
         }
 
+        @Suppress("DEPRECATION")
         private fun notifyWithImage(context: Context, tag: String, id: Int, notificationBuilder: NotificationCompat.Builder, image: Any?) {
             val notificationManager = notificationManager(context)
             notificationManager.notify(tag, id, notificationBuilder.build())
@@ -125,7 +125,7 @@ class Notifications {
             val requestOptions = RequestOptions().override(width, height).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop()
             Handler(Looper.getMainLooper()).post {
                 Glide.with(context).asBitmap().apply(requestOptions).load(image)
-                        .into(object : SimpleTarget<Bitmap>() {
+                        .into(object : com.bumptech.glide.request.target.SimpleTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 val notification = notificationBuilder.setLargeIcon(resource).build()
                                 notificationManager.notify(tag, id, notification)
