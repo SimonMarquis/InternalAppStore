@@ -18,6 +18,7 @@ class Store : android.app.Application() {
 
         val ALLOW_ANONYMOUS by lazy { false }
         val ALLOW_UNVERIFIED_EMAIL by lazy { false }
+        val ANALYTICS_COLLECTION by lazy { true }
         val AUTH_PROVIDERS by lazy {
             listOf(
                     AuthUI.IdpConfig.EmailBuilder().setRequireName(false).build(),
