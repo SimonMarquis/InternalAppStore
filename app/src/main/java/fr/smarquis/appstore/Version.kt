@@ -13,6 +13,7 @@ data class Version(
         val description: String? = null,
         val timestamp: Long? = null,
         val apkRef: String? = null,
+        var apkSize: Long? = null,
         val apkGeneration: Long? = null,
         val apkUrl: String? = null) : Comparable<Version> {
 
@@ -29,6 +30,11 @@ data class Version(
         val DECIMAL_FORMAT_LONG = (NumberFormat.getNumberInstance() as DecimalFormat).apply { maximumFractionDigits = 2 }
         val DECIMAL_FORMAT_SHORT = (NumberFormat.getNumberInstance() as DecimalFormat).apply { maximumFractionDigits = 0 }
 
+        private fun formatBytesSize(bytes: Long?): String? = when {
+            bytes == null || bytes == 0L -> null
+            BinaryByteUnit.BYTES.toMebibytes(bytes) < 1L -> BinaryByteUnit.format(bytes, DECIMAL_FORMAT_SHORT)
+            else -> BinaryByteUnit.format(bytes, DECIMAL_FORMAT_LONG)
+        }
     }
 
     val semver by lazy { SemVer.parse(name) }
@@ -46,18 +52,17 @@ data class Version(
 
     var status: Status = Status.DEFAULT
 
-    var apkSizeBytes: Long? = null
-        set(bytes) {
-            field = bytes
-            apkSizeBytesDisplay = when {
-                bytes == null || bytes == 0L -> null
-                BinaryByteUnit.BYTES.toMebibytes(bytes) < 1L -> BinaryByteUnit.format(bytes, DECIMAL_FORMAT_SHORT)
-                else -> BinaryByteUnit.format(bytes, DECIMAL_FORMAT_LONG)
-            }
-        }
-
     var apkSizeBytesDisplay: String? = null
         private set
+        get() {
+            if (field == null) field = formatBytesSize(apkSize)
+            return field
+        }
+
+    fun updateApkSize(bytes: Long?) {
+        apkSize = bytes
+        apkSizeBytesDisplay = null
+    }
 
     var apkFileAvailable: Boolean = false
 

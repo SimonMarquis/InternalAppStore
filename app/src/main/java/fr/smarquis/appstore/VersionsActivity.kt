@@ -340,13 +340,13 @@ class VersionsActivity : AppCompatActivity() {
         if (!version.hasApkRef()) return
 
         val context = applicationContext
-        val fileSizeTask = Firebase.storage.getReference(version.apkRef!!).metadata.addOnSuccessListener(activity) { version.apkSizeBytes = it.sizeBytes }
+        val fileSizeTask = if (version.apkSize == null) Firebase.storage.getReference(version.apkRef!!).metadata.addOnSuccessListener(activity) { version.updateApkSize(it.sizeBytes) } else null
         val fileAvailabilityTask = Tasks.call(executor, Callable {
             ApkFileProvider.apkFile(context, version).let {
                 version.apkFileAvailable = it.exists() && it.length() > 0
             }
         })
-        Tasks.whenAllComplete(fileSizeTask, fileAvailabilityTask).addOnCompleteListener(activity) { versionAdapter?.updateVersionProgress(version) }
+        Tasks.whenAllComplete(listOfNotNull(fileSizeTask, fileAvailabilityTask)).addOnCompleteListener(activity) { versionAdapter?.updateVersionProgress(version) }
     }
 
     private fun updateApplication(application: Application?): Boolean {

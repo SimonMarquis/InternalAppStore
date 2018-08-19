@@ -62,6 +62,9 @@
             "apkRef": {
               ".validate": "newData.isString()"
             },
+            "apkSize": {
+              ".validate": "newData.isNumber()"
+            },
             "apkGeneration": {
               ".validate": "newData.isNumber()"
             },

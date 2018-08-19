@@ -1402,6 +1402,8 @@ AppStore.prototype.dataUpdateVersion = function(
 
   if (data.apkUrl) {
     update.apkRef = null;
+    update.apkSize = null;
+    update.apkGeneration = null;
     update.apkUrl = data.apkUrl;
   }
   const updateOrRemoveApk = snapshot => {
@@ -1435,6 +1437,7 @@ AppStore.prototype.dataUpdateVersionApk = function(
   const updateVersion = snapshot => {
     const update = {
       apkRef: snapshot.metadata.fullPath,
+      apkSize: snapshot.metadata.size,
       apkGeneration: Number(snapshot.metadata.generation),
       apkUrl: null
     };
