@@ -69,6 +69,7 @@ class VersionsActivity : AppCompatActivity() {
 
         private const val EXTRA_APPLICATION = "EXTRA_APPLICATION"
         private const val EXTRA_HIGHLIGHT_VERSION_KEY = "EXTRA_HIGHLIGHT_VERSION_KEY"
+        private const val EXTRA_SHARED_ELEMENT_TRANSITION = "EXTRA_SHARED_ELEMENT_TRANSITION"
 
         fun start(context: Context, application: Application) {
             context.startActivity(intent(context, application))
@@ -76,7 +77,8 @@ class VersionsActivity : AppCompatActivity() {
 
         fun start(activity: AppCompatActivity, application: Application, vararg sharedElement: Pair<View, String>) {
             val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElement).toBundle()
-            activity.startActivity(intent(activity, application), bundle)
+            val intent = intent(activity, application).apply { putExtra(EXTRA_SHARED_ELEMENT_TRANSITION, true) }
+            activity.startActivity(intent, bundle)
         }
 
         fun intent(context: Context, application: Application, highlightVersionKey: String? = null): Intent {
@@ -284,6 +286,10 @@ class VersionsActivity : AppCompatActivity() {
         }
         if (savedInstanceState != null) {
             // SharedElementTransition is not run when Activity is recreated during configuration change
+            return
+        }
+        if (intent?.getBooleanExtra(EXTRA_SHARED_ELEMENT_TRANSITION, false) != true) {
+            // SharedElementTransition is not run when Activity is started from a Notification
             return
         }
         // assuming sharedElementEnterTransition and sharedElementReturnTransition are the same
