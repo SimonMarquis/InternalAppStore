@@ -6,6 +6,7 @@
     <style name="Base.V27.Theme.AppStore" parent="Base.V23.Theme.AppStore">
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarDividerColor">@color/colorDivider</item>
     </style>
 
 </resources>
