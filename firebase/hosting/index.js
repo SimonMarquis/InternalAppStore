@@ -559,6 +559,12 @@ AppStore.prototype.uiUpdateVersionApkLink = function(
   const download = root.querySelector("[data-version-apk]");
   download.removeAttribute("href");
   download.removeAttribute("download");
+  const title = `Download apk${
+    version.apkRef && version.apkSize
+      ? ` • ${Utils.formatBytesSize(version.apkSize, 2)}`
+      : ""
+  }`;
+  download.setAttribute("title", title);
   Ui.show(download);
   if (version.apkRef) {
     // Deferred link, fetched from storage, then applied as regular https link
@@ -1001,7 +1007,9 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
 
     if (version.apkRef) {
       modal.apkInput.removeAttribute("required");
-      modal.apkLabel.textContent = "Unchanged";
+      modal.apkLabel.textContent = version.apkSize
+        ? `${Utils.formatBytesSize(version.apkSize, 2)} • Unchanged`
+        : "Unchanged";
     } else if (version.apkUrl) {
       modal.apkUrl.value = version.apkUrl;
       modal.apkToggle.click();
@@ -1046,7 +1054,11 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
         AppStore.CONFIG.apkMaxSize
       );
     } else {
-      modal.apkLabel.textContent = version ? "Unchanged" : null;
+      modal.apkLabel.textContent = version
+        ? version.apkSize
+          ? `${Utils.formatBytesSize(version.apkSize, 2)} • Unchanged`
+          : "Unchanged"
+        : null;
     }
   });
   $(modal.root)
