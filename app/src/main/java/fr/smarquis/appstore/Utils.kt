@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.text.Html
 import android.text.Spanned
 import androidx.core.content.pm.PackageInfoCompat
+import androidx.core.view.doOnNextLayout
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -102,7 +103,13 @@ class Utils {
                         drawableHotspotChanged(width / 2F, height / 2F)
                         isPressed = false
                         viewHolder.setIsRecyclable(true)
-                    }, 300)
+                    }, resources.getInteger(android.R.integer.config_mediumAnimTime) * 2.toLong())
+                } else {
+                    doOnNextLayout {
+                        isPressed = false
+                        viewHolder.setIsRecyclable(true)
+                    }
+                    requestLayout()
                 }
             }
         }
