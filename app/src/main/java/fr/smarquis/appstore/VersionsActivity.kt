@@ -18,6 +18,8 @@ import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.HorizontalScrollView
 import android.widget.TextView
@@ -311,7 +313,7 @@ class VersionsActivity : AppCompatActivity() {
                     val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
                     ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
                         duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-                        startDelay = if (activityTransitionFlag) 0 else resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+                        interpolator = if (activityTransitionFlag) DecelerateInterpolator(2F) else AccelerateInterpolator(2F)
                         addListener(
                                 onStart = { header.visibility = VISIBLE },
                                 onEnd = { _ ->
