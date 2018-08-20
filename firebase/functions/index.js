@@ -43,6 +43,7 @@ exports.notifyNewApplications = functions.database
     if (application.image) {
       message.data.applicationImage = application.image;
     }
+    console.log("Sending message:", message);
     return admin
       .messaging()
       .send(message)
@@ -98,6 +99,7 @@ exports.notifyNewVersions = functions.database
         if (application.image) {
           message.data.applicationImage = application.image;
         }
+        console.log("Sending message:", message);
         return admin.messaging().send(message);
       })
       .then(response => {
