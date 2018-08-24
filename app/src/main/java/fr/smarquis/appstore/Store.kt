@@ -3,6 +3,9 @@ package fr.smarquis.appstore
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
+import androidx.core.provider.FontRequest
+import androidx.emoji.text.EmojiCompat
+import androidx.emoji.text.FontRequestEmojiCompatConfig
 import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.storage.images.FirebaseImageLoader
@@ -33,6 +36,16 @@ class Store : android.app.Application() {
         ApkFileProvider.cleanUp(this)
         checkForSelfUpdate()
         injectFirebaseImageLoader()
+        initEmojiCompat()
+    }
+
+    private fun initEmojiCompat() {
+        val fontRequest = FontRequest(
+                "com.google.android.gms.fonts",
+                "com.google.android.gms",
+                "Noto Color Emoji Compat",
+                R.array.com_google_android_gms_fonts_certs)
+        EmojiCompat.init(FontRequestEmojiCompatConfig(applicationContext, fontRequest).setReplaceAll(true))
     }
 
     fun clearFilesCacheAndDatabases(action: (() -> Unit)? = null) {

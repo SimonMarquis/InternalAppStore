@@ -39,6 +39,8 @@ import androidx.core.text.italic
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.core.widget.ContentLoadingProgressBar
+import androidx.emoji.text.EmojiCompat
+import androidx.emoji.text.EmojiCompat.LOAD_STATE_SUCCEEDED
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -373,7 +375,9 @@ class VersionsActivity : AppCompatActivity() {
 
     private fun updateAppTitle(application: Application) {
         supportActionBar?.apply {
-            title = application.name
+            title = with(EmojiCompat.get()) {
+                if (loadState == LOAD_STATE_SUCCEEDED) process(application.name.orEmpty()) else application.name
+            }
             subtitle = application.packageName
         }
     }

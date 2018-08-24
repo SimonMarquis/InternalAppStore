@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/material_baseline_grid_4x"
     android:paddingBottom="@dimen/material_baseline_grid_2x">
 
-    <TextView
+    <androidx.emoji.widget.EmojiTextView
         android:id="@+id/textView_version_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
         app:layout_constraintTop_toTopOf="@+id/barrier2"
         tools:visibility="visible" />
 
-    <TextView
+    <androidx.emoji.widget.EmojiTextView
         android:id="@+id/textView_version_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
