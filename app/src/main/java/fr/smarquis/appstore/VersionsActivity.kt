@@ -103,6 +103,12 @@ class VersionsActivity : AppCompatActivity() {
     private lateinit var links: HorizontalScrollView
     private lateinit var fab: FloatingActionButton
 
+    @delegate:Px
+    @delegate:SuppressLint("PrivateResource")
+    private val fabSizeMini by lazy { resources.getDimensionPixelSize(com.google.android.material.R.dimen.design_fab_size_mini) }
+    @delegate:Px
+    private val baselineGrid by lazy { resources.getDimensionPixelSize(R.dimen.material_baseline_grid_1x) }
+
     private val applicationValueEventListener: ValueEventListener = object : ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
             error.let {
@@ -154,13 +160,6 @@ class VersionsActivity : AppCompatActivity() {
             override fun onHidden(view: FloatingActionButton?) {
                 updatePadding(false)
             }
-
-            @Px
-            private val baselineGrid = resources.getDimensionPixelSize(R.dimen.material_baseline_grid_1x)
-
-            @SuppressLint("PrivateResource")
-            @Px
-            private val fabSizeMini = resources.getDimensionPixelSize(com.google.android.material.R.dimen.design_fab_size_mini)
 
             private fun updatePadding(visible: Boolean) {
                 if (ViewCompat.isLaidOut(constraintLayout)) TransitionManager.beginDelayedTransition(constraintLayout as ViewGroup)
@@ -448,7 +447,9 @@ class VersionsActivity : AppCompatActivity() {
             if (isCircularRevealPending) {
                 // Force setting the RecyclerView top padding before items are added
                 // This will prevent the RecyclerView to appear scrolled down by the amount of top padding
-                recyclerView.setPadding(0, resources.getDimensionPixelSize(R.dimen.material_baseline_grid_1x), 0, 0)
+                recyclerView.setPadding(0, baselineGrid, 0, 0)
+                // Force setting the HorizontalScrollView right padding before the animation ends to avoid flash of text
+                links.setPadding(0, 0, fabSizeMini, 0)
             } else {
                 fab.show(fabVisibilityChangedListener)
             }
