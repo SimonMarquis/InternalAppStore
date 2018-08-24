@@ -9,6 +9,7 @@ import androidx.emoji.text.FontRequestEmojiCompatConfig
 import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -34,8 +35,8 @@ class Store : android.app.Application() {
         Firebase.database.store().keepSynced(true)
         Firebase.auth.addAuthStateListener { Firebase.analytics.setUserId(it.currentUser?.uid) }
         ApkFileProvider.cleanUp(this)
-        checkForSelfUpdate()
         injectFirebaseImageLoader()
+        synchronizeNotificationChannels()
         initEmojiCompat()
     }
 
@@ -59,37 +60,46 @@ class Store : android.app.Application() {
         }
     }
 
-    private fun checkForSelfUpdate() {
-        val myVersion = Version(name = Utils.applicationVersionName(this@Store, packageName))
-        Firebase.database.applications().addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun synchronizeNotificationChannels() {
+        Firebase.database.applications().addChildEventListener(object : ChildEventListener {
+
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val application = Application.parse(snapshot) ?: return
+                Notifications.createOrUpdateNewVersionsNotificationChannel(this@Store, application)
+                if (application.isMyself(this@Store)) {
+                    checkForSelfUpdate(application)
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                Notifications.deleteNewVersionsNotificationChannel(this@Store, Application.parse(snapshot)
+                        ?: return)
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
+    private fun checkForSelfUpdate(application: Application) {
+        val myself = Version(name = Utils.applicationVersionName(this@Store, packageName))
+        Firebase.database.versions(application.key.orEmpty()).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {}
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // find the same packageName
-                for (applicationSnapshot in dataSnapshot.children) {
-                    val application = Application.parse(applicationSnapshot) ?: continue
-                    if (!application.isMyself(this@Store)) continue
-                    // now find the most recent version
-                    Firebase.database.versions(application.key.orEmpty()).addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onCancelled(error: DatabaseError) {}
-
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            var compareTo = myVersion
-                            for (versionSnapshot in dataSnapshot.children) {
-                                // only use versions without label
-                                val version = Version.parse(versionSnapshot) ?: continue
-                                if (!version.semver.label.isNullOrBlank()) continue
-                                // ignore same versions
-                                if (version.semver > compareTo.semver) {
-                                    compareTo = version
-                                }
-                            }
-                            if (compareTo != myVersion) {
-                                Notifications.onNewVersion(this@Store, application, compareTo)
-                            }
-                        }
-                    })
-                    break
+                var compareTo = myself
+                for (versionSnapshot in dataSnapshot.children) {
+                    // only use versions without label
+                    val version = Version.parse(versionSnapshot) ?: continue
+                    if (!version.semver.label.isNullOrBlank()) continue
+                    // ignore same versions
+                    if (version.semver > compareTo.semver) {
+                        compareTo = version
+                    }
+                }
+                if (compareTo != myself) {
+                    Notifications.onNewVersion(this@Store, application, compareTo)
                 }
             }
         })

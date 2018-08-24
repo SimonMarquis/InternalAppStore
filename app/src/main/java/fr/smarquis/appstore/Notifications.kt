@@ -52,6 +52,12 @@ class Notifications {
             }
         }
 
+        fun deleteNewVersionsNotificationChannel(context: Context, application: Application) {
+            if (Utils.isAtLeast(Build.VERSION_CODES.O)) {
+                notificationManager(context).deleteNotificationChannel(newVersionsNotificationChannelId(context, application))
+            }
+        }
+
         fun onNewApplication(context: Context, application: Application, msg: RemoteMessage? = null) {
             val intent = VersionsActivity.intent(context, application)
             val pendingIntent = TaskStackBuilder.create(context).addNextIntentWithParentStack(intent).getPendingIntent(application.key.orEmpty().hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
