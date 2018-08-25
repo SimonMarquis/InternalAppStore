@@ -27,8 +27,8 @@ data class Version(
 
         fun parse(dataSnapshot: DataSnapshot) = SAFE_PARSER(dataSnapshot)
 
-        val DECIMAL_FORMAT_LONG = (NumberFormat.getNumberInstance() as DecimalFormat).apply { maximumFractionDigits = 2 }
-        val DECIMAL_FORMAT_SHORT = (NumberFormat.getNumberInstance() as DecimalFormat).apply { maximumFractionDigits = 0 }
+        private val DECIMAL_FORMAT_LONG = (NumberFormat.getNumberInstance() as DecimalFormat).apply { maximumFractionDigits = 2 }
+        private val DECIMAL_FORMAT_SHORT = (NumberFormat.getNumberInstance() as DecimalFormat).apply { maximumFractionDigits = 0 }
 
         private fun formatBytesSize(bytes: Long?): String? = when {
             bytes == null || bytes == 0L -> null
