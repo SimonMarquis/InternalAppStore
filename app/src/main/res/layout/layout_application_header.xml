@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="@+id/imageView_header_icon"
         app:layout_constraintTop_toTopOf="@+id/imageView_header_icon" />
 
-    <androidx.emoji.widget.EmojiTextView
+    <fr.smarquis.appstore.EmojiTextView
         android:id="@+id/textView_header_installedInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         tools:text="Installed • 1.2.3 • 10203000"
         tools:visibility="visible" />
 
-    <androidx.emoji.widget.EmojiTextView
+    <fr.smarquis.appstore.EmojiTextView
         android:id="@+id/textView_header_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -122,28 +122,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <androidx.emoji.widget.EmojiButton
+            <fr.smarquis.appstore.EmojiButton
                 android:id="@+id/button_header_link1"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:text="Link 1" />
 
-            <androidx.emoji.widget.EmojiButton
+            <fr.smarquis.appstore.EmojiButton
                 android:id="@+id/button_header_link2"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:text="Link 2" />
 
-            <androidx.emoji.widget.EmojiButton
+            <fr.smarquis.appstore.EmojiButton
                 android:id="@+id/button_header_link3"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:text="Link 3" />
 
-            <androidx.emoji.widget.EmojiButton
+            <fr.smarquis.appstore.EmojiButton
                 android:id="@+id/button_header_link4"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"

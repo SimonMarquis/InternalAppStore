@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.emoji.widget.EmojiTextView
+    <fr.smarquis.appstore.EmojiTextView
         android:id="@+id/textView_version_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
         app:layout_constraintTop_toTopOf="@+id/barrier2"
         tools:visibility="visible" />
 
-    <androidx.emoji.widget.EmojiTextView
+    <fr.smarquis.appstore.EmojiTextView
         android:id="@+id/textView_version_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

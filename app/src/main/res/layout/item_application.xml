@@ -25,7 +25,7 @@
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 
-    <androidx.emoji.widget.EmojiTextView
+    <fr.smarquis.appstore.EmojiTextView
         android:id="@+id/textView_application_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
