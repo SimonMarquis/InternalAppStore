@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES.N
 import android.os.Bundle
+import android.os.Process
 import android.text.SpannedString
 import android.transition.Transition
 import android.util.Log
@@ -663,7 +664,10 @@ class VersionsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> supportFinishAfterTransition()
-            R.id.menu_action_stop -> application?.packageName?.let { (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it) }
+            R.id.menu_action_stop -> application?.packageName?.let {
+                if (it == packageName) Process.killProcess(Process.myPid())
+                else (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it)
+            }
             R.id.menu_action_info -> application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
             R.id.menu_action_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
             R.id.menu_action_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
