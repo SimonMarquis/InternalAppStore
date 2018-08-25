@@ -13,6 +13,14 @@
     android:paddingRight="@dimen/material_baseline_grid_4x"
     android:paddingBottom="@dimen/material_baseline_grid_2x">
 
+    <Space
+        android:id="@+id/space_responsive_width"
+        android:layout_width="@dimen/activity_responsive_width"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/textView_version_name"
         android:layout_width="0dp"
@@ -27,7 +35,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/barrier2"
         app:layout_constraintEnd_toEndOf="@+id/barrier3"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/space_responsive_width"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="1.2.3" />
 
@@ -39,7 +47,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/colorTextSecondary"
         android:textSize="11sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SmallSp"
         tools:text="1 day ago" />
@@ -64,7 +72,7 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView_version_size"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
         app:layout_constraintTop_toTopOf="@+id/textView_version_size"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_cloud_check_16dp" />
@@ -88,8 +96,8 @@
         android:max="100"
         android:maxHeight="@dimen/material_baseline_grid_2x"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
+        app:layout_constraintStart_toStartOf="@+id/space_responsive_width"
         app:layout_constraintTop_toTopOf="@+id/barrier2"
         tools:visibility="visible" />
 
@@ -98,10 +106,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
+        app:layout_constraintStart_toStartOf="@+id/space_responsive_width"
         app:layout_constraintTop_toBottomOf="@+id/progressBar_version"
-        tools:text="@tools:sample/lorem/random" />
+        tools:text="@tools:sample/lorem" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier3"
