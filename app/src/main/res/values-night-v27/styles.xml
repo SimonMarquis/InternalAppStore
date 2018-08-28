@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.AppStore" parent="Base.V27.Theme.AppStore" />
-
     <style name="Base.V27.Theme.AppStore" parent="Base.V23.Theme.AppStore">
         <item name="android:navigationBarColor">?colorPrimary</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightNavigationBar">false</item>
         <item name="android:navigationBarDividerColor">?colorControlHighlight</item>
     </style>
 

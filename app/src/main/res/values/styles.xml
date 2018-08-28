@@ -3,7 +3,7 @@
 
     <style name="Theme.AppStore" parent="Base.Theme.AppStore" />
 
-    <style name="Base.Theme.AppStore" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Base.Theme.AppStore" parent="Theme.AppCompat.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,6 +11,7 @@
         <item name="actionBarStyle">@style/ActionBarStyle</item>
         <item name="android:windowBackground">@color/colorBackground</item>
         <item name="android:listDivider">@drawable/list_divider</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
