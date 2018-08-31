@@ -15,7 +15,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppStore"
+        android:theme="@style/Theme.AppStore.Preview"
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity

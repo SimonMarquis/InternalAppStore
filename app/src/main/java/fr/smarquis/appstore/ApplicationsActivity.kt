@@ -69,6 +69,7 @@ class ApplicationsActivity : AppCompatActivity() {
     private val packageIntentFilterReceiver = PackageIntentFilter.receiver { _: String, packageName: String -> applicationAdapter?.onPackageChanged(packageName) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_AppStore)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_applications)
         initUi()

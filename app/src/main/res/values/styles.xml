@@ -11,7 +11,6 @@
         <item name="actionBarStyle">@style/ActionBarStyle</item>
         <item name="android:windowBackground">@color/colorBackground</item>
         <item name="android:listDivider">@drawable/list_divider</item>
-        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
@@ -30,6 +29,12 @@
     <style name="ActionBarSubtitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Theme.AppStore.Preview" parent="Base.Theme.AppStore.Preview" />
+
+    <style name="Base.Theme.AppStore.Preview" parent="Theme.AppStore">
+        <item name="android:windowBackground">@drawable/preview_window_background</item>
     </style>
 
 </resources>

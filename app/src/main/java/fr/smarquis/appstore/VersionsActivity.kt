@@ -177,6 +177,7 @@ class VersionsActivity : AppCompatActivity() {
     private var isCircularRevealPending = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_AppStore)
         super.onCreate(savedInstanceState)
 
         val application: Application? = intent?.extras?.getParcelable(EXTRA_APPLICATION)

@@ -39,7 +39,7 @@ class Firebase {
                     .setTheme(R.style.Theme_AppStore)
                     .setAvailableProviders(Store.AUTH_PROVIDERS)
                     .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
-                    .setLogo(R.drawable.ic_launcher_web)
+                    .setLogo(R.drawable.ic_launcher_preview_window)
                     .build()
         }
 
