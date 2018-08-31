@@ -51,7 +51,7 @@ class VersionViewHolder(
         size.text = version?.apkSizeBytesDisplay ?: UNKNOWN_SIZE
 
         val resourceId = when {
-            version?.status == DOWNLOADING -> R.drawable.ic_cloud_sync_16dp
+            version?.status == DOWNLOADING || version?.status == INSTALLING -> R.drawable.ic_cloud_sync_16dp
             version?.hasApkUrl() ?: false -> R.drawable.ic_cloud_search_16dp
             version?.hasApkRef() ?: false && version?.apkFileAvailable?.not() ?: false -> R.drawable.ic_cloud_download_16dp
             version?.hasApkRef() ?: false && version?.apkFileAvailable ?: false -> R.drawable.ic_cloud_check_16dp
