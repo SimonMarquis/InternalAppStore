@@ -42,7 +42,9 @@ class ApplicationViewHolder(
         installed.apply {
             val packageName = application?.packageName
             if (packageName != null && Utils.isApplicationInstalled(itemView.context, packageName)) {
-                text = resources.getString(R.string.item_application_installed, Utils.applicationVersionName(itemView.context, packageName))
+                val name = Utils.applicationVersionName(itemView.context, packageName)
+                val time = Utils.relativeTimeSpan(Utils.applicationLastUpdateTime(itemView.context, packageName))
+                text = resources.getString(R.string.item_application_installed, name, time)
                 visibility = View.VISIBLE
             } else {
                 text = null

@@ -395,7 +395,8 @@ class VersionsActivity : AppCompatActivity() {
         if (appInstalled) {
             val appVersionName = Utils.applicationVersionName(this, application.packageName.orEmpty())
             val appVersionCode = Utils.applicationVersionCode(this, application.packageName.orEmpty())
-            textView2.text = getString(R.string.versions_header_installed_info, appVersionName, appVersionCode)
+            val time = Utils.relativeTimeSpan(Utils.applicationLastUpdateTime(this, application.packageName.orEmpty()))
+            textView2.text = getString(R.string.versions_header_installed_info, appVersionName, appVersionCode, time)
         } else {
             textView2.text = null
         }

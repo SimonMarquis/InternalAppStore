@@ -49,7 +49,7 @@
         android:layout_marginLeft="@dimen/material_baseline_grid_2x"
         android:layout_marginBottom="@dimen/material_baseline_grid_1x"
         android:ellipsize="marquee"
-        android:singleLine="true"
+        android:maxLines="3"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="12sp"
@@ -61,7 +61,7 @@
         app:layout_constraintStart_toEndOf="@+id/imageView_header_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Installed • 1.2.3 • 10203000"
+        tools:text="Installed\n1.2.3 (10203000) • 2 min. ago"
         tools:visibility="visible" />
 
     <fr.smarquis.appstore.EmojiTextView

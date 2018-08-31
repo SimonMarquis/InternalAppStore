@@ -10,6 +10,9 @@ import android.os.Build.VERSION_CODES.*
 import android.provider.Settings
 import android.text.Html
 import android.text.Spanned
+import android.text.format.DateUtils
+import android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE
+import android.text.format.DateUtils.SECOND_IN_MILLIS
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.view.doOnNextLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +48,14 @@ class Utils {
                 PackageInfoCompat.getLongVersionCode(context.packageManager.getPackageInfo(packageName, 0))
             } catch (e: PackageManager.NameNotFoundException) {
                 0
+            }
+        }
+
+        fun applicationLastUpdateTime(context: Context, packageName: String): Long? {
+            return try {
+                context.packageManager.getPackageInfo(packageName, 0).lastUpdateTime
+            } catch (e: PackageManager.NameNotFoundException) {
+                null
             }
         }
 
@@ -127,6 +138,10 @@ class Utils {
                     }
                 }
             }
+        }
+
+        fun relativeTimeSpan(time: Long?, now: Long = System.currentTimeMillis(), minResolution: Long = SECOND_IN_MILLIS, flags: Int = FORMAT_ABBREV_RELATIVE): CharSequence? {
+            return DateUtils.getRelativeTimeSpanString(time ?: now, now, minResolution, flags)
         }
     }
 }

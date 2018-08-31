@@ -1,6 +1,5 @@
 package fr.smarquis.appstore
 
-import android.text.format.DateUtils
 import android.view.View
 import android.view.View.*
 import android.widget.ImageView
@@ -65,9 +64,7 @@ class VersionViewHolder(
                 progress.progress = 0
                 progress.isIndeterminate = false
                 progress.visibility = if (version?.descriptionToHtml.isNullOrBlank()) GONE else INVISIBLE
-                val now = System.currentTimeMillis()
-                val time = version?.timestamp ?: now
-                timestamp.text = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.SECOND_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE)
+                timestamp.text = Utils.relativeTimeSpan(version?.timestamp)
             }
             DOWNLOADING -> {
                 progress.progress = version?.progress ?: 0

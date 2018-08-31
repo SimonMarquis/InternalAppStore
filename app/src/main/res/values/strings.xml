@@ -20,11 +20,11 @@
     <string name="applications_toast_verification_email_sent">Check your inbox to verify your account</string>
     <string name="applications_toast_verification_email_error">Unable to send verification email</string>
 
-    <string name="item_application_installed">Installed • %1$s</string>
+    <string name="item_application_installed">Installed • %1$s • %2$s</string>
     <!--endregion-->
 
     <!--region Versions-->
-    <string name="versions_header_installed_info">Installed • %1$s • %2$d</string>
+    <string name="versions_header_installed_info">Installed\n%1$s (%2$d) • %3$s</string>
 
     <string name="versions_toast_application_installed">Application installed!</string>
     <string name="versions_toast_application_not_installed">Application not installed!</string>

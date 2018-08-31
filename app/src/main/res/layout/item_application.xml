@@ -55,5 +55,5 @@
         app:layout_constraintStart_toEndOf="@+id/imageView_application_icon"
         app:layout_constraintTop_toBottomOf="@+id/textView_application_title"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Installed • 1.2.3" />
+        tools:text="Installed • 1.2.3 • 2 min. ago" />
 </androidx.constraintlayout.widget.ConstraintLayout>
