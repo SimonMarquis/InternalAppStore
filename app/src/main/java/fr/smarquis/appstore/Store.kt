@@ -28,6 +28,13 @@ class Store : android.app.Application() {
                     AuthUI.IdpConfig.EmailBuilder().setRequireName(false).build(),
                     AuthUI.IdpConfig.GoogleBuilder().build())
         }
+
+        val SCREENSHOT_STATUS: Pair<Version.Status, Int>? by lazy {
+            /*Version.Status.DOWNLOADING to 66*/
+            /*Version.Status.INSTALLING*/
+            /*Version.Status.DEFAULT to 0*/
+            null
+        }
     }
 
     override fun onCreate() {
