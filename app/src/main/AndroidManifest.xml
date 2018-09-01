@@ -12,11 +12,12 @@
     <application
         android:name=".Store"
         android:allowBackup="false"
+        android:appCategory="productivity"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppStore.Preview"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
 
         <activity
             android:name=".ApplicationsActivity"
