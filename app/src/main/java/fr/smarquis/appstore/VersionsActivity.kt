@@ -177,6 +177,8 @@ class VersionsActivity : AppCompatActivity() {
 
     private var isCircularRevealPending = false
 
+    private var hasRegisteredListeners = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_AppStore)
         super.onCreate(savedInstanceState)
@@ -203,23 +205,31 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        unregisterListeners()
         super.onDestroy()
+        unregisterListeners()
     }
 
     private fun registerListeners(application: Application) {
+        if (hasRegisteredListeners) {
+            return
+        }
         firebaseApplicationDatabaseRef = Firebase.database.application(application.key.orEmpty())
         firebaseApplicationDatabaseRef?.addValueEventListener(applicationValueEventListener)
         versionAdapter?.registerAdapterDataObserver(dataObserver)
         versionAdapter?.startListening()
         PackageIntentFilter.register(this, packageIntentFilterReceiver)
+        hasRegisteredListeners = true
     }
 
     private fun unregisterListeners() {
+        if (!hasRegisteredListeners) {
+            return
+        }
         firebaseApplicationDatabaseRef?.removeEventListener(applicationValueEventListener)
         PackageIntentFilter.unregister(this, packageIntentFilterReceiver)
         versionAdapter?.unregisterAdapterDataObserver(dataObserver)
         versionAdapter?.stopListening()
+        hasRegisteredListeners = false
     }
 
     private fun initUi(application: Application) {
