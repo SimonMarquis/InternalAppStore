@@ -74,9 +74,10 @@ class VersionsActivity : AppCompatActivity() {
 
         private const val TAG = "AppStore"
 
-        private const val EXTRA_APPLICATION = "EXTRA_APPLICATION"
-        private const val EXTRA_HIGHLIGHT_VERSION_KEY = "EXTRA_HIGHLIGHT_VERSION_KEY"
-        private const val EXTRA_SHARED_ELEMENT_TRANSITION = "EXTRA_SHARED_ELEMENT_TRANSITION"
+        private val EXTRAS = VersionsActivity::class.java.`package`
+        private val EXTRA_APPLICATION = "$EXTRAS.EXTRA_APPLICATION"
+        private val EXTRA_HIGHLIGHT_VERSION_KEY = "$EXTRAS.EXTRA_HIGHLIGHT_VERSION_KEY"
+        private val EXTRA_SHARED_ELEMENT_TRANSITION = "$EXTRAS.EXTRA_SHARED_ELEMENT_TRANSITION"
 
         fun start(context: Context, application: Application) {
             context.startActivity(intent(context, application))
