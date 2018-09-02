@@ -356,20 +356,19 @@ class VersionsActivity : AppCompatActivity() {
 
     private fun refreshVersionProperties(version: Version) {
         // Restore active downloads and check for file size and apk file availability
-        val activity = this@VersionsActivity
         version.getActiveDownloadTask()?.apply { DownloadProgressListener.update(snapshot, version, versionAdapter) }
-                ?.addOnProgressListener(DownloadProgressListener(activity, version))
-                ?.addOnCompleteListener(DownloadCompleteListener(activity, version, primary = false))
+                ?.addOnProgressListener(DownloadProgressListener(this, version))
+                ?.addOnCompleteListener(DownloadCompleteListener(this, version, primary = false))
         if (!version.hasApkRef()) return
 
         val context = applicationContext
-        val fileSizeTask = if (version.apkSize == null) Firebase.storage.getReference(version.apkRef!!).metadata.addOnSuccessListener(activity) { version.updateApkSize(it.sizeBytes) } else null
+        val fileSizeTask = if (version.apkSize == null) Firebase.storage.getReference(version.apkRef!!).metadata.addOnSuccessListener(this) { version.updateApkSize(it.sizeBytes) } else null
         val fileAvailabilityTask = Tasks.call(executor, Callable {
             ApkFileProvider.apkFile(context, version).let {
                 version.apkFileAvailable = it.exists() && it.length() > 0
             }
         })
-        Tasks.whenAllComplete(listOfNotNull(fileSizeTask, fileAvailabilityTask)).addOnCompleteListener(activity) { versionAdapter?.updateVersionProgress(version) }
+        Tasks.whenAllComplete(listOfNotNull(fileSizeTask, fileAvailabilityTask)).addOnCompleteListener(this) { versionAdapter?.updateVersionProgress(version) }
     }
 
     private fun updateApplication(application: Application?): Boolean {
@@ -429,13 +428,12 @@ class VersionsActivity : AppCompatActivity() {
 
     private fun updateAppLink(link: Link?, view: Button) {
         view.apply {
-            val context = this@VersionsActivity
             text = link?.name
             visibility = if (link != null) VISIBLE else GONE
             setOnClickListener(if (link?.uri != null) {
                 View.OnClickListener {
                     val intent = Intent(Intent.ACTION_VIEW, link.uri.toUri()).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
-                    if (!intent.isSafe(context)) {
+                    if (!intent.isSafe(this@VersionsActivity)) {
                         val text = buildSpannedString {
                             append(getString(R.string.versions_toast_link_error))
                             append("\n")
@@ -445,7 +443,7 @@ class VersionsActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        Toast.makeText(context, text, LENGTH_SHORT).show()
+                        Toast.makeText(this@VersionsActivity, text, LENGTH_SHORT).show()
                     } else {
                         safeStartActivity(intent)
                     }
@@ -454,7 +452,7 @@ class VersionsActivity : AppCompatActivity() {
             setOnLongClickListener(if (link?.uri != null) {
                 View.OnLongClickListener {
                     (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip = ClipData.newPlainText(packageName, link.uri)
-                    Toast.makeText(context, getString(R.string.versions_toast_link_to_clipboard), LENGTH_SHORT).show()
+                    Toast.makeText(this@VersionsActivity, getString(R.string.versions_toast_link_to_clipboard), LENGTH_SHORT).show()
                     true
                 }
             } else null)
@@ -685,9 +683,7 @@ class VersionsActivity : AppCompatActivity() {
             R.id.menu_action_info -> application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
             R.id.menu_action_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
             R.id.menu_action_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
-            R.id.menu_action_notification_settings -> {
-                application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
-            }
+            R.id.menu_action_notification_settings -> application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
             else -> return super.onOptionsItemSelected(item)
         }
         return true

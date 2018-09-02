@@ -229,8 +229,8 @@ class ApplicationsActivity : AppCompatActivity() {
 
     private fun signInAnonymously() {
         Firebase.auth.signInAnonymously()
-                .addOnSuccessListener(this@ApplicationsActivity) { _ -> Log.d("Store", "signInAnonymously:SUCCESS").also { checkStoreAccess() } }
-                .addOnFailureListener(this@ApplicationsActivity) { exception -> Log.e("Store", "signInAnonymously:FAILURE", exception) }
+                .addOnSuccessListener(this) { _ -> Log.d("Store", "signInAnonymously:SUCCESS").also { checkStoreAccess() } }
+                .addOnFailureListener(this) { exception -> Log.e("Store", "signInAnonymously:FAILURE", exception) }
     }
 
     private fun registerListeners() {
@@ -281,8 +281,8 @@ class ApplicationsActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_action_refresh -> {
-                Firebase.auth.currentUser?.getIdToken(true)?.addOnSuccessListener(this@ApplicationsActivity) { _ ->
-                    Firebase.auth.currentUser?.reload()?.addOnSuccessListener(this@ApplicationsActivity) { checkStoreAccess() }
+                Firebase.auth.currentUser?.getIdToken(true)?.addOnSuccessListener(this) { _ ->
+                    Firebase.auth.currentUser?.reload()?.addOnSuccessListener(this) { checkStoreAccess() }
                 }
                 true
             }
@@ -327,11 +327,11 @@ class ApplicationsActivity : AppCompatActivity() {
     }
 
     private fun sendVerificationEmail(currentUser: FirebaseUser) {
-        currentUser.sendEmailVerification().addOnCompleteListener(this@ApplicationsActivity) { task: Task<Void> ->
+        currentUser.sendEmailVerification().addOnCompleteListener(this) { task: Task<Void> ->
             if (task.isSuccessful) {
-                Toast.makeText(this@ApplicationsActivity, R.string.applications_toast_verification_email_sent, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.applications_toast_verification_email_sent, Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(this@ApplicationsActivity, R.string.applications_toast_verification_email_error, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.applications_toast_verification_email_error, Toast.LENGTH_LONG).show()
             }
         }
     }

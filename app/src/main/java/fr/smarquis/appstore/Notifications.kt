@@ -5,7 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.O
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.NotificationCompat
@@ -30,32 +30,29 @@ class Notifications {
         }
 
         fun createOrUpdateNewApplicationsNotificationChannel(context: Context) {
-            if (Utils.isAtLeast(O)) {
-                notificationManager(context).createNotificationChannel(NotificationChannel(context.getString(R.string.notification_channel_new_applications_id), context.getString(R.string.notification_channel_new_applications_name), NotificationManager.IMPORTANCE_LOW))
-            }
+            if (!Utils.isAtLeast(O)) return
+            notificationManager(context).createNotificationChannel(NotificationChannel(context.getString(R.string.notification_channel_new_applications_id), context.getString(R.string.notification_channel_new_applications_name), NotificationManager.IMPORTANCE_LOW))
         }
 
         fun newVersionsNotificationChannelId(context: Context, application: Application): String =
                 context.getString(R.string.notification_channel_new_versions_id, application.key)
 
         fun createOrUpdateNewVersionsNotificationChannel(context: Context, application: Application) {
-            if (Utils.isAtLeast(O)) {
-                val nm = notificationManager(context)
-                val channelId = newVersionsNotificationChannelId(context, application)
-                if (nm.getNotificationChannel(channelId) == null) {
-                    // If new apps notification is disabled, then create but disable this notification channel
-                    val shouldMuteNotificationChannel = nm.getNotificationChannel(context.getString(R.string.notification_channel_new_applications_id))?.importance == NotificationManagerCompat.IMPORTANCE_NONE
-                    nm.createNotificationChannel(NotificationChannel(channelId, application.name, if (application.isMyself(context)) NotificationManager.IMPORTANCE_HIGH else if (shouldMuteNotificationChannel) NotificationManagerCompat.IMPORTANCE_NONE else NotificationManager.IMPORTANCE_LOW))
-                } else {
-                    nm.createNotificationChannel(NotificationChannel(channelId, application.name, if (application.isMyself(context)) NotificationManager.IMPORTANCE_HIGH else NotificationManager.IMPORTANCE_LOW))
-                }
+            if (!Utils.isAtLeast(O)) return
+            val nm = notificationManager(context)
+            val channelId = newVersionsNotificationChannelId(context, application)
+            if (nm.getNotificationChannel(channelId) == null) {
+                // If new apps notification is disabled, then create but disable this notification channel
+                val shouldMuteNotificationChannel = nm.getNotificationChannel(context.getString(R.string.notification_channel_new_applications_id))?.importance == NotificationManagerCompat.IMPORTANCE_NONE
+                nm.createNotificationChannel(NotificationChannel(channelId, application.name, if (application.isMyself(context)) NotificationManager.IMPORTANCE_HIGH else if (shouldMuteNotificationChannel) NotificationManagerCompat.IMPORTANCE_NONE else NotificationManager.IMPORTANCE_LOW))
+            } else {
+                nm.createNotificationChannel(NotificationChannel(channelId, application.name, if (application.isMyself(context)) NotificationManager.IMPORTANCE_HIGH else NotificationManager.IMPORTANCE_LOW))
             }
         }
 
         fun deleteNewVersionsNotificationChannel(context: Context, application: Application) {
-            if (Utils.isAtLeast(O)) {
-                notificationManager(context).deleteNotificationChannel(newVersionsNotificationChannelId(context, application))
-            }
+            if (!Utils.isAtLeast(O)) return
+            notificationManager(context).deleteNotificationChannel(newVersionsNotificationChannelId(context, application))
         }
 
         fun onNewApplication(context: Context, application: Application, msg: RemoteMessage? = null) {
