@@ -19,6 +19,9 @@
         android:id="@+id/menu_action_store"
         android:title="@string/versions_menu_play_store" />
     <item
+        android:id="@+id/menu_action_create_shortcut"
+        android:title="@string/versions_menu_create_shortcut" />
+    <item
         android:id="@+id/menu_action_notification_settings"
         android:title="@string/versions_menu_notification_settings" />
 </menu>

@@ -43,7 +43,7 @@ class Store : android.app.Application() {
         Firebase.auth.addAuthStateListener { Firebase.analytics.setUserId(it.currentUser?.uid) }
         ApkFileProvider.cleanUp(this)
         injectFirebaseImageLoader()
-        synchronizeNotificationChannels()
+        synchronizeNotificationChannelsAndShortcuts()
         initEmojiCompat()
     }
 
@@ -67,25 +67,37 @@ class Store : android.app.Application() {
         }
     }
 
-    private fun synchronizeNotificationChannels() {
+    private fun synchronizeNotificationChannelsAndShortcuts() {
         Notifications.createOrUpdateNewApplicationsNotificationChannel(this)
         Firebase.database.applications().addChildEventListener(object : ChildEventListener {
 
+            val store = this@Store
+            val shortcuts by lazy { Shortcuts.instance(store) }
+
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val application = Application.parse(snapshot) ?: return
-                Notifications.createOrUpdateNewVersionsNotificationChannel(this@Store, application)
-                if (application.isMyself(this@Store)) {
-                    checkForSelfUpdate(application)
+                Application.parse(snapshot)?.let {
+                    Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
+                    if (it.isMyself(store)) {
+                        checkForSelfUpdate(it)
+                    }
                 }
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                Notifications.deleteNewVersionsNotificationChannel(this@Store, Application.parse(snapshot)
-                        ?: return)
+                Application.parse(snapshot)?.let {
+                    Notifications.deleteNewVersionsNotificationChannel(store, it)
+                    shortcuts.remove(it)
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                Application.parse(snapshot)?.let {
+                    Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
+                    shortcuts.update(it)
+                }
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onCancelled(error: DatabaseError) {}
         })
     }

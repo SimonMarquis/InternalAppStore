@@ -313,6 +313,7 @@ class ApplicationsActivity : AppCompatActivity() {
     private fun wipeAndExit() {
         Firebase.unsubscribeFromStore()
         Notifications.invalidate(this)
+        Shortcuts.instance(this).invalidate()
         invalidateCache {
             // Force exit to prevent Firebase database in-memory cache
             if (Utils.isAtLeast(KITKAT)) {

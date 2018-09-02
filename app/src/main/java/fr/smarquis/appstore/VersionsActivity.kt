@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
@@ -100,6 +101,7 @@ class VersionsActivity : AppCompatActivity() {
     private var firebaseApplicationDatabaseRef: DatabaseReference? = null
     private var versionAdapter: VersionAdapter? = null
     private var application: Application? = null
+    private val shortcuts: Shortcuts by lazy { Shortcuts.instance(this) }
 
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var recyclerView: RecyclerView
@@ -118,18 +120,26 @@ class VersionsActivity : AppCompatActivity() {
             error.let {
                 Log.w(TAG, "Error fetching application ${application?.key}\n${it.message}\n${it.details}", error.toException())
                 Toast.makeText(this@VersionsActivity, it.message, LENGTH_LONG).show()
-                finish()
+                supportFinishAfterTransition()
             }
         }
 
         override fun onDataChange(snapshot: DataSnapshot) {
-            Application.parse(snapshot).let {
-                if (it == null) {
+            Application.parse(snapshot).let { update ->
+                if (update == null) {
                     Toast.makeText(applicationContext, R.string.versions_toast_application_removed, LENGTH_SHORT).show()
-                    finish()
+                    application?.let {
+                        Notifications.deleteNewVersionsNotificationChannel(this@VersionsActivity, it)
+                        shortcuts.remove(it)
+                    }
+                    supportFinishAfterTransition()
                 } else {
-                    Notifications.createOrUpdateNewVersionsNotificationChannel(this@VersionsActivity, it)
-                    updateApplication(it)
+                    Notifications.createOrUpdateNewVersionsNotificationChannel(this@VersionsActivity, update)
+                    updateApplication(update)
+                    if (reportShortcutUsage) {
+                        shortcuts.use(update)
+                        reportShortcutUsage = false
+                    }
                 }
             }
         }
@@ -179,15 +189,22 @@ class VersionsActivity : AppCompatActivity() {
 
     private var hasRegisteredListeners = false
 
+    /**
+     * Used to report shortcuts only once (prevent configuration change, data change, etc.)
+     */
+    private var reportShortcutUsage = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_AppStore)
         super.onCreate(savedInstanceState)
-
-        val application: Application? = intent?.extras?.getParcelable(EXTRA_APPLICATION)
+        val application = intent?.let {
+            it.extras?.getParcelable(EXTRA_APPLICATION) ?: shortcuts.extract(it)
+        }
         if (application?.key == null) {
             finish()
             return
         }
+        reportShortcutUsage = savedInstanceState == null
 
         setContentView(R.layout.activity_versions)
         initUi(application)
@@ -670,6 +687,7 @@ class VersionsActivity : AppCompatActivity() {
         menu?.findItem(R.id.menu_action_info)?.isVisible = applicationInstalled
         menu?.findItem(R.id.menu_action_stop)?.isVisible = applicationInstalled
         menu?.findItem(R.id.menu_action_uninstall)?.isVisible = applicationInstalled
+        menu?.findItem(R.id.menu_action_create_shortcut)?.isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -684,6 +702,7 @@ class VersionsActivity : AppCompatActivity() {
             R.id.menu_action_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
             R.id.menu_action_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
             R.id.menu_action_notification_settings -> application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
+            R.id.menu_action_create_shortcut -> application?.let { shortcuts.request(it) }
             else -> return super.onOptionsItemSelected(item)
         }
         return true

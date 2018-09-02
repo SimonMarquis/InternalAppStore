@@ -38,11 +38,17 @@
     <string name="versions_menu_stop">Force stop</string>
     <string name="versions_menu_uninstall">Uninstall</string>
     <string name="versions_menu_play_store">Play Store</string>
+    <string name="versions_menu_create_shortcut">Create shortcut</string>
     <string name="versions_menu_notification_settings">Notification settings</string>
 
     <string name="item_version_downloading">Downloading…</string>
     <string name="item_version_installing">Installing…</string>
     <string name="item_version_opening">Opening…</string>
+    <!--endregion-->
+
+    <!--region Shortcuts-->
+    <string name="shortcut_added_to_home_screen">Shortcut added to home screen.</string>
+    <string name="shortcut_application_removed">This application has been removed.</string>
     <!--endregion-->
 
 </resources>
