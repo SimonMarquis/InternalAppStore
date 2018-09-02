@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
+import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -316,7 +316,7 @@ class ApplicationsActivity : AppCompatActivity() {
         Notifications.cancelAll(this@ApplicationsActivity)
         invalidateCache {
             // Force exit to prevent Firebase database in-memory cache
-            if (Utils.isAtLeast(Build.VERSION_CODES.KITKAT)) {
+            if (Utils.isAtLeast(KITKAT)) {
                 (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
             } else {
                 (applicationContext as Store).clearFilesCacheAndDatabases {

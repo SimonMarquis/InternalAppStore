@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.*
 import android.provider.Settings
@@ -109,7 +108,7 @@ class Utils {
             viewHolder.itemView.apply {
                 isPressed = true
                 // Animate RippleDrawable
-                if (Utils.isAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
+                if (Utils.isAtLeast(LOLLIPOP)) {
                     postDelayed({
                         drawableHotspotChanged(width / 2F, height / 2F)
                         isPressed = false

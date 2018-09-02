@@ -5,7 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Build
+import android.os.Build.VERSION_CODES.*
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.NotificationCompat
@@ -30,7 +30,7 @@ class Notifications {
         }
 
         fun createOrUpdateNewApplicationsNotificationChannel(context: Context) {
-            if (Utils.isAtLeast(Build.VERSION_CODES.O)) {
+            if (Utils.isAtLeast(O)) {
                 notificationManager(context).createNotificationChannel(NotificationChannel(context.getString(R.string.notification_channel_new_applications_id), context.getString(R.string.notification_channel_new_applications_name), NotificationManager.IMPORTANCE_LOW))
             }
         }
@@ -39,7 +39,7 @@ class Notifications {
                 context.getString(R.string.notification_channel_new_versions_id, application.key)
 
         fun createOrUpdateNewVersionsNotificationChannel(context: Context, application: Application) {
-            if (Utils.isAtLeast(Build.VERSION_CODES.O)) {
+            if (Utils.isAtLeast(O)) {
                 val nm = notificationManager(context)
                 val channelId = newVersionsNotificationChannelId(context, application)
                 if (nm.getNotificationChannel(channelId) == null) {
@@ -53,7 +53,7 @@ class Notifications {
         }
 
         fun deleteNewVersionsNotificationChannel(context: Context, application: Application) {
-            if (Utils.isAtLeast(Build.VERSION_CODES.O)) {
+            if (Utils.isAtLeast(O)) {
                 notificationManager(context).deleteNotificationChannel(newVersionsNotificationChannelId(context, application))
             }
         }
