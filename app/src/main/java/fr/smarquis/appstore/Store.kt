@@ -68,6 +68,7 @@ class Store : android.app.Application() {
     }
 
     private fun synchronizeNotificationChannels() {
+        Notifications.createOrUpdateNewApplicationsNotificationChannel(this)
         Firebase.database.applications().addChildEventListener(object : ChildEventListener {
 
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {

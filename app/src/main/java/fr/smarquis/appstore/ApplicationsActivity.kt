@@ -292,7 +292,6 @@ class ApplicationsActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_action_notification_settings -> {
-                Notifications.createOrUpdateNewApplicationsNotificationChannel(this)
                 safeStartActivityForResult(Utils.notificationSettingsIntent(this, null, true), REQUEST_CODE_NOTIFICATION_SETTINGS)
                 true
             }
@@ -313,7 +312,7 @@ class ApplicationsActivity : AppCompatActivity() {
 
     private fun wipeAndExit() {
         Firebase.unsubscribeFromStore()
-        Notifications.cancelAll(this@ApplicationsActivity)
+        Notifications.invalidate(this)
         invalidateCache {
             // Force exit to prevent Firebase database in-memory cache
             if (Utils.isAtLeast(KITKAT)) {

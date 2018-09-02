@@ -29,13 +29,26 @@ class Notifications {
             notificationManager(context).cancelAll()
         }
 
+        fun invalidate(context: Context) {
+            cancelAll(context)
+            if (!Utils.isAtLeast(O)) return
+            val channelPrefixToRemove = newVersionsNotificationChannelId(context)
+            with(notificationManager(context)) {
+                notificationChannels.forEach {
+                    if (it.id.startsWith(channelPrefixToRemove)) {
+                        deleteNotificationChannel(it.id)
+                    }
+                }
+            }
+        }
+
         fun createOrUpdateNewApplicationsNotificationChannel(context: Context) {
             if (!Utils.isAtLeast(O)) return
             notificationManager(context).createNotificationChannel(NotificationChannel(context.getString(R.string.notification_channel_new_applications_id), context.getString(R.string.notification_channel_new_applications_name), NotificationManager.IMPORTANCE_LOW))
         }
 
-        fun newVersionsNotificationChannelId(context: Context, application: Application): String =
-                context.getString(R.string.notification_channel_new_versions_id, application.key)
+        fun newVersionsNotificationChannelId(context: Context, application: Application? = null): String =
+                context.getString(R.string.notification_channel_new_versions_id, application?.key.orEmpty())
 
         fun createOrUpdateNewVersionsNotificationChannel(context: Context, application: Application) {
             if (!Utils.isAtLeast(O)) return
