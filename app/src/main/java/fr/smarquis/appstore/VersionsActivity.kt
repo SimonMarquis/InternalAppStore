@@ -685,25 +685,25 @@ class VersionsActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val applicationInstalled = isApplicationInstalled(application)
-        menu?.findItem(R.id.menu_action_info)?.isVisible = applicationInstalled
-        menu?.findItem(R.id.menu_action_stop)?.isVisible = applicationInstalled
-        menu?.findItem(R.id.menu_action_uninstall)?.isVisible = applicationInstalled
-        menu?.findItem(R.id.menu_action_create_shortcut)?.isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
+        menu?.findItem(R.id.menu_versions_info)?.isVisible = applicationInstalled
+        menu?.findItem(R.id.menu_versions_stop)?.isVisible = applicationInstalled
+        menu?.findItem(R.id.menu_versions_uninstall)?.isVisible = applicationInstalled
+        menu?.findItem(R.id.menu_versions_create_shortcut)?.isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> supportFinishAfterTransition()
-            R.id.menu_action_stop -> application?.packageName?.let {
+            R.id.menu_versions_stop -> application?.packageName?.let {
                 if (it == packageName) Process.killProcess(Process.myPid())
                 else (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it)
             }
-            R.id.menu_action_info -> application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
-            R.id.menu_action_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
-            R.id.menu_action_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
-            R.id.menu_action_notification_settings -> application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
-            R.id.menu_action_create_shortcut -> application?.let { shortcuts.request(it) }
+            R.id.menu_versions_info -> application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
+            R.id.menu_versions_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
+            R.id.menu_versions_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
+            R.id.menu_versions_notification_settings -> application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
+            R.id.menu_versions_create_shortcut -> application?.let { shortcuts.request(it) }
             else -> return super.onOptionsItemSelected(item)
         }
         return true

@@ -4,24 +4,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/menu_action_info"
+        android:id="@+id/menu_versions_info"
         android:icon="@drawable/ic_info_24dp"
         android:title="@string/versions_menu_info"
         app:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
     <item
-        android:id="@+id/menu_action_stop"
+        android:id="@+id/menu_versions_stop"
         android:title="@string/versions_menu_stop" />
     <item
-        android:id="@+id/menu_action_uninstall"
+        android:id="@+id/menu_versions_uninstall"
         android:title="@string/versions_menu_uninstall" />
     <item
-        android:id="@+id/menu_action_store"
+        android:id="@+id/menu_versions_store"
         android:title="@string/versions_menu_play_store" />
     <item
-        android:id="@+id/menu_action_create_shortcut"
+        android:id="@+id/menu_versions_create_shortcut"
         android:title="@string/versions_menu_create_shortcut" />
     <item
-        android:id="@+id/menu_action_notification_settings"
+        android:id="@+id/menu_versions_notification_settings"
         android:title="@string/versions_menu_notification_settings" />
 </menu>

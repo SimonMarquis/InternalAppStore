@@ -251,20 +251,20 @@ class ApplicationsActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val user = Firebase.auth.currentUser
-        menu?.findItem(R.id.menu_action_signin)?.isVisible = user == null || user.isAnonymous
-        menu?.findItem(R.id.menu_action_signout)?.isVisible = user != null && !user.isAnonymous
-        menu?.findItem(R.id.menu_action_send_verification_email)?.isVisible = user != null && !user.isAnonymous && !user.isEmailVerified
-        menu?.findItem(R.id.menu_action_refresh)?.isVisible = user != null
+        menu?.findItem(R.id.menu_applications_signin)?.isVisible = user == null || user.isAnonymous
+        menu?.findItem(R.id.menu_applications_signout)?.isVisible = user != null && !user.isAnonymous
+        menu?.findItem(R.id.menu_applications_send_verification_email)?.isVisible = user != null && !user.isAnonymous && !user.isEmailVerified
+        menu?.findItem(R.id.menu_applications_refresh)?.isVisible = user != null
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_action_signin -> {
+            R.id.menu_applications_signin -> {
                 startActivityForResult(Firebase.signInIntent, REQUEST_CODE_MANUAL_SIGN_IN)
                 true
             }
-            R.id.menu_action_signout -> {
+            R.id.menu_applications_signout -> {
                 Firebase.auth.signOut()
                 Firebase.database.store().apply {
                     keepSynced(false)
@@ -274,24 +274,24 @@ class ApplicationsActivity : AppCompatActivity() {
                 wipeAndExit()
                 true
             }
-            R.id.menu_action_send_verification_email -> {
+            R.id.menu_applications_send_verification_email -> {
                 Firebase.auth.currentUser?.apply {
                     sendEmailVerification()
                 }
                 true
             }
-            R.id.menu_action_refresh -> {
+            R.id.menu_applications_refresh -> {
                 Firebase.auth.currentUser?.getIdToken(true)?.addOnSuccessListener(this) { _ ->
                     Firebase.auth.currentUser?.reload()?.addOnSuccessListener(this) { checkStoreAccess() }
                 }
                 true
             }
-            R.id.menu_action_invalidate_cache -> {
+            R.id.menu_applications_invalidate_cache -> {
                 recyclerView.adapter = null
                 invalidateCache { recreate() }
                 true
             }
-            R.id.menu_action_notification_settings -> {
+            R.id.menu_applications_notification_settings -> {
                 safeStartActivityForResult(Utils.notificationSettingsIntent(this, null, true), REQUEST_CODE_NOTIFICATION_SETTINGS)
                 true
             }
