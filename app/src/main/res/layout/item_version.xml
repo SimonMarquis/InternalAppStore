@@ -122,4 +122,14 @@
         tools:layout_editor_absoluteX="352dp"
         tools:layout_editor_absoluteY="16dp" />
 
+    <View
+        android:id="@+id/anchor"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
+        app:layout_constraintStart_toEndOf="@+id/space_responsive_width"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

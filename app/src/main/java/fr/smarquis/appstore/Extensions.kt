@@ -62,16 +62,20 @@ fun Intent?.isSafe(context: Context): Boolean {
     return this != null && resolveActivity(context.packageManager) != null
 }
 
-fun AppCompatActivity.safeStartActivity(intent: Intent?) {
+fun AppCompatActivity.safeStartActivity(intent: Intent?): Boolean {
     if (intent.isSafe(this)) {
         startActivity(intent)
+        return true
     }
+    return false
 }
 
-fun AppCompatActivity.safeStartActivityForResult(intent: Intent?, requestCode: Int) {
+fun AppCompatActivity.safeStartActivityForResult(intent: Intent?, requestCode: Int): Boolean {
     if (intent.isSafe(this)) {
         startActivityForResult(intent, requestCode)
+        return true
     }
+    return false
 }
 
 //endregion

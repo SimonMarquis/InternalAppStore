@@ -20,6 +20,7 @@ class VersionViewHolder(
     private val size: TextView = v.textView_version_size
     private val progress: ProgressBar = v.progressBar_version
     private val type: ImageView = v.imageView_version_type
+    val anchor: View = v.anchor
 
     private var version: Version? = null
 

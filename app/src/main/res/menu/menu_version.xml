@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_version_cancel"
+        android:title="@string/version_menu_cancel" />
+    <item
+        android:id="@+id/menu_version_download"
+        android:title="@string/version_menu_download" />
+    <item
+        android:id="@+id/menu_version_install"
+        android:title="@string/version_menu_install" />
+    <item
+        android:id="@+id/menu_version_share"
+        android:title="@string/version_menu_share" />
+    <item
+        android:id="@+id/menu_version_delete"
+        android:title="@string/version_menu_delete" />
+</menu>

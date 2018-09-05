@@ -1,5 +1,6 @@
 package fr.smarquis.appstore
 
+import android.os.Bundle
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -49,6 +50,14 @@ class Firebase {
 
         fun unsubscribeFromStore() {
             Firebase.messaging.unsubscribeFromTopic("store")
+        }
+
+        fun logSelectedContent(application: Application?, version: Version) {
+            Firebase.analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_ID, "${version.name} (${version.key})")
+                putString(FirebaseAnalytics.Param.ITEM_NAME, "${application?.packageName} ${version.name} (${version.key})")
+                putString(FirebaseAnalytics.Param.CONTENT_TYPE, application?.packageName ?: "unknown")
+            })
         }
 
     }

@@ -1,6 +1,7 @@
 package fr.smarquis.appstore
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.util.Log
@@ -16,9 +17,13 @@ class ApkFileProvider : FileProvider() {
 
         private const val TAG = "ApkFileProvider"
 
+        private const val MIME_TYPE_APK = "application/vnd.android.package-archive"
+
+        private const val FILE_EXTENSION_APK = ".apk"
+
         fun uri(file: File, context: Context): Uri = getUriForFile(context, "${context.packageName}.apk_provider", file)
 
-        private fun apkFilename(version: Version, withExtension: Boolean = true) = "${version.key}_${version.apkGeneration}${if (withExtension) ".apk" else ""}"
+        private fun apkFilename(version: Version, withExtension: Boolean = true) = "${version.key}_${version.apkGeneration}${if (withExtension) FILE_EXTENSION_APK else ""}"
 
         fun tempApkFile(context: Context, version: Version): File = File(context.cacheDir, "~${apkFilename(version)}")
 
@@ -31,14 +36,14 @@ class ApkFileProvider : FileProvider() {
         }
 
         fun invalidate(context: Context) {
-            val filter = FileFilter { it.endsWith(".apk") }
+            val filter = FileFilter { it.endsWith(FILE_EXTENSION_APK) }
             AsyncTask.execute { delete(context, filter) }
         }
 
         fun cleanUp(context: Context) {
             val time = Date().time
             val month = TimeUnit.DAYS.toMillis(30)
-            val filter = FileFilter { it.endsWith(".apk") && time - it.lastModified() > month }
+            val filter = FileFilter { it.endsWith(FILE_EXTENSION_APK) && time - it.lastModified() > month }
             AsyncTask.execute { delete(context, filter) }
         }
 
@@ -54,6 +59,15 @@ class ApkFileProvider : FileProvider() {
                         Log.w(TAG, "Failed to delete file: $file")
                     }
                 }
+            }
+        }
+
+        fun shareIntent(context: Context, application: Application, version: Version): Intent {
+            return Intent(Intent.ACTION_SEND).apply {
+                putExtra(Intent.EXTRA_SUBJECT, "${application.name} ${version.name}")
+                putExtra(Intent.EXTRA_STREAM, uri(apkFile(context, version), context))
+                type = MIME_TYPE_APK
+                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             }
         }
     }

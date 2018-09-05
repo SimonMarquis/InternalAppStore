@@ -30,6 +30,7 @@ import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.Px
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.app.ActivityOptionsCompat
@@ -54,7 +55,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -62,8 +62,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.OnProgressListener
 import fr.smarquis.appstore.Version.Status.*
+import fr.smarquis.appstore.VersionRequest.Action.*
 import fr.smarquis.appstore.VersionRequest.Companion.create
-import java.io.File
 import java.lang.ref.WeakReference
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -270,11 +270,46 @@ class VersionsActivity : AppCompatActivity() {
                     }
 
                     override fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder) {
-                        downloadVersion(version, false)
+                        when {
+                            version.hasApkUrl() -> openVersion(version)
+                            version.hasApkRef() -> downloadVersion(version, false) { installVersion(it) }
+                        }
                     }
 
                     override fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean {
-                        downloadVersion(version, true)
+                        return when {
+                            version.hasApkUrl() -> openVersion(version)
+                            version.hasApkRef() -> popupMenu(version, versionViewHolder)
+                            else -> return false
+                        }
+                    }
+
+                    private fun popupMenu(version: Version, versionViewHolder: VersionViewHolder): Boolean {
+                        val downloadTask = version.getActiveDownloadTask()
+                        val isDownloading = downloadTask?.isComplete == false
+                        PopupMenu(this@VersionsActivity, versionViewHolder.anchor, Gravity.END).apply {
+                            menuInflater.inflate(R.menu.menu_version, menu)
+                            menu.findItem(R.id.menu_version_cancel).isVisible = isDownloading
+                            menu.findItem(R.id.menu_version_download).isVisible = !isDownloading && !version.apkFileAvailable
+                            menu.findItem(R.id.menu_version_install).isVisible = !isDownloading
+                            menu.findItem(R.id.menu_version_share).isVisible = !isDownloading
+                            menu.findItem(R.id.menu_version_delete).isVisible = !isDownloading && version.apkFileAvailable
+                            setOnMenuItemClickListener { item ->
+                                when (item.itemId) {
+                                    R.id.menu_version_cancel -> version.getActiveDownloadTask()?.cancel()
+                                    R.id.menu_version_download -> downloadVersion(version, true)
+                                    R.id.menu_version_install -> downloadVersion(version) { installVersion(it) }
+                                    R.id.menu_version_share -> downloadVersion(version) { shareVersion(it) }
+                                    R.id.menu_version_delete -> deleteVersion(version)
+                                }
+                                true
+                            }
+                            show()
+                            // Dismiss popup if download completes
+                            if (isDownloading) {
+                                downloadTask?.addOnCompleteListener(this@VersionsActivity) { dismiss() }
+                            }
+                        }
                         return true
                     }
                 }
@@ -376,7 +411,7 @@ class VersionsActivity : AppCompatActivity() {
         // Restore active downloads and check for file size and apk file availability
         version.getActiveDownloadTask()?.apply { DownloadProgressListener.update(snapshot, version, versionAdapter) }
                 ?.addOnProgressListener(DownloadProgressListener(this, version))
-                ?.addOnCompleteListener(DownloadCompleteListener(this, version, primary = false))
+                ?.addOnCompleteListener(DownloadCompleteListener(this, version))
         if (!version.hasApkRef()) return
 
         val context = applicationContext
@@ -493,58 +528,97 @@ class VersionsActivity : AppCompatActivity() {
         }
     }
 
-    private fun downloadVersion(version: Version, force: Boolean) {
-        Firebase.analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, Bundle().apply {
-            putString(FirebaseAnalytics.Param.ITEM_ID, "${version.name} (${version.key})")
-            putString(FirebaseAnalytics.Param.ITEM_NAME, "${application?.packageName} ${version.name} (${version.key})")
-            putString(FirebaseAnalytics.Param.CONTENT_TYPE, application?.packageName ?: "unknown")
-        })
+    private fun downloadVersion(version: Version, force: Boolean = false, continuation: ((version: Version) -> Unit)? = null) {
+        if (!version.hasApkRef()) return
 
         // Cancel the current active download task if forced
-        version.getActiveDownloadTask()?.let {
-            if (force) {
-                it.cancel()
-            } else {
+        version.getActiveDownloadTask()?.apply {
+            if (!force) {
                 Log.d("APK Download", "Version already downloading")
                 return
             }
+            cancel()
         }
 
-        when {
-            version.hasApkRef() -> {
-                val apkFile = ApkFileProvider.apkFile(applicationContext, version)
-                // Install apk if it's already downloaded
-                if (apkFile.exists() && apkFile.length() > 0 && !force) {
-                    installVersion(version, apkFile)
-                    return
-                }
-                // Make sure to delete the dst file
-                if (apkFile.exists()) {
-                    apkFile.delete()
-                }
-
-                version.updateStatus(DOWNLOADING, progress = 0)
-                versionAdapter?.updateVersionProgress(version)
-
-                val tmpFile = ApkFileProvider.tempApkFile(applicationContext, version)
-
-                Firebase.storage.getReference(version.apkRef!!).getFile(tmpFile)
-                        .addOnProgressListener(DownloadProgressListener(this, version))
-                        .addOnCompleteListener(DownloadCompleteListener(this, version, primary = true))
-            }
-            version.hasApkUrl() -> {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(version.apkUrl))
-                if (intent.isSafe(this)) {
-                    version.updateStatus(OPENING)
-                    versionAdapter?.updateVersionProgress(version)
-                    val requestCode = create(VersionRequest.Action.OPEN, version)
-                    safeStartActivityForResult(intent, requestCode)
-                } else {
-                    Toast.makeText(this, R.string.versions_toast_application_open_error, LENGTH_SHORT).show()
-                }
-            }
-            else -> Log.e("APK Download", "No apk file to download")
+        val apkFile = ApkFileProvider.apkFile(applicationContext, version)
+        // If file is already available, execute continuation block
+        if (apkFile.exists() && apkFile.length() > 0 && !force) {
+            continuation?.invoke(version)
+            return
         }
+
+        // Make sure to delete the dst file
+        if (apkFile.exists()) {
+            apkFile.delete()
+        }
+
+        version.updateStatus(DOWNLOADING, progress = 0)
+        versionAdapter?.updateVersionProgress(version)
+
+        Firebase.storage.getReference(version.apkRef!!).getFile(ApkFileProvider.tempApkFile(applicationContext, version))
+                .addOnProgressListener(DownloadProgressListener(this, version))
+                .addOnCompleteListener(DownloadCompleteListener(this, version, primary = true, continuation = continuation))
+    }
+
+    private fun openVersion(version: Version): Boolean {
+        if (!version.hasApkUrl()) return false
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(version.apkUrl))
+        return if (intent.isSafe(this)) {
+            Firebase.logSelectedContent(application, version)
+            version.updateStatus(OPENING)
+            versionAdapter?.updateVersionProgress(version)
+            val requestCode = create(OPEN, version)
+            safeStartActivityForResult(intent, requestCode)
+        } else {
+            Toast.makeText(this, R.string.versions_toast_application_open_error, LENGTH_SHORT).show()
+            false
+        }
+    }
+
+    @SuppressLint("SetWorldReadable")
+    private fun installVersion(version: Version) {
+        if (!version.hasApkRef()) return
+        if (!version.apkFileAvailable) return
+        val apkFile = ApkFileProvider.apkFile(applicationContext, version)
+        if (!apkFile.exists() || apkFile.length() <= 0) {
+            return
+        }
+        version.updateStatus(INSTALLING)
+        versionAdapter?.updateVersionProgress(version)
+        val install = Intent().apply {
+            action = Intent.ACTION_INSTALL_PACKAGE
+            data = if (Utils.isAtLeast(N)) {
+                ApkFileProvider.uri(apkFile, applicationContext)
+            } else {
+                Uri.fromFile(apkFile.apply { setReadable(true, false) })
+            }
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true)
+            putExtra(Intent.EXTRA_RETURN_RESULT, true)
+            @Suppress("DEPRECATION")
+            putExtra(Intent.EXTRA_ALLOW_REPLACE, true)
+            putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME, applicationInfo.packageName)
+        }
+        val requestCode = VersionRequest.create(INSTALL, version)
+        safeStartActivityForResult(install, requestCode)
+    }
+
+    private fun shareVersion(version: Version) {
+        if (!version.hasApkRef()) return
+        if (!version.apkFileAvailable) return
+        val apkFile = ApkFileProvider.apkFile(applicationContext, version)
+        if (!apkFile.exists() || apkFile.length() <= 0) {
+            return
+        }
+        safeStartActivity(ApkFileProvider.shareIntent(this, application ?: return, version))
+    }
+
+    private fun deleteVersion(version: Version) {
+        if (!version.hasApkRef()) return
+        version.getActiveDownloadTask()?.cancel()
+        ApkFileProvider.apkFile(applicationContext, version).delete()
+        ApkFileProvider.tempApkFile(applicationContext, version).delete()
+        refreshVersionProperties(version)
     }
 
     class DownloadProgressListener(
@@ -576,13 +650,15 @@ class VersionsActivity : AppCompatActivity() {
     class DownloadCompleteListener(
             activity: VersionsActivity,
             val version: Version,
-            private val primary: Boolean
+            val primary: Boolean = false,
+            private val continuation: ((version: Version) -> Unit)? = null
     ) : OnCompleteListener<FileDownloadTask.TaskSnapshot> {
 
         private val appContext: Context = activity.applicationContext
         private val activityReference: WeakReference<VersionsActivity> = WeakReference(activity)
 
         override fun onComplete(task: Task<FileDownloadTask.TaskSnapshot>) {
+            version.updateStatus(DEFAULT)
             if (task.isSuccessful) {
                 val tmpFile = ApkFileProvider.tempApkFile(appContext, version)
                 val apkFile = ApkFileProvider.apkFile(appContext, version)
@@ -597,14 +673,15 @@ class VersionsActivity : AppCompatActivity() {
                 }
                 activityReference.get()?.let {
                     version.apkFileAvailable = true
+                    // Block should be run only when Activity is at least in STARTED state
                     if (it.lifecycle.currentState.isAtLeast(STARTED)) {
-                        it.installVersion(version, apkFile)
+                        it.versionAdapter?.updateVersionProgress(version)
+                        continuation?.invoke(version)
                     }
                 }
             } else {
                 val exception = task.exception
                 Log.e("DownloadComplete", "onFailure($exception) code:${exception?.message} cancelled:${task.isCanceled}")
-                version.updateStatus(DEFAULT)
                 activityReference.get()?.let {
                     it.versionAdapter?.updateVersionProgress(version)
                     if (exception != null) {
@@ -616,36 +693,17 @@ class VersionsActivity : AppCompatActivity() {
 
     }
 
-    @SuppressLint("SetWorldReadable")
-    private fun installVersion(version: Version, file: File) {
-        version.updateStatus(INSTALLING)
-        versionAdapter?.updateVersionProgress(version)
-        val install = Intent().apply {
-            action = Intent.ACTION_INSTALL_PACKAGE
-            data = if (Utils.isAtLeast(N)) {
-                ApkFileProvider.uri(file, applicationContext)
-            } else {
-                Uri.fromFile(file.apply { setReadable(true, false) })
-            }
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true)
-            putExtra(Intent.EXTRA_RETURN_RESULT, true)
-            @Suppress("DEPRECATION")
-            putExtra(Intent.EXTRA_ALLOW_REPLACE, true)
-            putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME, applicationInfo.packageName)
-        }
-        val requestCode = VersionRequest.create(VersionRequest.Action.INSTALL, version)
-        safeStartActivityForResult(install, requestCode)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        VersionRequest.extract(requestCode)?.let {
-            val version = it.version
-            when (it.action) {
-                VersionRequest.Action.UNINSTALL -> if (!isApplicationInstalled(application)) updateApplication(application)
-                VersionRequest.Action.INSTALL -> {
+        VersionRequest.extract(requestCode)?.let { request ->
+            val version = request.version
+            when (request.action) {
+                UNINSTALL -> if (!isApplicationInstalled(application)) updateApplication(application)
+                INSTALL -> {
                     when {
-                        resultCode == RESULT_OK -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_installed), Color.GREEN), LENGTH_LONG).show()
+                        resultCode == RESULT_OK -> {
+                            version?.let { Firebase.logSelectedContent(application, it) }
+                            Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_installed), Color.GREEN), LENGTH_LONG).show()
+                        }
                         resultCode == RESULT_CANCELED || !isApplicationInstalled(application) -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_not_installed), Color.RED), LENGTH_LONG).show()
                         else -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_not_installed_uninstall_first), Color.RED), LENGTH_LONG).show()
                     }
@@ -654,7 +712,7 @@ class VersionsActivity : AppCompatActivity() {
                         versionAdapter?.updateVersionProgress(version)
                     }
                 }
-                VersionRequest.Action.OPEN -> {
+                OPEN -> {
                     if (version?.status == OPENING) {
                         version.updateStatus(DEFAULT)
                         versionAdapter?.updateVersionProgress(version)
@@ -700,7 +758,7 @@ class VersionsActivity : AppCompatActivity() {
                 else (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it)
             }
             R.id.menu_versions_info -> application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
-            R.id.menu_versions_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(VersionRequest.Action.UNINSTALL)) }
+            R.id.menu_versions_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(UNINSTALL)) }
             R.id.menu_versions_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
             R.id.menu_versions_notification_settings -> application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
             R.id.menu_versions_create_shortcut -> application?.let { shortcuts.request(it) }
