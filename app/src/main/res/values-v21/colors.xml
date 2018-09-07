@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Using attribute resources in xml drawables is not supported on API < 21  -->
+    <color name="listDividerColor">?attr/colorControlHighlight</color>
+    <color name="applicationIconPlaceholderColor">?attr/colorPrimary</color>
+
+</resources>

@@ -6,4 +6,7 @@
     <color name="colorPrimaryDark">#ffe0e0e0</color>
     <color name="colorBackground">@color/background_material_light</color>
 
+    <color name="listDividerColor">@color/ripple_material_light</color>
+    <color name="applicationIconPlaceholderColor">@color/colorPrimary</color>
+
 </resources>
