@@ -4,9 +4,9 @@
     <style name="Theme.AppStore" parent="Base.V27.Theme.AppStore" />
 
     <style name="Base.V27.Theme.AppStore" parent="Base.V23.Theme.AppStore">
-        <item name="android:navigationBarColor">?colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
         <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:navigationBarDividerColor">?colorControlHighlight</item>
+        <item name="android:navigationBarDividerColor">?attr/colorControlHighlight</item>
     </style>
 
 </resources>
