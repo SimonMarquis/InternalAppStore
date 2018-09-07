@@ -752,7 +752,7 @@ class VersionsActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> supportFinishAfterTransition()
+            android.R.id.home -> if (isTaskRoot) return super.onOptionsItemSelected(item) else supportFinishAfterTransition()
             R.id.menu_versions_stop -> application?.packageName?.let {
                 if (it == packageName) Process.killProcess(Process.myPid())
                 else (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it)

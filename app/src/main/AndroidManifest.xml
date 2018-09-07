@@ -24,6 +24,7 @@
 
         <activity
             android:name=".ApplicationsActivity"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.AppStore.Preview">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,8 +36,10 @@
 
         <activity
             android:name=".VersionsActivity"
+            android:autoRemoveFromRecents="true"
             android:exported="true"
             android:parentActivityName=".ApplicationsActivity"
+            android:taskAffinity=".Versions"
             android:theme="@style/Theme.AppStore.Preview">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
