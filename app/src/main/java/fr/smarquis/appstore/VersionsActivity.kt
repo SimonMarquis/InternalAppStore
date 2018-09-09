@@ -353,7 +353,7 @@ class VersionsActivity : AppCompatActivity() {
 
         links = findViewById(R.id.horizontalScrollView_header)
         fab = findViewById(R.id.floatingActionButton)
-        fab.setOnClickListener { _ -> application.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it)) } }
+        fab.setOnClickListener { startApplication() }
     }
 
     @TargetApi(LOLLIPOP)
@@ -533,6 +533,37 @@ class VersionsActivity : AppCompatActivity() {
         } else {
             fab.hide(fabVisibilityChangedListener)
         }
+    }
+
+    private fun startApplication() {
+        application?.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it)) }
+    }
+
+    private fun openApplicationInfo() {
+        application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
+    }
+
+    private fun openApplicationOnMarket() {
+        application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
+    }
+
+    private fun openApplicationNotificationSettings() {
+        application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
+    }
+
+    private fun createApplicationShortcut() {
+        application?.let { shortcuts.request(it) }
+    }
+
+    private fun killApplicationProcess() {
+        application?.packageName?.let {
+            if (it == packageName) Process.killProcess(Process.myPid())
+            else (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it)
+        }
+    }
+
+    private fun uninstallApplication() {
+        application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(UNINSTALL)) }
     }
 
     private fun downloadVersion(version: Version, force: Boolean = false, continuation: ((version: Version) -> Unit)? = null) {
@@ -760,15 +791,12 @@ class VersionsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> if (isTaskRoot) return super.onOptionsItemSelected(item) else supportFinishAfterTransition()
-            R.id.menu_versions_stop -> application?.packageName?.let {
-                if (it == packageName) Process.killProcess(Process.myPid())
-                else (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(it)
-            }
-            R.id.menu_versions_info -> application?.packageName?.let { safeStartActivity(Utils.getDetailsIntent(it)) }
-            R.id.menu_versions_uninstall -> application?.packageName?.let { safeStartActivityForResult(Utils.getDeleteIntent(it), create(UNINSTALL)) }
-            R.id.menu_versions_store -> application?.packageName?.let { safeStartActivity(Utils.getMarketIntent(it)) }
-            R.id.menu_versions_notification_settings -> application?.let { safeStartActivity(Utils.notificationSettingsIntent(this, Notifications.newVersionsNotificationChannelId(this, it))) }
-            R.id.menu_versions_create_shortcut -> application?.let { shortcuts.request(it) }
+            R.id.menu_versions_stop -> killApplicationProcess()
+            R.id.menu_versions_info -> openApplicationInfo()
+            R.id.menu_versions_uninstall -> uninstallApplication()
+            R.id.menu_versions_store -> openApplicationOnMarket()
+            R.id.menu_versions_notification_settings -> openApplicationNotificationSettings()
+            R.id.menu_versions_create_shortcut -> createApplicationShortcut()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
