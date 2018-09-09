@@ -7,14 +7,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.N
 import android.os.Bundle
 import android.os.Process
-import android.text.SpannedString
 import android.transition.Transition
 import android.util.Log
 import android.view.*
@@ -38,10 +36,10 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
-import androidx.core.text.color
 import androidx.core.text.italic
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
+import androidx.core.view.setMargins
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.text.EmojiCompat.LOAD_STATE_SUCCEEDED
@@ -55,6 +53,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -740,10 +739,10 @@ class VersionsActivity : AppCompatActivity() {
                     when {
                         resultCode == RESULT_OK -> {
                             version?.let { Firebase.logSelectedContent(application, it) }
-                            Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_installed), Color.GREEN), LENGTH_LONG).show()
+                            Snackbar.make(constraintLayout, R.string.versions_toast_application_installed, Snackbar.LENGTH_LONG).setAction(R.string.versions_toast_application_installed_action) { startApplication() }.customize().show()
                         }
-                        resultCode == RESULT_CANCELED || !isApplicationInstalled(application) -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_not_installed), Color.RED), LENGTH_LONG).show()
-                        else -> Toast.makeText(this, spannedBoldString(getString(R.string.versions_toast_application_not_installed_uninstall_first), Color.RED), LENGTH_LONG).show()
+                        resultCode == RESULT_CANCELED || !isApplicationInstalled(application) -> Snackbar.make(constraintLayout, R.string.versions_toast_application_not_installed, Snackbar.LENGTH_LONG).customize().show()
+                        else -> Snackbar.make(constraintLayout, R.string.versions_toast_application_not_installed_uninstall_first_action, Snackbar.LENGTH_LONG).setAction(R.string.versions_menu_uninstall) { uninstallApplication() }.customize().show()
                     }
                     if (version?.status == INSTALLING) {
                         version.updateStatus(DEFAULT)
@@ -760,14 +759,15 @@ class VersionsActivity : AppCompatActivity() {
         } ?: super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun spannedBoldString(string: String, color: Int): SpannedString {
-        return buildSpannedString {
-            bold {
-                color(color) {
-                    append(string)
-                }
-            }
+    @SuppressLint("PrivateResource")
+    fun Snackbar.customize(): Snackbar {
+        with(view) {
+            ViewCompat.setElevation(this, context.resources.getDimension(R.dimen.design_snackbar_elevation))
+            (layoutParams as? ViewGroup.MarginLayoutParams)?.setMargins(context.resources.getDimensionPixelSize(R.dimen.mtrl_snackbar_margin))
+            setBackgroundResource(R.drawable.mtrl_snackbar_background)
+            findViewById<TextView>(R.id.snackbar_text)?.maxLines = 2
         }
+        return this
     }
 
     private fun isApplicationInstalled(application: Application?): Boolean {

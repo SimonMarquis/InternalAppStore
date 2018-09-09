@@ -27,8 +27,10 @@
     <string name="versions_header_installed_info">Installed\n%1$s (%2$d) • %3$s</string>
 
     <string name="versions_toast_application_installed">Application installed!</string>
+    <string name="versions_toast_application_installed_action">Start</string>
     <string name="versions_toast_application_not_installed">Application not installed!</string>
     <string name="versions_toast_application_not_installed_uninstall_first">Application not installed!\nYou might need to uninstall it first.</string>
+    <string name="versions_toast_application_not_installed_uninstall_first_action">@string/versions_menu_uninstall</string>
     <string name="versions_toast_application_removed">Application removed</string>
     <string name="versions_toast_application_open_error">Unable to open this version</string>
     <string name="versions_toast_link_to_clipboard">Link copied to clipboard</string>
