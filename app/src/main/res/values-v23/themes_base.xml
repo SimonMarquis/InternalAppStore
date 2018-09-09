@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.AppStore" parent="Base.V23.Theme.AppStore" />
-
     <style name="Base.V23.Theme.AppStore" parent="Base.V21.Theme.AppStore">
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <style name="Base.Theme.AppStore" parent="Base.V23.Theme.AppStore" />
 
 </resources>

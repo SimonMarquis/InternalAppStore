@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.AppStore.Preview" parent="Base.V26.Theme.AppStore.Preview" />
-
-    <style name="Base.V26.Theme.AppStore.Preview" parent="Base.Theme.AppStore.Preview">
+    <style name="Base.V26.Theme.AppStore" parent="Base.V23.Theme.AppStore">
         <item name="android:windowSplashscreenContent">@drawable/preview_window_background</item>
     </style>
+
+    <style name="Base.Theme.AppStore" parent="Base.V26.Theme.AppStore" />
 
 </resources>

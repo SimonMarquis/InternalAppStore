@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.V21.Theme.AppStore" parent="Base.V1.Theme.AppStore">
+        <item name="android:colorEdgeEffect">@color/colorAccent</item>
+    </style>
+
+    <style name="Base.Theme.AppStore" parent="Base.V21.Theme.AppStore" />
+
+</resources>

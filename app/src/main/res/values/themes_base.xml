@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.V1.Theme.AppStore" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppStore.ActionBarTheme</item>
+        <item name="actionBarStyle">@style/Widget.AppStore.ActionBarStyle</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:listDivider">@drawable/list_divider</item>
+    </style>
+
+    <style name="Base.Theme.AppStore" parent="Base.V1.Theme.AppStore" />
+
+    <style name="Base.V1.Theme.AppStore.Preview" parent="Theme.AppStore">
+        <item name="android:windowBackground">@drawable/preview_window_background</item>
+    </style>
+
+    <style name="Base.Theme.AppStore.Preview" parent="Base.V1.Theme.AppStore.Preview" />
+
+</resources>
