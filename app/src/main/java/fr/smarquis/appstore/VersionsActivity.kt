@@ -177,11 +177,18 @@ class VersionsActivity : AppCompatActivity() {
             }
 
             private fun updatePadding(visible: Boolean) {
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val firstCompletelyVisibleItemPositionBefore = layoutManager.findFirstCompletelyVisibleItemPosition()
                 if (ViewCompat.isLaidOut(constraintLayout)) TransitionManager.beginDelayedTransition(constraintLayout as ViewGroup)
                 val recyclerViewTopPadding = if (visible) baselineGrid else 0
                 recyclerView.setPadding(0, recyclerViewTopPadding, 0, 0)
                 val linksRightPadding = if (visible) fabSizeMini else 0
                 links.setPadding(0, 0, linksRightPadding, 0)
+                val firstCompletelyVisibleItemPositionAfter = layoutManager.findFirstCompletelyVisibleItemPosition()
+                // Force re-scroll to first completely visible item when padding is added
+                if (visible && firstCompletelyVisibleItemPositionBefore == 0 && firstCompletelyVisibleItemPositionAfter != firstCompletelyVisibleItemPositionBefore) {
+                    layoutManager.scrollToPosition(firstCompletelyVisibleItemPositionBefore)
+                }
             }
         }
     }
