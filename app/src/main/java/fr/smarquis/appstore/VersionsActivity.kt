@@ -284,28 +284,28 @@ class VersionsActivity : AppCompatActivity() {
 
                     override fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean {
                         return when {
-                            version.hasApkUrl() -> openVersion(version)
-                            version.hasApkRef() -> popupMenu(version, versionViewHolder)
+                            version.hasApkUrl() || version.hasApkRef() -> popupMenu(version, versionViewHolder)
                             else -> return false
                         }
                     }
 
                     private fun popupMenu(version: Version, versionViewHolder: VersionViewHolder): Boolean {
-                        val downloadTask = version.getActiveDownloadTask()
-                        val isDownloading = downloadTask?.isComplete == false
+                        val hasApkUrl = version.hasApkUrl()
+                        val hasApkRef = version.hasApkRef()
+                        val isDownloading = hasApkRef && version.getActiveDownloadTask()?.isComplete == false
                         PopupMenu(this@VersionsActivity, versionViewHolder.anchor, Gravity.END).apply {
                             menuInflater.inflate(R.menu.menu_version, menu)
-                            menu.findItem(R.id.menu_version_cancel).isVisible = isDownloading
-                            menu.findItem(R.id.menu_version_download).isVisible = !isDownloading && !version.apkFileAvailable
-                            menu.findItem(R.id.menu_version_install).isVisible = !isDownloading
-                            menu.findItem(R.id.menu_version_share).isVisible = !isDownloading
-                            menu.findItem(R.id.menu_version_delete).isVisible = !isDownloading && version.apkFileAvailable
+                            menu.findItem(R.id.menu_version_cancel).isVisible = hasApkRef && isDownloading
+                            menu.findItem(R.id.menu_version_download).isVisible = hasApkUrl || hasApkRef && !isDownloading && !version.apkFileAvailable
+                            menu.findItem(R.id.menu_version_install).isVisible = hasApkRef && !isDownloading
+                            menu.findItem(R.id.menu_version_share).isVisible = hasApkUrl || hasApkRef && !isDownloading
+                            menu.findItem(R.id.menu_version_delete).isVisible = hasApkRef && !isDownloading && version.apkFileAvailable
                             setOnMenuItemClickListener { item ->
                                 when (item.itemId) {
                                     R.id.menu_version_cancel -> version.getActiveDownloadTask()?.cancel()
-                                    R.id.menu_version_download -> downloadVersion(version, true)
+                                    R.id.menu_version_download -> if (hasApkUrl) openVersion(version) else downloadVersion(version, true)
                                     R.id.menu_version_install -> downloadVersion(version) { installVersion(it) }
-                                    R.id.menu_version_share -> downloadVersion(version) { shareVersion(it) }
+                                    R.id.menu_version_share -> if (hasApkUrl) shareVersion(version) else downloadVersion(version) { shareVersion(it) }
                                     R.id.menu_version_delete -> deleteVersion(version)
                                 }
                                 true
@@ -313,7 +313,7 @@ class VersionsActivity : AppCompatActivity() {
                             show()
                             // Dismiss popup if download completes
                             if (isDownloading) {
-                                downloadTask?.addOnCompleteListener(this@VersionsActivity) { dismiss() }
+                                version.getActiveDownloadTask()?.addOnCompleteListener(this@VersionsActivity) { dismiss() }
                             }
                         }
                         return true
@@ -641,13 +641,23 @@ class VersionsActivity : AppCompatActivity() {
     }
 
     private fun shareVersion(version: Version) {
-        if (!version.hasApkRef()) return
-        if (!version.apkFileAvailable) return
-        val apkFile = ApkFileProvider.apkFile(applicationContext, version)
-        if (!apkFile.exists() || apkFile.length() <= 0) {
-            return
+        when {
+            version.hasApkUrl() -> {
+                safeStartActivity(Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, "${application?.name} ${version.name}")
+                    putExtra(Intent.EXTRA_TEXT, version.apkUrl)
+                })
+                return
+            }
+            version.hasApkRef() && version.apkFileAvailable -> {
+                val apkFile = ApkFileProvider.apkFile(applicationContext, version)
+                if (!apkFile.exists() || apkFile.length() <= 0) {
+                    return
+                }
+                safeStartActivity(ApkFileProvider.shareIntent(this, application ?: return, version))
+            }
         }
-        safeStartActivity(ApkFileProvider.shareIntent(this, application ?: return, version))
     }
 
     private fun deleteVersion(version: Version) {
