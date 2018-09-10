@@ -752,7 +752,7 @@ class VersionsActivity : AppCompatActivity() {
                             Snackbar.make(constraintLayout, R.string.versions_toast_application_installed, Snackbar.LENGTH_LONG).setAction(R.string.versions_toast_application_installed_action) { startApplication() }.customize().show()
                         }
                         resultCode == RESULT_CANCELED || !isApplicationInstalled(application) -> Snackbar.make(constraintLayout, R.string.versions_toast_application_not_installed, Snackbar.LENGTH_LONG).customize().show()
-                        else -> Snackbar.make(constraintLayout, R.string.versions_toast_application_not_installed_uninstall_first_action, Snackbar.LENGTH_LONG).setAction(R.string.versions_menu_uninstall) { uninstallApplication() }.customize().show()
+                        else -> Snackbar.make(constraintLayout, R.string.versions_toast_application_not_installed_uninstall_first, Snackbar.LENGTH_LONG).setAction(R.string.versions_toast_application_not_installed_uninstall_first_action) { uninstallApplication() }.customize().show()
                     }
                     if (version?.status == INSTALLING) {
                         version.updateStatus(DEFAULT)
