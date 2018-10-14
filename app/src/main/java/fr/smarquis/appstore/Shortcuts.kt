@@ -134,7 +134,7 @@ class Shortcuts private constructor(_context: Context) {
         with(manager()) {
             loadImage(application) { bitmap ->
                 val id = DYNAMIC.idOf(application)
-                val shortcuts = dynamicShortcuts.filterNotNull().sortedBy { it.rank }
+                val shortcuts = dynamicShortcuts.asSequence().filterNotNull().sortedBy { it.rank }.toList()
                 val found = shortcuts.find { it.id == id }
                 val shortcut = shortcutInfo(DYNAMIC, application, bitmap, found?.rank?.dec())
                 if (found == null) {
