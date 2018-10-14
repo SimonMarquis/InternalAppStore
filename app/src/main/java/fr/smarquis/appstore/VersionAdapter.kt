@@ -12,7 +12,6 @@ import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import fr.smarquis.appstore.Store.Config.SCREENSHOT_STATUS
 
 class VersionAdapter(
         query: DatabaseReference,
@@ -103,7 +102,7 @@ class VersionAdapter(
     }
 
     override fun onBindViewHolder(holder: VersionViewHolder, position: Int, version: Version) {
-        SCREENSHOT_STATUS?.let {
+        DEBUG_SCREENSHOT_STATUS?.let {
             if (position == 0) {
                 version.status = it.first
                 version.progress = it.second

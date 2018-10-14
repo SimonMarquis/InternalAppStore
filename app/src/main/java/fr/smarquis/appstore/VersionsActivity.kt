@@ -347,7 +347,7 @@ class VersionsActivity : AppCompatActivity() {
             adapter = versionAdapter
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, orientation))
-            isScrollbarFadingEnabled = Store.SCREENSHOT_STATUS == null
+            isScrollbarFadingEnabled = DEBUG_SCREENSHOT_STATUS == null
         }
 
         links = findViewById(R.id.horizontalScrollView_header)
