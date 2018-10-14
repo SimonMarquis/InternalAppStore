@@ -14,7 +14,7 @@
 </details>
 
 ## 1.2.0
-> 2018.09.07
+> 2018.10.14
 
 - 🥧 Android P compatibility
 - 🚀 Migrate to AndroidX
