@@ -80,16 +80,16 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
 
 #### Configure
 
-- Replace `applicationId` with your own unique id in [app/build.gradle](app/build.gradle#L17)
+- Replace `applicationId` with your own unique id in [app/build.gradle](app/build.gradle#L15)
 - Create a Firebase project https://console.firebase.google.com
 - Select `Add Firebase to your Android app` and fill in the form
 - Download the config file `google-services.json` and move it to your [Android app module root directory](app/)
 - In the Firebase Authentication page, enable sign-in methods, then create your first admin user
 - In the Firebase project settings, select `ADD APP` and `Add Firebase to your web app`
-- Copy and replace the config values in [index.js](firebase/hosting/index.js#L6-L12)
+- When using Firebase Hosting and the CLI, [Web SDK auto-configuration](https://firebase.googleblog.com/2017/04/easier-configuration-for-firebase-on-web.html) is [enabled by default](https://github.com/SimonMarquis/InternalAppStore/commit/2b94dd0e7e1614a06a3126f57e2fb69cfeeab257)
 - Verify the configuration of each module
-  + Android: [Store.kt](app/src/main/java/fr/smarquis/appstore/Store.kt#L11-L20)
-  + Web: [index.js](firebase/hosting/index.js#L13-L25)
+  + Android: [Store.kt](app/src/main/java/fr/smarquis/appstore/Store.kt#L21-L32)
+  + Web: [index.js](firebase/hosting/index.js#L5-L23)
   + Firebase Database: use your own domain
     * [database-private.rules.json (read access)](firebase/database/database-private.rules.json#L19-L20)
     <details>
