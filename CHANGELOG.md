@@ -1,10 +1,10 @@
 # Changelog
 
-
 <details><summary>Releases</summary>
 
 <!-- MarkdownTOC -->
 
+- [1.2.0](#120)
 - [1.1.0](#110)
 - [1.0.2](#102)
 - [1.0.1](#101)
@@ -12,6 +12,21 @@
 
 <!-- /MarkdownTOC -->
 </details>
+
+## 1.2.0
+> 2018.09.07
+
+- 🥧 Android P compatibility
+- 🚀 Migrate to AndroidX
+- 📦 Update dependencies
+- ✨ Add subtle animations
+- 📋 Show status, file size and apk location
+- 🔔 High importance notification for self update
+- 🔵 Floating Action Button to start apps
+- 📡 Improve Firebase Analytics reports
+- 🌃 Follow system Night Mode
+- ⚡ Pinned & dynamic shortcuts
+- 📤 More granular controls on apk files with long press
 
 ## 1.1.0
 > 2018.05.31
