@@ -25,7 +25,15 @@ class ApplicationAdapter(
     }
 
     interface Callback {
+        fun showEmptyState()
         fun onItemClicked(application: Application, applicationViewHolder: ApplicationViewHolder)
+    }
+
+    override fun onDataChanged() {
+        super.onDataChanged()
+        if (itemCount == 0) {
+            callback.showEmptyState()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder {

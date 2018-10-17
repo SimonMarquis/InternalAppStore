@@ -107,6 +107,10 @@ class ApplicationsActivity : AppCompatActivity() {
                 query = Firebase.database.applications().orderByChild("name"),
                 glide = Glide.with(this),
                 callback = object : ApplicationAdapter.Callback {
+                    override fun showEmptyState() {
+                        contentLoadingProgressBar.hide()
+                    }
+
                     override fun onItemClicked(application: Application, applicationViewHolder: ApplicationViewHolder) {
                         Firebase.analytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, Bundle().apply {
                             putString(FirebaseAnalytics.Param.ITEM_ID, application.key)

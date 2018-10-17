@@ -271,6 +271,11 @@ class VersionsActivity : AppCompatActivity() {
         versionAdapter = VersionAdapter(
                 query = Firebase.database.versions(application.key.orEmpty()),
                 callback = object : VersionAdapter.Callback {
+
+                    override fun showEmptyState() {
+                        contentLoadingProgressBar.hide()
+                    }
+
                     override fun onItemChanged(version: Version) {
                         refreshVersionProperties(version)
                     }

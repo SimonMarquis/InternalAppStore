@@ -26,6 +26,7 @@ class VersionAdapter(
     }
 
     interface Callback {
+        fun showEmptyState()
         fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder)
         fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean
         fun onItemChanged(version: Version)
@@ -83,6 +84,13 @@ class VersionAdapter(
                     callback.onItemChanged(version)
                 }
             }
+        }
+    }
+
+    override fun onDataChanged() {
+        super.onDataChanged()
+        if (itemCount == 0) {
+            callback.showEmptyState()
         }
     }
 
