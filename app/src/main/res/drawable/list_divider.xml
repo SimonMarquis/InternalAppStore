@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="@color/listDividerColor" />
     <size
-        android:width=".5dp"
-        android:height=".5dp" />
+        android:width="@dimen/list_divider_height"
+        android:height="@dimen/list_divider_height" />
 </shape>

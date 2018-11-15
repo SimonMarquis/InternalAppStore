@@ -6,4 +6,6 @@
 
     <dimen name="activity_responsive_width">@dimen/match_parent</dimen>
 
+    <dimen name="list_divider_height">0.5dp</dimen>
+
 </resources>
