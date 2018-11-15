@@ -199,7 +199,7 @@ class ApplicationsActivity : AppCompatActivity() {
                                         return
                                     }
                                     if (reloadUser) {
-                                        currentUser.getIdToken(true).addOnSuccessListener(this@ApplicationsActivity) { _ ->
+                                        currentUser.getIdToken(true).addOnSuccessListener(this@ApplicationsActivity) {
                                             currentUser.reload().addOnSuccessListener(this@ApplicationsActivity) { checkStoreAccess() }
                                         }
                                     } else {
@@ -233,7 +233,7 @@ class ApplicationsActivity : AppCompatActivity() {
 
     private fun signInAnonymously() {
         Firebase.auth.signInAnonymously()
-                .addOnSuccessListener(this) { _ -> Log.d("Store", "signInAnonymously:SUCCESS").also { checkStoreAccess() } }
+                .addOnSuccessListener(this) { Log.d("Store", "signInAnonymously:SUCCESS").also { checkStoreAccess() } }
                 .addOnFailureListener(this) { exception -> Log.e("Store", "signInAnonymously:FAILURE", exception) }
     }
 
@@ -285,7 +285,7 @@ class ApplicationsActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_applications_refresh -> {
-                Firebase.auth.currentUser?.getIdToken(true)?.addOnSuccessListener(this) { _ ->
+                Firebase.auth.currentUser?.getIdToken(true)?.addOnSuccessListener(this) {
                     Firebase.auth.currentUser?.reload()?.addOnSuccessListener(this) { checkStoreAccess() }
                 }
                 true

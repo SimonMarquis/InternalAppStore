@@ -407,9 +407,9 @@ class VersionsActivity : AppCompatActivity() {
                         interpolator = if (activityTransitionFlag) DecelerateInterpolator(2F) else AccelerateInterpolator(2F)
                         addListener(
                                 onStart = { header.visibility = VISIBLE },
-                                onEnd = { _ ->
+                                onEnd = {
                                     isCircularRevealPending = false
-                                    application?.let { updateFab(it) }
+                                    application?.let { app -> updateFab(app) }
                                 })
                     }.start()
                     if (activityTransitionFlag) {
