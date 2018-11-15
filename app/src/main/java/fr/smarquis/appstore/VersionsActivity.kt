@@ -214,10 +214,22 @@ class VersionsActivity : AppCompatActivity() {
         reportShortcutUsage = savedInstanceState == null
 
         setContentView(R.layout.activity_versions)
+        excludeTransitionTargets()
         initUi(application)
         initCircularReveal(savedInstanceState)
         registerListeners(application)
         updateApplication(application)
+    }
+
+    private fun excludeTransitionTargets() {
+        if (SDK_INT < LOLLIPOP) {
+            return
+        }
+        val transitions = with(window) { listOfNotNull(enterTransition, exitTransition, sharedElementEnterTransition, sharedElementExitTransition) }
+        transitions.forEach {
+            it.excludeTarget(android.R.id.statusBarBackground, true)
+            it.excludeTarget(android.R.id.navigationBarBackground, true)
+        }
     }
 
     override fun onStart() {
