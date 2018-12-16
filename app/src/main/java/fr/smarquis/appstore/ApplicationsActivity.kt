@@ -39,6 +39,8 @@ class ApplicationsActivity : AppCompatActivity() {
         const val REQUEST_CODE_MANUAL_SIGN_IN = 2
         const val REQUEST_CODE_NOTIFICATION_SETTINGS = 3
 
+        const val PREFERENCE_NAME_FAVORITES = "applications_favorites"
+
     }
 
     private var applicationAdapter: ApplicationAdapter? = null
@@ -80,6 +82,7 @@ class ApplicationsActivity : AppCompatActivity() {
                 lifecycleOwner = this,
                 query = Firebase.database.applications().orderByChild("name"),
                 glide = Glide.with(this),
+                preferences = getSharedPreferences(PREFERENCE_NAME_FAVORITES, Context.MODE_PRIVATE),
                 callback = object : ApplicationAdapter.Callback {
 
                     override fun onDataChanged() {
@@ -93,6 +96,12 @@ class ApplicationsActivity : AppCompatActivity() {
                         })
                         VersionsActivity.start(this@ApplicationsActivity, application, applicationViewHolder.sharedElement())
                     }
+
+                    override fun onItemLongClicked(application: Application, applicationViewHolder: ApplicationViewHolder): Boolean {
+                        applicationAdapter?.onFavoriteToggle(application)
+                        return true
+                    }
+
                 }
         )
 

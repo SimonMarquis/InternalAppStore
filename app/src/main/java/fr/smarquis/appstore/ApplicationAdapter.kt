@@ -1,5 +1,6 @@
 package fr.smarquis.appstore
 
+import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ class ApplicationAdapter(
         query: Query,
         private val callback: Callback,
         private val glide: RequestManager,
+        private val preferences: SharedPreferences
 
 ) : RecyclerView.Adapter<ApplicationViewHolder>(), LifecycleObserver, ChangeEventListener {
 
@@ -38,6 +40,7 @@ class ApplicationAdapter(
     interface Callback {
         fun onDataChanged()
         fun onItemClicked(application: Application, applicationViewHolder: ApplicationViewHolder)
+        fun onItemLongClicked(application: Application, applicationViewHolder: ApplicationViewHolder): Boolean
     }
 
     private val snapshots: ObservableSnapshotArray<Application> = FirebaseRecyclerOptions.Builder<Application>().setQuery(query) { Application.parse(it, preferences)!! }.build().snapshots
@@ -148,6 +151,14 @@ class ApplicationAdapter(
                 notifyItemChanged(i, PAYLOAD_PACKAGE_CHANGED)
                 return
             }
+        }
+    }
+
+    fun onFavoriteToggle(application: Application) {
+        application.apply {
+            val indexOf = displayList.indexOf(this)
+            applyFavoriteState(isFavorite.not(), preferences)
+            displayList.updateItemAt(indexOf, this)
         }
     }
 

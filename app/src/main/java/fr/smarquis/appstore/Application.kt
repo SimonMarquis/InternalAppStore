@@ -1,5 +1,6 @@
 package fr.smarquis.appstore
 
+import android.content.SharedPreferences
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
@@ -21,6 +22,8 @@ data class Application(
     val descriptionToHtml by lazy {
         Utils.parseHtml(description)
     }
+
+    var isFavorite = false
 
     private constructor(p: Parcel) : this(
             key = p.readString(),
@@ -57,13 +60,14 @@ data class Application(
             override fun newArray(size: Int) = arrayOfNulls<Application?>(size)
         }
 
-        private val SAFE_PARSER: (DataSnapshot) -> Application? = { snapshot ->
+        private val SAFE_PARSER: (DataSnapshot, preferences: SharedPreferences?) -> Application? = { snapshot, preferences ->
             snapshot.getValue(Application::class.java)?.apply {
                 key = snapshot.key
+                preferences?.let { fetchFavoriteState(it) }
             }
         }
 
-        fun parse(dataSnapshot: DataSnapshot) = SAFE_PARSER(dataSnapshot)
+        fun parse(dataSnapshot: DataSnapshot, preferences: SharedPreferences? = null) = SAFE_PARSER(dataSnapshot, preferences)
 
     }
 

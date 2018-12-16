@@ -6,39 +6,50 @@
     android:layout_height="@dimen/material_baseline_grid_7.5x"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/material_baseline_grid_2x"
-    android:paddingRight="@dimen/material_baseline_grid_2x">
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/imageView_application_icon"
         android:layout_width="@dimen/material_baseline_grid_5x"
         android:layout_height="@dimen/material_baseline_grid_5x"
+        android:layout_marginStart="@dimen/material_baseline_grid_2x"
+        android:layout_marginLeft="@dimen/material_baseline_grid_2x"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textView_application_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 
+    <ImageView
+        android:id="@+id/imageView_application_favorite"
+        android:layout_width="@dimen/material_baseline_grid_1.5x"
+        android:layout_height="@dimen/material_baseline_grid_1.5x"
+        android:layout_marginStart="@dimen/material_baseline_grid_2x"
+        android:layout_marginLeft="@dimen/material_baseline_grid_2x"
+        android:src="@drawable/ic_stars_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_application_title"
+        app:layout_constraintStart_toEndOf="@+id/imageView_application_icon"
+        app:layout_constraintTop_toTopOf="@+id/textView_application_title"
+        tools:ignore="ContentDescription" />
+
     <fr.smarquis.appstore.EmojiTextView
         android:id="@+id/textView_application_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/material_baseline_grid_2x"
-        android:layout_marginLeft="@dimen/material_baseline_grid_2x"
+        android:layout_marginStart="@dimen/material_baseline_grid_0.5x"
+        android:layout_marginLeft="@dimen/material_baseline_grid_0.5x"
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/textView_application_installed"
-        app:layout_constraintStart_toEndOf="@+id/imageView_application_icon"
+        app:layout_constraintStart_toEndOf="@+id/imageView_application_favorite"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginLeft="@dimen/material_baseline_grid_2x"
+        app:layout_goneMarginStart="@dimen/material_baseline_grid_2x"
         tools:text="@tools:sample/full_names" />
 
     <TextView

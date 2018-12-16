@@ -2,6 +2,7 @@ package fr.smarquis.appstore
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.RequestManager
@@ -102,5 +103,14 @@ fun Application.loadImageInto(imageView: ImageView, glide: RequestManager) {
 }
 
 fun Application.isMyself(context: Context) = context.packageName == packageName
+
+fun Application.fetchFavoriteState(sharedPreferences: SharedPreferences) {
+    isFavorite = sharedPreferences.getBoolean(key, false)
+}
+
+fun Application.applyFavoriteState(favorite: Boolean, sharedPreferences: SharedPreferences) {
+    isFavorite = favorite
+    sharedPreferences.edit().putBoolean(key, favorite).apply()
+}
 
 //endregion
