@@ -28,13 +28,14 @@ class VersionAdapter(
     companion object {
 
         val PAYLOAD_PROGRESS_CHANGED = Any()
+
     }
 
     interface Callback {
         fun onDataChanged()
         fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder)
         fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean
-        fun onItemChanged(version: Version)
+        fun onChildChanged(type: ChangeEventType, version: Version)
     }
 
     private val snapshots: ObservableSnapshotArray<Version> = FirebaseRecyclerOptions.Builder<Version>().setQuery(query) { Version.parse(it)!! }.build().snapshots
@@ -92,7 +93,7 @@ class VersionAdapter(
                 version.progress = it.second
             }
         }
-        holder.bind(version)
+        holder.bind(version, filter)
         if (version.key == highlightVersionKey) {
             highlightVersionKey = null
             Utils.highlight(holder)
@@ -122,21 +123,32 @@ class VersionAdapter(
 
     override fun onChildChanged(type: ChangeEventType, snapshot: DataSnapshot, newIndex: Int, oldIndex: Int) {
         val version = snapshots[newIndex]
+        val matches = version.filter(filter)
         when (type) {
             ChangeEventType.ADDED -> {
                 backupList.add(newIndex, version)
-                displayList.add(version)
+                if (matches) {
+                    displayList.add(version)
+                }
             }
             ChangeEventType.CHANGED -> {
                 val removedVersion = backupList.removeAt(newIndex)
                 backupList.add(newIndex, version)
                 val oldDisplayIndex = displayList.indexOf(removedVersion)
-                displayList.updateItemAt(oldDisplayIndex, version)
+                if (matches) {
+                    displayList.updateItemAt(oldDisplayIndex, version)
+                } else {
+                    displayList.removeItemAt(oldDisplayIndex)
+                }
             }
             ChangeEventType.MOVED -> {
                 val removedVersion = backupList.removeAt(oldIndex)
                 backupList.add(newIndex, version)
-                displayList.add(version)
+                if (matches) {
+                    displayList.add(version)
+                } else {
+                    displayList.remove(removedVersion)
+                }
             }
             ChangeEventType.REMOVED -> {
                 backupList.removeAt(newIndex)
@@ -144,6 +156,7 @@ class VersionAdapter(
             }
             else -> throw IllegalStateException("Incomplete case statement")
         }
+        callback.onChildChanged(type, version)
     }
 
     override fun onError(e: DatabaseError) {
@@ -169,6 +182,33 @@ class VersionAdapter(
             Log.e("VersionAdapter", "Version not found in the list!")
             // Note: We could retry and search the whole list for the same version key
         }
+    }
+
+    private var filter: String? = null
+
+    fun filter(): String? = filter
+
+    fun filter(value: String?) {
+        val search = if (value.isNullOrBlank()) null else value
+        if (filter == search) {
+            return
+        }
+        filter = value
+        displayList.beginBatchedUpdates()
+        if (value.isNullOrBlank()) {
+            displayList.clear()
+            displayList.addAll(backupList)
+        } else {
+            for (version in backupList) {
+                if (version.filter(value)) {
+                    displayList.add(version)
+                } else {
+                    displayList.remove(version)
+                }
+            }
+        }
+        displayList.endBatchedUpdates()
+        notifyDataSetChanged()
     }
 
 }

@@ -65,8 +65,8 @@ class ApplicationAdapter(
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    @Suppress("unused")
+    /*@OnLifecycleEvent(Lifecycle.Event.ON_CREATE)*/
+    /*startListening should be called from the host Activity once access has been granted*/
     fun startListening() {
         if (!snapshots.isListening(this)) {
             snapshots.addChangeEventListener(this)
@@ -91,7 +91,7 @@ class ApplicationAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder = ApplicationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_application, parent, false), callback, glide)
 
-    override fun onBindViewHolder(holder: ApplicationViewHolder, position: Int) = holder.bind(getItem(position), search)
+    override fun onBindViewHolder(holder: ApplicationViewHolder, position: Int) = holder.bind(getItem(position), filter)
 
     override fun onBindViewHolder(holder: ApplicationViewHolder, position: Int, payloads: List<Any>) {
         if (payloads.isEmpty()) {
@@ -115,21 +115,32 @@ class ApplicationAdapter(
 
     override fun onChildChanged(type: ChangeEventType, snapshot: DataSnapshot, newIndex: Int, oldIndex: Int) {
         val application = snapshots[newIndex]
+        val matches = application.filter(filter)
         when (type) {
             ADDED -> {
                 backupList.add(newIndex, application)
-                displayList.add(application)
+                if (matches) {
+                    displayList.add(application)
+                }
             }
             CHANGED -> {
                 val removedApplication = backupList.removeAt(newIndex)
                 backupList.add(newIndex, application)
                 val oldDisplayIndex = displayList.indexOf(removedApplication)
-                displayList.updateItemAt(oldDisplayIndex, application)
+                if (matches) {
+                    displayList.updateItemAt(oldDisplayIndex, application)
+                } else {
+                    displayList.removeItemAt(oldDisplayIndex)
+                }
             }
             MOVED -> {
                 val removedApplication = backupList.removeAt(oldIndex)
                 backupList.add(newIndex, application)
-                displayList.add(application)
+                if (matches) {
+                    displayList.add(application)
+                } else {
+                    displayList.remove(removedApplication)
+                }
             }
             REMOVED -> {
                 backupList.removeAt(newIndex)
@@ -160,6 +171,33 @@ class ApplicationAdapter(
             applyFavoriteState(isFavorite.not(), preferences)
             displayList.updateItemAt(indexOf, this)
         }
+    }
+
+    private var filter: String? = null
+
+    fun filter(): String? = filter
+
+    fun filter(value: String?) {
+        val search = if (value.isNullOrBlank()) null else value
+        if (filter == search) {
+            return
+        }
+        filter = search
+        displayList.beginBatchedUpdates()
+        if (search.isNullOrBlank()) {
+            displayList.clear()
+            displayList.addAll(backupList)
+        } else {
+            for (application in backupList) {
+                if (application.filter(search)) {
+                    displayList.add(application)
+                } else {
+                    displayList.remove(application)
+                }
+            }
+        }
+        displayList.endBatchedUpdates()
+        notifyDataSetChanged()
     }
 
 }

@@ -15,7 +15,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import java.lang.Exception
 
 //region Firebase
 
@@ -35,6 +34,8 @@ fun Version.getActiveDownloadTask(): FileDownloadTask? {
     val ref = apkRef ?: return null
     return Firebase.storage.getReference(ref).activeDownloadTasks.firstOrNull()?.takeIf { !it.isComplete }
 }
+
+fun Version.filter(constraint: String?) = Utils.matchesFilter(name, constraint) || Utils.matchesFilter(description, constraint)
 
 fun StorageReference.cancelActiveDownloadTasks() {
     for (activeDownloadTask in activeDownloadTasks) {
@@ -112,5 +113,7 @@ fun Application.applyFavoriteState(favorite: Boolean, sharedPreferences: SharedP
     isFavorite = favorite
     sharedPreferences.edit().putBoolean(key, favorite).apply()
 }
+
+fun Application.filter(constraint: String?) = Utils.matchesFilter(name, constraint)
 
 //endregion

@@ -29,9 +29,11 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.Px
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.core.text.bold
@@ -43,12 +45,15 @@ import androidx.core.view.setMargins
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.text.EmojiCompat.LOAD_STATE_SUCCEEDED
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
+import com.firebase.ui.common.ChangeEventType
+import com.firebase.ui.common.ChangeEventType.ADDED
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -67,7 +72,7 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
-class VersionsActivity : AppCompatActivity() {
+class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     companion object {
 
@@ -104,6 +109,7 @@ class VersionsActivity : AppCompatActivity() {
     private lateinit var contentLoadingProgressBar: ContentLoadingProgressBar
     private lateinit var links: HorizontalScrollView
     private lateinit var fab: FloatingActionButton
+    private lateinit var searchView: SearchView
 
     @delegate:Px
     @delegate:SuppressLint("PrivateResource")
@@ -132,15 +138,6 @@ class VersionsActivity : AppCompatActivity() {
                         reportShortcutUsage = false
                     }
                 }
-            }
-        }
-    }
-
-    private val dataObserver: RecyclerView.AdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            for (position in positionStart until positionStart + itemCount) {
-                refreshVersionProperties(versionAdapter?.getItem(position) ?: continue)
             }
         }
     }
@@ -234,7 +231,6 @@ class VersionsActivity : AppCompatActivity() {
         }
         firebaseApplicationDatabaseRef = Firebase.database.application(application.key.orEmpty())
         firebaseApplicationDatabaseRef?.addValueEventListener(applicationValueEventListener)
-        versionAdapter?.registerAdapterDataObserver(dataObserver)
         hasRegisteredListeners = true
     }
 
@@ -243,7 +239,6 @@ class VersionsActivity : AppCompatActivity() {
             return
         }
         firebaseApplicationDatabaseRef?.removeEventListener(applicationValueEventListener)
-        versionAdapter?.unregisterAdapterDataObserver(dataObserver)
         hasRegisteredListeners = false
     }
 
@@ -268,8 +263,10 @@ class VersionsActivity : AppCompatActivity() {
                         contentLoadingProgressBar.hide()
                     }
 
-                    override fun onItemChanged(version: Version) {
-                        refreshVersionProperties(version)
+                    override fun onChildChanged(type: ChangeEventType, version: Version) {
+                        if (type == ADDED) {
+                            refreshVersionProperties(version)
+                        }
                     }
 
                     override fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder) {
@@ -780,8 +777,30 @@ class VersionsActivity : AppCompatActivity() {
         return Utils.isApplicationInstalled(this, application?.packageName.orEmpty())
     }
 
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        versionAdapter?.filter(query)
+        searchView.clearFocus()
+        return true
+    }
+
+    override fun onQueryTextChange(query: String?): Boolean {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            versionAdapter?.filter(query)
+        }
+        return true
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_versions, menu)
+        val searchItem = menu.findItem(R.id.menu_versions_search)
+        searchView = searchItem.actionView as SearchView
+        searchView.findViewById<SearchView.SearchAutoComplete>(R.id.search_src_text).setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+        searchView.setOnQueryTextListener(this)
+        searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && searchView.query.isNullOrBlank()) {
+                searchItem.collapseActionView()
+            }
+        }
         return true
     }
 
@@ -791,6 +810,7 @@ class VersionsActivity : AppCompatActivity() {
         menu?.findItem(R.id.menu_versions_stop)?.isVisible = applicationInstalled
         menu?.findItem(R.id.menu_versions_uninstall)?.isVisible = applicationInstalled
         menu?.findItem(R.id.menu_versions_create_shortcut)?.isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
+        (menu?.findItem(R.id.menu_versions_search)?.actionView as SearchView).setQuery(versionAdapter?.filter(), false)
         return super.onPrepareOptionsMenu(menu)
     }
 

@@ -7,6 +7,7 @@
     <string name="applications_subtitle_anonymous">anonymous</string>
     <string name="applications_subtitle_unverified">(unverified)</string>
 
+    <string name="applications_menu_search">Search</string>
     <string name="applications_menu_sign_in">Sign in</string>
     <string name="applications_menu_send_verification_email">Send verification email</string>
     <string name="applications_menu_refresh">Refresh</string>
@@ -36,6 +37,7 @@
     <string name="versions_toast_link_to_clipboard">Link copied to clipboard</string>
     <string name="versions_toast_link_error">Unable to start this link:</string>
 
+    <string name="versions_menu_search">Search</string>
     <string name="versions_menu_info">App info</string>
     <string name="versions_menu_stop">Force stop</string>
     <string name="versions_menu_uninstall">Uninstall</string>

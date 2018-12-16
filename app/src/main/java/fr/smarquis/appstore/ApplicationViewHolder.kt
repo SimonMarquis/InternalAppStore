@@ -25,6 +25,7 @@ class ApplicationViewHolder(
     private val favorite: ImageView = v.imageView_application_favorite
 
     private var application: Application? = null
+    private var filter: String? = null
 
     init {
         itemView.setOnClickListener(this)
@@ -34,8 +35,9 @@ class ApplicationViewHolder(
     private val colorAccent = ContextCompat.getColor(itemView.context, R.color.colorAccent)
     private val defaultColor = title.currentTextColor
 
-    fun bind(application: Application) {
+    fun bind(application: Application, filter: String?) {
         this.application = application
+        this.filter = filter
         ViewCompat.setTransitionName(image, application.imageTransitionName())
         renderFavorite()
         renderImage()
@@ -53,7 +55,7 @@ class ApplicationViewHolder(
     fun renderText() {
         title.setTextColor(if (application?.isFavorite == true) colorAccent else defaultColor)
         title.setTypeface(null, if (application?.isFavorite == true) Typeface.BOLD else Typeface.NORMAL)
-        title.text = application?.name
+        title.text = Utils.highlightFilter(application?.name, filter)
         installed.apply {
             setTextColor(if (application?.isFavorite == true) colorAccent else defaultColor)
             val packageName = application?.packageName

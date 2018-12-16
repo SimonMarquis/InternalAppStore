@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_applications_search"
+        android:icon="@drawable/ic_search_24dp"
+        android:title="@string/applications_menu_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
 
     <item
         android:id="@+id/menu_applications_signin"
@@ -8,13 +16,11 @@
 
     <item
         android:id="@+id/menu_applications_send_verification_email"
-        android:title="@string/applications_menu_send_verification_email"
-        android:visible="false"/>
+        android:title="@string/applications_menu_send_verification_email" />
 
     <item
         android:id="@+id/menu_applications_refresh"
-        android:title="@string/applications_menu_refresh"
-        android:visible="false"/>
+        android:title="@string/applications_menu_refresh" />
 
     <item
         android:id="@+id/menu_applications_invalidate_cache"

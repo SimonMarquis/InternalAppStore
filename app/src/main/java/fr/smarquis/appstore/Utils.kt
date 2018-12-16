@@ -3,6 +3,8 @@ package fr.smarquis.appstore
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.*
@@ -12,7 +14,12 @@ import android.text.Spanned
 import android.text.format.DateUtils
 import android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE
 import android.text.format.DateUtils.SECOND_IN_MILLIS
+import android.text.style.BackgroundColorSpan
+import android.text.style.StyleSpan
 import androidx.core.content.pm.PackageInfoCompat
+import androidx.core.text.buildSpannedString
+import androidx.core.text.set
+import androidx.core.text.toSpannable
 import androidx.core.view.doOnNextLayout
 import androidx.recyclerview.widget.RecyclerView
 
@@ -100,6 +107,34 @@ class Utils {
                         data = Uri.parse("package:" + context.packageName)
                     }
                 }
+            }
+        }
+
+        fun matchesFilter(text: CharSequence?, constraint: String?): Boolean =
+                when {
+                    constraint.isNullOrBlank() -> true // Always accept empty constraint
+                    text.isNullOrBlank() -> false // Always deny empty text
+                    else -> text.indexOf(constraint, ignoreCase = true) != -1 // Search first occurrence
+                }
+
+        fun highlightFilter(text: CharSequence?, constraint: String?): CharSequence? {
+            if (constraint.isNullOrBlank() || text.isNullOrBlank()) {
+                return text
+            }
+            var indexOf = text.indexOf(constraint, ignoreCase = true)
+            if (indexOf == -1) {
+                return text
+            }
+            val spannable = text.toSpannable()
+            do {
+                spannable[indexOf, indexOf + constraint.length] = StyleSpan(Typeface.BOLD)
+                spannable[indexOf, indexOf + constraint.length] = BackgroundColorSpan(Color.YELLOW)
+                // more ? text size ?
+                indexOf = text.indexOf(constraint, indexOf + 1, ignoreCase = true)
+            } while (indexOf != -1)
+
+            return buildSpannedString {
+                append(spannable)
             }
         }
 

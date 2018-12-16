@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import fr.smarquis.appstore.Utils.Companion.highlightFilter
 import fr.smarquis.appstore.Version.Status.*
 import kotlinx.android.synthetic.main.item_version.view.*
 
@@ -23,6 +24,7 @@ class VersionViewHolder(
     val anchor: View = v.anchor
 
     private var version: Version? = null
+    private var filter: String? = null
 
     init {
         itemView.setOnClickListener(this)
@@ -33,16 +35,17 @@ class VersionViewHolder(
         const val UNKNOWN_SIZE = "⋯" /*•••*/ /*∙∙∙*/ /*···*/
     }
 
-    fun bind(version: Version) {
+    fun bind(version: Version, filter: String?) {
         this.version = version
+        this.filter = filter
         renderTitleAndDescription()
         renderProgress()
     }
 
     private fun renderTitleAndDescription() {
-        name.text = version?.name
+        name.text = highlightFilter(version?.name, filter)
         description.apply {
-            text = version?.descriptionToHtml
+            text = highlightFilter(version?.descriptionToHtml, filter)
             visibility = if (version?.descriptionToHtml.isNullOrBlank()) GONE else VISIBLE
             BetterLinkMovementMethod.applyTo(this, itemView)
         }

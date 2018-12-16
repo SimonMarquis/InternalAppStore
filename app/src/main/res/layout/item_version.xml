@@ -48,7 +48,7 @@
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView_version_name"
         tools:ignore="SmallSp"
         tools:text="1 day ago" />
 

@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
+        android:id="@+id/menu_versions_search"
+        android:icon="@drawable/ic_search_24dp"
+        android:title="@string/versions_menu_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
+    <item
         android:id="@+id/menu_versions_info"
         android:icon="@drawable/ic_info_24dp"
         android:title="@string/versions_menu_info"

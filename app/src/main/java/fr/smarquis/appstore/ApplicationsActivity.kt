@@ -12,11 +12,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
 import androidx.core.widget.ContentLoadingProgressBar
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +31,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 
-class ApplicationsActivity : AppCompatActivity() {
+class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     companion object {
 
@@ -46,6 +48,7 @@ class ApplicationsActivity : AppCompatActivity() {
     private var applicationAdapter: ApplicationAdapter? = null
     private lateinit var contentLoadingProgressBar: ContentLoadingProgressBar
     private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_AppStore)
@@ -208,7 +211,6 @@ class ApplicationsActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 Firebase.subscribeToStore()
                 applicationAdapter?.apply {
-                    stopListening()
                     startListening()
                 }
             }
@@ -221,9 +223,30 @@ class ApplicationsActivity : AppCompatActivity() {
                 .addOnFailureListener(this) { exception -> Log.e("Store", "signInAnonymously:FAILURE", exception) }
     }
 
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        applicationAdapter?.filter(query)
+        searchView.clearFocus()
+        return true
+    }
+
+    override fun onQueryTextChange(query: String?): Boolean {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            applicationAdapter?.filter(query)
+        }
+        return true
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_applications, menu)
+        val searchItem = menu.findItem(R.id.menu_applications_search)
+        searchView = searchItem.actionView as SearchView
+        searchView.findViewById<SearchView.SearchAutoComplete>(R.id.search_src_text).setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+        searchView.setOnQueryTextListener(this)
+        searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && searchView.query.isNullOrBlank()) {
+                searchItem.collapseActionView()
+            }
+        }
         return true
     }
 
@@ -233,6 +256,10 @@ class ApplicationsActivity : AppCompatActivity() {
         menu?.findItem(R.id.menu_applications_signout)?.isVisible = user != null && !user.isAnonymous
         menu?.findItem(R.id.menu_applications_send_verification_email)?.isVisible = user != null && !user.isAnonymous && !user.isEmailVerified
         menu?.findItem(R.id.menu_applications_refresh)?.isVisible = user != null
+        menu?.findItem(R.id.menu_applications_search)?.apply {
+            isVisible = user != null
+            (actionView as SearchView).setQuery(applicationAdapter?.filter(), false)
+        }
         return super.onPrepareOptionsMenu(menu)
     }
 
