@@ -16,7 +16,7 @@
     <string name="applications_menu_notification_settings">Notification settings</string>
 
     <string name="applications_toast_verify_inbox">Unverified email, check your inbox</string>
-    <string name="applications_toast_not_allowed">"¯\_(ツ)_/¯\nYou are not allowed here!"</string>
+    <string name="applications_toast_not_allowed">"¯\\_(ツ)_/¯\nYou are not allowed here!"</string>
 
     <string name="applications_toast_verification_email_sent">Check your inbox to verify your account</string>
     <string name="applications_toast_verification_email_error">Unable to send verification email</string>
