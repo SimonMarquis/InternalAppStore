@@ -8,6 +8,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FileDownloadTask
@@ -94,9 +95,10 @@ val DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS = RequestOptions()
         .diskCacheStrategy(DiskCacheStrategy.ALL)
         .centerCrop()
         .placeholder(R.drawable.item_application_icon_placeholder)
+        .autoClone()
 
 fun Application.loadImageInto(imageView: ImageView, glide: RequestManager) {
-    glide.load(findImageReference()).apply(DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS).into(imageView)
+    glide.load(findImageReference()).apply(DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS.signature(ObjectKey(image.orEmpty()))).into(imageView)
 }
 
 fun Application.isMyself(context: Context) = context.packageName == packageName

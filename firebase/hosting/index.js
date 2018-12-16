@@ -1281,6 +1281,7 @@ AppStore.prototype.dataUpdateApplicationImage = function(key, file) {
     .applicationImage(key)
     .put(file)
     .then(snapshot => snapshot.ref.getDownloadURL())
+    .then(url => `${url}#${Date.now()}`)
     .then(url => this.databaseRefs.application(key).update({ image: url }));
 };
 
