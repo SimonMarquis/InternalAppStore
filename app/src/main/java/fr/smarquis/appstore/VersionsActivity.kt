@@ -263,10 +263,8 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                         contentLoadingProgressBar.hide()
                     }
 
-                    override fun onChildChanged(type: ChangeEventType, version: Version) {
-                        if (type == ADDED) {
-                            refreshVersionProperties(version)
-                        }
+                    override fun onChildAdded(version: Version) {
+                        refreshVersionProperties(version)
                     }
 
                     override fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder) {

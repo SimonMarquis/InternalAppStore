@@ -35,7 +35,7 @@ class VersionAdapter(
         fun onDataChanged()
         fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder)
         fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean
-        fun onChildChanged(type: ChangeEventType, version: Version)
+        fun onChildAdded(version: Version)
     }
 
     private val snapshots: ObservableSnapshotArray<Version> = FirebaseRecyclerOptions.Builder<Version>().setQuery(query) { Version.parse(it)!! }.build().snapshots
@@ -122,41 +122,43 @@ class VersionAdapter(
     override fun onDataChanged() = callback.onDataChanged()
 
     override fun onChildChanged(type: ChangeEventType, snapshot: DataSnapshot, newIndex: Int, oldIndex: Int) {
-        val version = snapshots[newIndex]
-        val matches = version.filter(filter)
         when (type) {
             ChangeEventType.ADDED -> {
+                val version = snapshots[newIndex]
                 backupList.add(newIndex, version)
-                if (matches) {
+                if (version.filter(filter)) {
                     displayList.add(version)
                 }
+                callback.onChildAdded(version)
             }
             ChangeEventType.CHANGED -> {
+                val version = snapshots[newIndex]
                 val removedVersion = backupList.removeAt(newIndex)
                 backupList.add(newIndex, version)
                 val oldDisplayIndex = displayList.indexOf(removedVersion)
-                if (matches) {
+                if (version.filter(filter)) {
                     displayList.updateItemAt(oldDisplayIndex, version)
                 } else {
                     displayList.removeItemAt(oldDisplayIndex)
                 }
             }
             ChangeEventType.MOVED -> {
+                val version = snapshots[newIndex]
                 val removedVersion = backupList.removeAt(oldIndex)
                 backupList.add(newIndex, version)
-                if (matches) {
+                if (version.filter(filter)) {
                     displayList.add(version)
                 } else {
                     displayList.remove(removedVersion)
                 }
             }
             ChangeEventType.REMOVED -> {
+                val removedVersion = backupList.removeAt(newIndex)
                 backupList.removeAt(newIndex)
-                displayList.remove(version)
+                displayList.remove(removedVersion)
             }
             else -> throw IllegalStateException("Incomplete case statement")
         }
-        callback.onChildChanged(type, version)
     }
 
     override fun onError(e: DatabaseError) {

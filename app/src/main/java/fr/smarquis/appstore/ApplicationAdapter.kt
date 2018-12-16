@@ -114,37 +114,39 @@ class ApplicationAdapter(
     override fun onDataChanged() = callback.onDataChanged()
 
     override fun onChildChanged(type: ChangeEventType, snapshot: DataSnapshot, newIndex: Int, oldIndex: Int) {
-        val application = snapshots[newIndex]
-        val matches = application.filter(filter)
         when (type) {
             ADDED -> {
+                val application = snapshots[newIndex]
                 backupList.add(newIndex, application)
-                if (matches) {
+                if (application.filter(filter)) {
                     displayList.add(application)
                 }
             }
             CHANGED -> {
+                val application = snapshots[newIndex]
                 val removedApplication = backupList.removeAt(newIndex)
                 backupList.add(newIndex, application)
                 val oldDisplayIndex = displayList.indexOf(removedApplication)
-                if (matches) {
+                if (application.filter(filter)) {
                     displayList.updateItemAt(oldDisplayIndex, application)
                 } else {
                     displayList.removeItemAt(oldDisplayIndex)
                 }
             }
             MOVED -> {
+                val application = snapshots[newIndex]
                 val removedApplication = backupList.removeAt(oldIndex)
                 backupList.add(newIndex, application)
-                if (matches) {
+                if (application.filter(filter)) {
                     displayList.add(application)
                 } else {
                     displayList.remove(removedApplication)
                 }
             }
             REMOVED -> {
+                val removedApplication = backupList.removeAt(newIndex)
                 backupList.removeAt(newIndex)
-                displayList.remove(application)
+                displayList.remove(removedApplication)
             }
             else -> throw IllegalStateException("Incomplete case statement")
         }
