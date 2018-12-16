@@ -5,11 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
 import android.content.IntentFilter
+import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 
-class PackageIntentFilter {
+@Keep
+class PackageIntentFilter(private val activity: AppCompatActivity, private val block: (action: String, packageName: String) -> Unit) : BroadcastReceiver(), LifecycleObserver {
 
     companion object {
+
+        fun init(activity: AppCompatActivity, block: (action: String, packageName: String) -> Unit) = PackageIntentFilter(activity, block)
 
         private val INTENT_FILTER = object : IntentFilter() {
             init {
@@ -20,26 +27,31 @@ class PackageIntentFilter {
             }
         }
 
-        fun receiver(block: (action: String, packageName: String) -> Unit): BroadcastReceiver {
-            return object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    val action = intent.action ?: return
-                    intent.data?.schemeSpecificPart?.let {
-                        if (INTENT_FILTER.hasAction(action)) {
-                            block(action, it)
-                        }
-                    }
-                }
+    }
+
+    init {
+        activity.lifecycle.addObserver(this)
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        val action = intent.action ?: return
+        intent.data?.schemeSpecificPart?.let {
+            if (INTENT_FILTER.hasAction(action)) {
+                block(action, it)
             }
         }
+    }
 
-        fun register(activity: AppCompatActivity, receiver: BroadcastReceiver) {
-            activity.registerReceiver(receiver, INTENT_FILTER)
-        }
+    @Suppress("unused")
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private fun register() {
+        activity.registerReceiver(this, INTENT_FILTER)
+    }
 
-        fun unregister(activity: AppCompatActivity, receiver: BroadcastReceiver) {
-            activity.unregisterReceiver(receiver)
-        }
+    @Suppress("unused")
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    private fun unregister() {
+        activity.unregisterReceiver(this)
     }
 
 }

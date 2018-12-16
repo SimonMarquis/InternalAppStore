@@ -45,35 +45,12 @@ class ApplicationsActivity : AppCompatActivity() {
     private lateinit var contentLoadingProgressBar: ContentLoadingProgressBar
     private lateinit var recyclerView: RecyclerView
 
-    private val dataObserver: RecyclerView.AdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            super.onItemRangeInserted(positionStart, itemCount)
-            contentLoadingProgressBar.hide()
-            updateNotificationChannels(positionStart, itemCount)
-        }
-
-        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-            super.onItemRangeChanged(positionStart, itemCount)
-            updateNotificationChannels(positionStart, itemCount)
-        }
-
-        private fun updateNotificationChannels(positionStart: Int, itemCount: Int) {
-            for (index in positionStart until positionStart + itemCount) {
-                applicationAdapter?.getItem(index)?.let {
-                    Notifications.createOrUpdateNewVersionsNotificationChannel(this@ApplicationsActivity, it)
-                }
-            }
-        }
-    }
-
-    private val packageIntentFilterReceiver = PackageIntentFilter.receiver { _: String, packageName: String -> applicationAdapter?.onPackageChanged(packageName) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_AppStore)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_applications)
         initUi()
-        registerListeners()
+        PackageIntentFilter.init(this) { _: String, packageName: String -> applicationAdapter?.onPackageChanged(packageName) }
         checkStoreAccess(sendEmailVerification = false, reloadUser = true)
     }
 
@@ -94,20 +71,18 @@ class ApplicationsActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        unregisterListeners()
-        super.onDestroy()
-    }
 
     private fun initUi() {
         contentLoadingProgressBar = findViewById(R.id.contentLoadingProgressBar_applications)
         contentLoadingProgressBar.show()
 
         applicationAdapter = ApplicationAdapter(
+                lifecycleOwner = this,
                 query = Firebase.database.applications().orderByChild("name"),
                 glide = Glide.with(this),
                 callback = object : ApplicationAdapter.Callback {
-                    override fun showEmptyState() {
+
+                    override fun onDataChanged() {
                         contentLoadingProgressBar.hide()
                     }
 
@@ -237,16 +212,6 @@ class ApplicationsActivity : AppCompatActivity() {
                 .addOnFailureListener(this) { exception -> Log.e("Store", "signInAnonymously:FAILURE", exception) }
     }
 
-    private fun registerListeners() {
-        applicationAdapter?.registerAdapterDataObserver(dataObserver)
-        PackageIntentFilter.register(this, packageIntentFilterReceiver)
-    }
-
-    private fun unregisterListeners() {
-        PackageIntentFilter.unregister(this, packageIntentFilterReceiver)
-        applicationAdapter?.stopListening()
-        applicationAdapter?.unregisterAdapterDataObserver(dataObserver)
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_applications, menu)

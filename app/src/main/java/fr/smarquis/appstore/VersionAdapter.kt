@@ -3,113 +3,89 @@ package fr.smarquis.appstore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.collection.ArrayMap
+import androidx.annotation.NonNull
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.firebase.ui.common.ChangeEventType
-import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.ChangeEventListener
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.Query
 
 class VersionAdapter(
-        query: DatabaseReference,
+        lifecycleOwner: LifecycleOwner,
+        query: Query,
         private val callback: Callback
-) : FirebaseRecyclerAdapter<Version, VersionViewHolder>(recyclerOptions(query)) {
+) : RecyclerView.Adapter<VersionViewHolder>(), LifecycleObserver, ChangeEventListener {
 
     companion object {
-
-        private fun recyclerOptions(query: DatabaseReference) = FirebaseRecyclerOptions.Builder<Version>().setQuery(query) { Version.parse(it)!! }.build()
 
         val PAYLOAD_PROGRESS_CHANGED = Any()
     }
 
     interface Callback {
-        fun showEmptyState()
+        fun onDataChanged()
         fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder)
         fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean
         fun onItemChanged(version: Version)
     }
 
-    private val stableIds = HashMap<String, Long>()
+    private val snapshots: ObservableSnapshotArray<Version> = FirebaseRecyclerOptions.Builder<Version>().setQuery(query) { Version.parse(it)!! }.build().snapshots
 
     private val sortedListCallback = object : SortedListAdapterCallback<Version>(this) {
 
-        override fun areItemsTheSame(item1: Version?, item2: Version?): Boolean {
-            return item1?.key.equals(item2?.key)
-        }
+        override fun areItemsTheSame(item1: Version?, item2: Version?): Boolean = item1?.key.equals(item2?.key)
 
-        override fun areContentsTheSame(oldItem: Version?, newItem: Version?): Boolean {
-            return oldItem == newItem
-        }
+        override fun areContentsTheSame(oldItem: Version?, newItem: Version?): Boolean = oldItem == newItem
 
-        override fun compare(o1: Version?, o2: Version?): Int {
-            return when {
-                o1 == null || o2 == null -> 0
-                else -> o1.compareTo(o2)
-            }
-        }
+        override fun compare(o1: Version?, o2: Version?): Int = if (o1 != null && o2 != null) o1.compareTo(o2) else 0
 
     }
 
-    private val sortedList = SortedList(Version::class.java, sortedListCallback)
+    private val backupList: MutableList<Version> = ArrayList()
+    private val displayList: SortedList<Version> = SortedList(Version::class.java, sortedListCallback)
+    private val stableIds = HashMap<String, Long>()
 
-    private val lut = ArrayMap<String, Version>(10)
-
-    private var highlightVersionKey: String? = null
-
-    fun highlightVersion(key: String?) {
-        this.highlightVersionKey = key
+    init {
+        setHasStableIds(true)
+        lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    override fun onChildChanged(type: ChangeEventType, snapshot: DataSnapshot, newIndex: Int, oldIndex: Int) {
-        val version = Version.parse(snapshot) ?: return
-        when (type) {
-            ChangeEventType.ADDED -> {
-                lut[version.key] = version
-                sortedList.add(version)
-            }
-            ChangeEventType.REMOVED -> {
-                lut[version.key] = null
-                sortedList.remove(version)
-            }
-            ChangeEventType.CHANGED, ChangeEventType.MOVED -> {
-                lut[version.key]?.let {
-                    sortedList.updateItemAt(sortedList.indexOf(it), version)
-                }
-                lut[version.key] = version
-
-                if (type == ChangeEventType.CHANGED) {
-                    callback.onItemChanged(version)
-                }
-            }
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    @Suppress("unused")
+    fun startListening() {
+        if (!snapshots.isListening(this)) {
+            snapshots.addChangeEventListener(this)
         }
     }
 
-    override fun onDataChanged() {
-        super.onDataChanged()
-        if (itemCount == 0) {
-            callback.showEmptyState()
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    @Suppress("unused")
+    fun stopListening() {
+        snapshots.removeChangeEventListener(this)
+        backupList.clear()
+        displayList.clear()
+        stableIds.clear()
     }
 
-    override fun getItem(position: Int): Version = sortedList.get(position)
+    @NonNull
+    fun getItem(position: Int): Version = displayList[position]
 
-    override fun getItemCount(): Int = sortedList.size()
+    override fun getItemId(position: Int): Long = stableIds.getOrPut(getItem(position).key.orEmpty()) { stableIds.size.toLong() }
 
-    override fun getItemViewType(position: Int): Int = R.layout.item_version
+    override fun getItemCount(): Int = displayList.size()
 
-    override fun getItemId(position: Int): Long {
-        return stableIds.getOrPut(getItem(position).key.orEmpty()) { stableIds.size.toLong() }
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VersionViewHolder = VersionViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_version, parent, false), callback)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VersionViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_version, parent, false)
-        return VersionViewHolder(view, callback)
-    }
-
-    override fun onBindViewHolder(holder: VersionViewHolder, position: Int, version: Version) {
+    override fun onBindViewHolder(holder: VersionViewHolder, position: Int) {
+        val version = getItem(position)
         DEBUG_SCREENSHOT_STATUS?.let {
             if (position == 0) {
                 version.status = it.first
@@ -127,11 +103,12 @@ class VersionAdapter(
     override fun onBindViewHolder(holder: VersionViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
-        } else {
-            for (payload in payloads) {
-                when (payload) {
-                    PAYLOAD_PROGRESS_CHANGED -> holder.renderProgress()
-                }
+            return
+        }
+
+        for (payload in payloads) {
+            when (payload) {
+                PAYLOAD_PROGRESS_CHANGED -> holder.renderProgress()
             }
         }
     }
@@ -141,15 +118,48 @@ class VersionAdapter(
         holder.unbind()
     }
 
-    override fun onError(error: DatabaseError) {
-        Log.w("VersionAdapter", "message:${error.message}, code:${error.code}")
+    override fun onDataChanged() = callback.onDataChanged()
+
+    override fun onChildChanged(type: ChangeEventType, snapshot: DataSnapshot, newIndex: Int, oldIndex: Int) {
+        val version = snapshots[newIndex]
+        when (type) {
+            ChangeEventType.ADDED -> {
+                backupList.add(newIndex, version)
+                displayList.add(version)
+            }
+            ChangeEventType.CHANGED -> {
+                val removedVersion = backupList.removeAt(newIndex)
+                backupList.add(newIndex, version)
+                val oldDisplayIndex = displayList.indexOf(removedVersion)
+                displayList.updateItemAt(oldDisplayIndex, version)
+            }
+            ChangeEventType.MOVED -> {
+                val removedVersion = backupList.removeAt(oldIndex)
+                backupList.add(newIndex, version)
+                displayList.add(version)
+            }
+            ChangeEventType.REMOVED -> {
+                backupList.removeAt(newIndex)
+                displayList.remove(version)
+            }
+            else -> throw IllegalStateException("Incomplete case statement")
+        }
     }
 
+    override fun onError(e: DatabaseError) {
+        Log.w("VersionAdapter", e.toException())
+    }
+
+    private var highlightVersionKey: String? = null
+
+    fun highlightVersion(key: String?) {
+        this.highlightVersionKey = key
+    }
 
     fun updateVersionProgress(version: Version) {
-        val indexOf = sortedList.indexOf(version)
+        val indexOf = displayList.indexOf(version)
         if (indexOf != SortedList.INVALID_POSITION) {
-            sortedList.get(indexOf).apply {
+            displayList.get(indexOf).apply {
                 status = version.status
                 progress = version.progress
             }

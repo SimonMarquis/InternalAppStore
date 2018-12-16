@@ -78,10 +78,6 @@ class VersionsActivity : AppCompatActivity() {
         private val EXTRA_HIGHLIGHT_VERSION_KEY = "$EXTRAS.EXTRA_HIGHLIGHT_VERSION_KEY"
         private val EXTRA_SHARED_ELEMENT_TRANSITION = "$EXTRAS.EXTRA_SHARED_ELEMENT_TRANSITION"
 
-        fun start(context: Context, application: Application) {
-            context.startActivity(intent(context, application))
-        }
-
         fun start(activity: AppCompatActivity, application: Application, vararg sharedElement: Pair<View, String>) {
             val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElement).toBundle()
             val intent = intent(activity, application).apply { putExtra(EXTRA_SHARED_ELEMENT_TRANSITION, true) }
@@ -128,13 +124,8 @@ class VersionsActivity : AppCompatActivity() {
             Application.parse(snapshot).let { update ->
                 if (update == null) {
                     Toast.makeText(applicationContext, R.string.versions_toast_application_removed, LENGTH_SHORT).show()
-                    application?.let {
-                        Notifications.deleteNewVersionsNotificationChannel(this@VersionsActivity, it)
-                        shortcuts.remove(it)
-                    }
                     supportFinishAfterTransition()
                 } else {
-                    Notifications.createOrUpdateNewVersionsNotificationChannel(this@VersionsActivity, update)
                     updateApplication(update)
                     if (reportShortcutUsage) {
                         shortcuts.use(update)
@@ -148,18 +139,9 @@ class VersionsActivity : AppCompatActivity() {
     private val dataObserver: RecyclerView.AdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
 
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            super.onItemRangeInserted(positionStart, itemCount)
-            contentLoadingProgressBar.hide()
-
             for (position in positionStart until positionStart + itemCount) {
                 refreshVersionProperties(versionAdapter?.getItem(position) ?: continue)
             }
-        }
-    }
-
-    private val packageIntentFilterReceiver = PackageIntentFilter.receiver { _: String, packageName: String ->
-        if (packageName == application?.packageName) {
-            updateApplication(application)
         }
     }
 
@@ -219,6 +201,7 @@ class VersionsActivity : AppCompatActivity() {
         initCircularReveal(savedInstanceState)
         registerListeners(application)
         updateApplication(application)
+        PackageIntentFilter.init(this) { _: String, packageName: String -> if (packageName == application.packageName) updateApplication(application) }
     }
 
     private fun excludeTransitionTargets() {
@@ -252,8 +235,6 @@ class VersionsActivity : AppCompatActivity() {
         firebaseApplicationDatabaseRef = Firebase.database.application(application.key.orEmpty())
         firebaseApplicationDatabaseRef?.addValueEventListener(applicationValueEventListener)
         versionAdapter?.registerAdapterDataObserver(dataObserver)
-        versionAdapter?.startListening()
-        PackageIntentFilter.register(this, packageIntentFilterReceiver)
         hasRegisteredListeners = true
     }
 
@@ -262,9 +243,7 @@ class VersionsActivity : AppCompatActivity() {
             return
         }
         firebaseApplicationDatabaseRef?.removeEventListener(applicationValueEventListener)
-        PackageIntentFilter.unregister(this, packageIntentFilterReceiver)
         versionAdapter?.unregisterAdapterDataObserver(dataObserver)
-        versionAdapter?.stopListening()
         hasRegisteredListeners = false
     }
 
@@ -281,10 +260,11 @@ class VersionsActivity : AppCompatActivity() {
         }
 
         versionAdapter = VersionAdapter(
+                lifecycleOwner = this,
                 query = Firebase.database.versions(application.key.orEmpty()),
                 callback = object : VersionAdapter.Callback {
 
-                    override fun showEmptyState() {
+                    override fun onDataChanged() {
                         contentLoadingProgressBar.hide()
                     }
 
@@ -337,7 +317,6 @@ class VersionsActivity : AppCompatActivity() {
                     }
                 }
         ).apply {
-            setHasStableIds(true)
             // Scroll to the highlighted version
             intent.extras?.getString(EXTRA_HIGHLIGHT_VERSION_KEY)?.let {
                 intent.extras?.remove(EXTRA_HIGHLIGHT_VERSION_KEY)
