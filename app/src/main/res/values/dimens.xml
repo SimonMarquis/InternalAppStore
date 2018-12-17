@@ -8,4 +8,7 @@
 
     <dimen name="list_divider_height">0.5dp</dimen>
 
+    <dimen name="roundedTextBorderRadius">4dp</dimen>
+    <dimen name="roundedTextBorderWidth">1dp</dimen>
+
 </resources>

@@ -3,19 +3,16 @@ package fr.smarquis.appstore
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.*
 import android.provider.Settings
+import android.text.Annotation
 import android.text.Html
 import android.text.Spanned
 import android.text.format.DateUtils
 import android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE
 import android.text.format.DateUtils.SECOND_IN_MILLIS
-import android.text.style.BackgroundColorSpan
-import android.text.style.StyleSpan
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.set
@@ -127,9 +124,7 @@ class Utils {
             }
             val spannable = text.toSpannable()
             do {
-                spannable[indexOf, indexOf + constraint.length] = StyleSpan(Typeface.BOLD)
-                spannable[indexOf, indexOf + constraint.length] = BackgroundColorSpan(Color.YELLOW)
-                // more ? text size ?
+                spannable[indexOf, indexOf + constraint.length] = Annotation("filter", "rounded")
                 indexOf = text.indexOf(constraint, indexOf + 1, ignoreCase = true)
             } while (indexOf != -1)
 

@@ -6,6 +6,7 @@
     android:layout_height="@dimen/material_baseline_grid_7.5x"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
+    android:clipChildren="false"
     android:focusable="true">
 
     <ImageView
