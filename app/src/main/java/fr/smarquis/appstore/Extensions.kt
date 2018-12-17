@@ -35,7 +35,7 @@ fun Version.getActiveDownloadTask(): FileDownloadTask? {
     return Firebase.storage.getReference(ref).activeDownloadTasks.firstOrNull()?.takeIf { !it.isComplete }
 }
 
-fun Version.filter(constraint: String?) = Utils.matchesFilter(name, constraint) || Utils.matchesFilter(description, constraint)
+fun Version.filter(constraint: String?) = Utils.matchesFilter(name, constraint) || Utils.matchesFilter(descriptionToHtml, constraint)
 
 fun StorageReference.cancelActiveDownloadTasks() {
     for (activeDownloadTask in activeDownloadTasks) {
