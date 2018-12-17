@@ -210,9 +210,8 @@ class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 Firebase.subscribeToStore()
-                applicationAdapter?.apply {
-                    startListening()
-                }
+                // Only start listening when data can be successfully fetched
+                applicationAdapter?.startListening()
             }
         })
     }
