@@ -72,6 +72,7 @@
         app:layout_constraintBottom_toTopOf="@+id/recyclerView_versions"
         app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
         app:layout_constraintTop_toTopOf="@+id/recyclerView_versions"
+        tools:ignore="UnusedAttribute"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
