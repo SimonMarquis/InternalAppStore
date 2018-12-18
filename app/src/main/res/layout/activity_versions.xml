@@ -65,6 +65,7 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_launch_24dp"
+        android:tooltipText="@string/versions_tooltip_open"
         android:visibility="invisible"
         app:elevation="@dimen/material_baseline_grid_1x"
         app:fabSize="mini"
