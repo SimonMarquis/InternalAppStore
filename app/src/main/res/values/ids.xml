@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="better_link_movement_method_forward" type="id"/>
-    <item name="better_link_movement_method_forward_to" type="id"/>
+    <item name="better_link_movement_method_forward" type="id" />
+    <item name="better_link_movement_method_forward_to" type="id" />
 
 </resources>

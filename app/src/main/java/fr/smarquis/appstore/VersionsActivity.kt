@@ -52,8 +52,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
-import com.firebase.ui.common.ChangeEventType
-import com.firebase.ui.common.ChangeEventType.ADDED
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks

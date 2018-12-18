@@ -1,7 +1,6 @@
 package fr.smarquis.appstore
 
 import androidx.annotation.Keep
-import java.lang.NullPointerException
 
 /**
  * Inspired by https://github.com/swiftzer/semver
