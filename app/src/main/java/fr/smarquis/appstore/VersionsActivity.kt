@@ -220,6 +220,11 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        versionAdapter?.notifyDataSetChanged()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         unregisterListeners()

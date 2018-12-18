@@ -69,6 +69,7 @@ class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener
         super.onRestart()
         updateSubtitle()
         invalidateOptionsMenu()
+        applicationAdapter?.notifyDataSetChanged()
         Firebase.auth.currentUser?.let {
             if (!it.isEmailVerified) {
                 checkStoreAccess(sendEmailVerification = false, reloadUser = true)
