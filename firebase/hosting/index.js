@@ -651,6 +651,7 @@ AppStore.prototype.uiShowApplicationCards = function(key, callback) {
       .children()
       .slideUp();
   }
+  Ui.scrollToTop();
 };
 
 AppStore.prototype.uiShowApplicationDetails = function(key) {
@@ -668,6 +669,7 @@ AppStore.prototype.uiShowApplicationDetails = function(key) {
     .children()
     .slideUp();
   $("#" + this.ids.ofApplicationDetails(key)).slideDown();
+  Ui.scrollToTop();
 };
 
 AppStore.prototype.uiShowApplicationModal = function(key) {
@@ -1831,6 +1833,13 @@ Ui.resetFavicon = function() {
       favicon.setAttribute("href", favicon.getAttribute("_href"));
     }
   }
+};
+
+Ui.scrollToTop = function() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 };
 
 function Utils() {}
