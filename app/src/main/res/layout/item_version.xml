@@ -7,21 +7,43 @@
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:clipChildren="false"
-    android:clipToPadding="false"
     android:focusable="true"
-    android:longClickable="true"
-    android:paddingLeft="@dimen/material_baseline_grid_4x"
-    android:paddingTop="@dimen/material_baseline_grid_2x"
-    android:paddingRight="@dimen/material_baseline_grid_4x"
-    android:paddingBottom="@dimen/material_baseline_grid_2x">
+    android:longClickable="true">
 
-    <Space
-        android:id="@+id/space_responsive_width"
-        android:layout_width="@dimen/activity_responsive_width"
+    <View
+        android:id="@+id/view_version_highlight"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/colorHighlight"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Space
+        android:id="@+id/space_responsive_container"
+        android:layout_width="@dimen/activity_responsive_width"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Space
+        android:id="@+id/space_responsive_container_inset"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/material_baseline_grid_4x"
+        android:layout_marginTop="@dimen/material_baseline_grid_2x"
+        android:layout_marginEnd="@dimen/material_baseline_grid_4x"
+        android:layout_marginBottom="@dimen/material_baseline_grid_2x"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/space_responsive_container"
+        app:layout_constraintEnd_toEndOf="@id/space_responsive_container"
+        app:layout_constraintStart_toStartOf="@id/space_responsive_container"
+        app:layout_constraintTop_toTopOf="@id/space_responsive_container" />
 
     <fr.smarquis.appstore.EmojiTextView
         android:id="@+id/textView_version_name"
@@ -37,8 +59,8 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/barrier2"
         app:layout_constraintEnd_toEndOf="@+id/barrier3"
-        app:layout_constraintStart_toStartOf="@+id/space_responsive_width"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/space_responsive_container_inset"
+        app:layout_constraintTop_toTopOf="@+id/space_responsive_container_inset"
         tools:text="1.2.3" />
 
     <TextView
@@ -49,7 +71,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="11sp"
-        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
+        app:layout_constraintEnd_toEndOf="@id/space_responsive_container_inset"
         app:layout_constraintTop_toTopOf="@+id/textView_version_name"
         tools:ignore="SmallSp"
         tools:text="1 day ago" />
@@ -74,7 +96,7 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView_version_size"
-        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_container_inset"
         app:layout_constraintTop_toTopOf="@+id/textView_version_size"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_cloud_check_16dp" />
@@ -85,9 +107,7 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="textView_version_size,textView_version_name"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="46dp" />
+        tools:ignore="MissingConstraints" />
 
     <ProgressBar
         android:id="@+id/progressBar_version"
@@ -98,8 +118,8 @@
         android:max="100"
         android:maxHeight="@dimen/material_baseline_grid_2x"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
-        app:layout_constraintStart_toStartOf="@+id/space_responsive_width"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_container_inset"
+        app:layout_constraintStart_toStartOf="@+id/space_responsive_container_inset"
         app:layout_constraintTop_toTopOf="@+id/barrier2"
         tools:visibility="visible" />
 
@@ -108,9 +128,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="?android:attr/textColorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
-        app:layout_constraintStart_toStartOf="@+id/space_responsive_width"
+        app:layout_constraintBottom_toBottomOf="@id/space_responsive_container_inset"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_container_inset"
+        app:layout_constraintStart_toStartOf="@+id/space_responsive_container_inset"
         app:layout_constraintTop_toBottomOf="@+id/progressBar_version"
         tools:text="@tools:sample/lorem" />
 
@@ -129,9 +149,9 @@
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
-        app:layout_constraintStart_toEndOf="@+id/space_responsive_width"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/space_responsive_container_inset"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_container_inset"
+        app:layout_constraintStart_toEndOf="@+id/space_responsive_container_inset"
+        app:layout_constraintTop_toTopOf="@+id/space_responsive_container_inset" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

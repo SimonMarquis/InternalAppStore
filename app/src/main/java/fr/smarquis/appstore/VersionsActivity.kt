@@ -241,6 +241,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         if (!hasRegisteredListeners) {
             return
         }
+        scrollToHighlightedVersionDataObserver?.let { versionAdapter?.unregisterAdapterDataObserver(it) }
         firebaseApplicationDatabaseRef?.removeEventListener(applicationValueEventListener)
         hasRegisteredListeners = false
     }
@@ -316,22 +317,15 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 }
         ).apply {
             // Scroll to the highlighted version
-            intent.extras?.getString(EXTRA_HIGHLIGHT_VERSION_KEY)?.let {
-                intent.extras?.remove(EXTRA_HIGHLIGHT_VERSION_KEY)
+            val highlightVersionKey = intent.extras?.getString(EXTRA_HIGHLIGHT_VERSION_KEY)
+            intent.extras?.remove(EXTRA_HIGHLIGHT_VERSION_KEY)
+            if (!highlightVersionKey.isNullOrBlank()) {
                 // provide adapter with the version key to highlight
-                highlightVersion(it)
+                highlightVersion(highlightVersionKey)
                 // detect highlighted version insertion and scroll to position
-                registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                        for (position in positionStart until positionStart + itemCount) {
-                            if (it == (versionAdapter?.getItem(position) ?: break).key) {
-                                recyclerView.scrollToPosition(position)
-                                unregisterAdapterDataObserver(this)
-                                return
-                            }
-                        }
-                    }
-                })
+                scrollToHighlightedVersionDataObserver = ScrollToHighlightedVersionDataObserver(recyclerView, this, highlightVersionKey).apply {
+                    registerAdapterDataObserver(this)
+                }
             }
         }
 
@@ -347,6 +341,33 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         links = findViewById(R.id.horizontalScrollView_header)
         fab = findViewById(R.id.floatingActionButton)
         fab.setOnClickListener { startApplication() }
+    }
+
+    private var scrollToHighlightedVersionDataObserver: ScrollToHighlightedVersionDataObserver? = null
+
+    class ScrollToHighlightedVersionDataObserver(
+            private val recycler: RecyclerView,
+            private val adapter: VersionAdapter,
+            private val key: String
+    ) : RecyclerView.AdapterDataObserver() {
+
+        private var found: Boolean = false
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            if (found) return
+            for (position in positionStart until positionStart + itemCount) {
+                val version = adapter.getItem(position)
+                if (key != version.key) continue
+                found = true
+                recycler.post {
+                    val positionOf = adapter.positionOf(version)
+                    if (positionOf != NO_POSITION) {
+                        recycler.scrollToPosition(positionOf)
+                    }
+                }
+                return
+            }
+        }
     }
 
     @TargetApi(LOLLIPOP)

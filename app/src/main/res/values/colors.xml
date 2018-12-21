@@ -9,6 +9,8 @@
     <color name="listDividerColor">@color/ripple_material_light</color>
     <color name="applicationIconPlaceholderColor">@color/colorPrimary</color>
 
+    <!--colorAccent (ARGB) with A -> #44-->
+    <color name="colorHighlight">#444285f4</color>
     <!--colorAccent (ARGB) with A -> #55-->
     <color name="roundedTextBg">#554285f4</color>
     <!--colorAccent (HSB) with S,B -> 95%,90%-->

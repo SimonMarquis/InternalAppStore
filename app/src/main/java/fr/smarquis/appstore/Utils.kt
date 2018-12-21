@@ -17,8 +17,6 @@ import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.set
 import androidx.core.text.toSpannable
-import androidx.core.view.doOnNextLayout
-import androidx.recyclerview.widget.RecyclerView
 
 
 class Utils {
@@ -130,27 +128,6 @@ class Utils {
 
             return buildSpannedString {
                 append(spannable)
-            }
-        }
-
-        fun highlight(viewHolder: RecyclerView.ViewHolder) {
-            viewHolder.setIsRecyclable(false)
-            viewHolder.itemView.apply {
-                isPressed = true
-                // Animate RippleDrawable
-                if (Utils.isAtLeast(LOLLIPOP)) {
-                    postDelayed({
-                        drawableHotspotChanged(width / 2F, height / 2F)
-                        isPressed = false
-                        viewHolder.setIsRecyclable(true)
-                    }, resources.getInteger(android.R.integer.config_mediumAnimTime) * 2.toLong())
-                } else {
-                    doOnNextLayout {
-                        isPressed = false
-                        viewHolder.setIsRecyclable(true)
-                    }
-                    requestLayout()
-                }
             }
         }
 

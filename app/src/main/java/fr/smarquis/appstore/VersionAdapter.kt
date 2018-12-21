@@ -2,6 +2,7 @@ package fr.smarquis.appstore
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.lifecycle.Lifecycle
@@ -93,11 +94,7 @@ class VersionAdapter(
                 version.progress = it.second
             }
         }
-        holder.bind(version, filter)
-        if (version.key == highlightVersionKey) {
-            highlightVersionKey = null
-            Utils.highlight(holder)
-        }
+        holder.bind(version, filter, highlightVersionKey)
     }
 
 

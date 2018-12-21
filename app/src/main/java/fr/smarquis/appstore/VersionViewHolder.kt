@@ -21,6 +21,7 @@ class VersionViewHolder(
     private val size: TextView = v.textView_version_size
     private val progress: ProgressBar = v.progressBar_version
     private val type: ImageView = v.imageView_version_type
+    private val highlight: View = v.view_version_highlight
     val anchor: View = v.anchor
 
     private var version: Version? = null
@@ -35,11 +36,16 @@ class VersionViewHolder(
         const val UNKNOWN_SIZE = "⋯" /*•••*/ /*∙∙∙*/ /*···*/
     }
 
-    fun bind(version: Version, filter: String?) {
+    fun bind(version: Version, filter: String?, highlightKey: String?) {
         this.version = version
         this.filter = filter
+        renderHighlight(highlightKey)
         renderTitleAndDescription()
         renderProgress()
+    }
+
+    private fun renderHighlight(key: String?) {
+        this.highlight.visibility = if (version?.key == key) VISIBLE else INVISIBLE
     }
 
     private fun renderTitleAndDescription() {
