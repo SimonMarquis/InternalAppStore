@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">App Store</string>
+    <string name="deeplink_scheme">appstore</string>
+    <string name="deeplink_host">public-app-store.firebaseapp.com</string>
 
     <!--region Applications-->
     <string name="applications_subtitle_anonymous">anonymous</string>
@@ -32,7 +34,8 @@
     <string name="versions_toast_application_not_installed">Application not installed!</string>
     <string name="versions_toast_application_not_installed_uninstall_first">Application not installed!\nYou might need to uninstall it first.</string>
     <string name="versions_toast_application_not_installed_uninstall_first_action">@string/versions_menu_uninstall</string>
-    <string name="versions_toast_application_removed">Application removed</string>
+    <string name="versions_toast_application_removed">Application removed!</string>
+    <string name="versions_toast_application_not_found">Application not found!</string>
     <string name="versions_toast_application_open_error">Unable to open this version</string>
     <string name="versions_toast_link_to_clipboard">Link copied to clipboard</string>
     <string name="versions_toast_link_error">Unable to start this link:</string>

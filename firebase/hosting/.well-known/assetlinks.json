@@ -1,0 +1,15 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "fr.smarquis.appstore",
+            "sha256_cert_fingerprints": [
+                "6B:41:26:A6:1E:D8:BD:91:D3:8B:57:10:5F:07:5C:2D:AB:3E:26:A4:D1:3C:9C:97:15:78:9E:0D:56:0A:CE:DC",
+                "69:85:00:C6:A6:30:CA:D8:E6:D0:1A:D8:F5:3B:71:34:DC:17:96:E2:2D:49:C5:05:55:02:69:E3:43:FA:2D:96"
+            ]
+        }
+    }
+]

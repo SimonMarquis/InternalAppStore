@@ -183,6 +183,8 @@ class VersionAdapter(
         }
     }
 
+    fun positionOf(version: Version): Int = displayList.indexOf(version)
+
     private var filter: String? = null
 
     fun filter(): String? = filter

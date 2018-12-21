@@ -50,6 +50,7 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnCompleteListener
@@ -79,17 +80,24 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         private val EXTRAS = VersionsActivity::class.java.`package`
         private val EXTRA_APPLICATION = "$EXTRAS.EXTRA_APPLICATION"
         private val EXTRA_HIGHLIGHT_VERSION_KEY = "$EXTRAS.EXTRA_HIGHLIGHT_VERSION_KEY"
+        private val EXTRA_APPLICATION_UNKNOWN = "$EXTRAS.EXTRA_APPLICATION_UNKNOWN"
         private val EXTRA_SHARED_ELEMENT_TRANSITION = "$EXTRAS.EXTRA_SHARED_ELEMENT_TRANSITION"
 
-        fun start(activity: AppCompatActivity, application: Application, vararg sharedElement: Pair<View, String>) {
-            val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElement).toBundle()
-            val intent = intent(activity, application).apply { putExtra(EXTRA_SHARED_ELEMENT_TRANSITION, true) }
-            activity.startActivity(intent, bundle)
+        fun start(activity: AppCompatActivity, application: Application, highlightVersionKey: String? = null, unknown: Boolean = false, sharedElement: Pair<View, String>? = null) {
+            val intent = intent(activity, application, highlightVersionKey, unknown)
+            if (sharedElement == null) {
+                intent.putExtra(EXTRA_SHARED_ELEMENT_TRANSITION, false)
+                activity.startActivity(intent)
+            } else {
+                intent.putExtra(EXTRA_SHARED_ELEMENT_TRANSITION, true)
+                activity.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(activity, sharedElement).toBundle())
+            }
         }
 
-        fun intent(context: Context, application: Application, highlightVersionKey: String? = null): Intent {
+        fun intent(context: Context, application: Application, highlightVersionKey: String? = null, unknown: Boolean = false): Intent {
             return Intent(context, VersionsActivity::class.java).apply {
                 putExtra(EXTRA_APPLICATION, application)
+                putExtra(EXTRA_APPLICATION_UNKNOWN, unknown)
                 highlightVersionKey?.let {
                     putExtra(EXTRA_HIGHLIGHT_VERSION_KEY, it)
                 }
@@ -127,7 +135,8 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             Application.parse(snapshot).let { update ->
                 if (update == null) {
-                    Toast.makeText(applicationContext, R.string.versions_toast_application_removed, LENGTH_SHORT).show()
+                    val message = if (intent.getBooleanExtra(EXTRA_APPLICATION_UNKNOWN, false)) R.string.versions_toast_application_not_found else R.string.versions_toast_application_removed
+                    Toast.makeText(applicationContext, message, LENGTH_SHORT).show()
                     supportFinishAfterTransition()
                 } else {
                     updateApplication(update)

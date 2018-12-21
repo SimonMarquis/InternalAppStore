@@ -1,5 +1,6 @@
 package fr.smarquis.appstore
 
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -43,6 +44,10 @@ class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener
 
         const val PREFERENCE_NAME_FAVORITES = "applications_favorites"
 
+        fun start(activity: Activity) {
+            activity.startActivity(Intent(activity, ApplicationsActivity::class.java))
+        }
+
     }
 
     private var applicationAdapter: ApplicationAdapter? = null
@@ -77,7 +82,6 @@ class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener
         }
     }
 
-
     private fun initUi() {
         contentLoadingProgressBar = findViewById(R.id.contentLoadingProgressBar_applications)
         contentLoadingProgressBar.show()
@@ -98,7 +102,10 @@ class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener
                             putString(FirebaseAnalytics.Param.ITEM_ID, application.key)
                             putString(FirebaseAnalytics.Param.ITEM_NAME, application.name)
                         })
-                        VersionsActivity.start(this@ApplicationsActivity, application, applicationViewHolder.sharedElement())
+                        VersionsActivity.start(
+                                activity = this@ApplicationsActivity,
+                                application = application,
+                                sharedElement = applicationViewHolder.sharedElement())
                     }
 
                     override fun onItemLongClicked(application: Application, applicationViewHolder: ApplicationViewHolder): Boolean {

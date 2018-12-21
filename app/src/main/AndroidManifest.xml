@@ -23,6 +23,31 @@
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
 
         <activity
+            android:name=".Deeplink"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/deeplink_scheme" />
+            </intent-filter>
+            <intent-filter
+                android:autoVerify="true"
+                tools:targetApi="m">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/deeplink_host"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".ApplicationsActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppStore.Preview">
