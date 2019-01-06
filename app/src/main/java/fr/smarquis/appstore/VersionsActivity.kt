@@ -201,7 +201,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         setContentView(R.layout.activity_versions)
         excludeTransitionTargets()
-        initUi(application)
+        initUi(savedInstanceState, application)
         initCircularReveal(savedInstanceState)
         registerListeners(application)
         updateApplication(application)
@@ -255,8 +255,8 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         hasRegisteredListeners = false
     }
 
-    private fun initUi(application: Application) {
-        ViewCompat.setTransitionName(findViewById(R.id.imageView_header_icon), application.imageTransitionName())
+    private fun initUi(savedInstanceState: Bundle?, application: Application) {
+        ViewCompat.setTransitionName(findViewById(R.id.imageView_header_icon), if (savedInstanceState == null) application.imageTransitionName() else null)
         constraintLayout = findViewById(R.id.constraintLayout)
         recyclerView = findViewById(R.id.recyclerView_versions)
         contentLoadingProgressBar = findViewById(R.id.contentLoadingProgressBar_versions)
