@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.content.FileProvider
 import java.io.File
@@ -32,6 +34,14 @@ class ApkFileProvider : FileProvider() {
                 if (exists()) {
                     setLastModified(System.currentTimeMillis())
                 }
+            }
+        }
+
+        fun delete(context: Context, version: Version, action: (() -> Unit)? = null) {
+            AsyncTask.execute {
+                tempApkFile(context, version).delete()
+                apkFile(context, version).delete()
+                action?.let { Handler(Looper.getMainLooper()).post(it) }
             }
         }
 

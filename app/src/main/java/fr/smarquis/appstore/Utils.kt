@@ -189,3 +189,11 @@ class SelfUpdateEventListener(val context: Context, val application: Application
         }
     }
 }
+
+class RemovedVersionsEventListener(val context: Context) : AbstractChildEventListener() {
+    override fun onChildRemoved(snapshot: DataSnapshot) {
+        Version.parse(snapshot)?.let {
+            ApkFileProvider.delete(context, it)
+        }
+    }
+}

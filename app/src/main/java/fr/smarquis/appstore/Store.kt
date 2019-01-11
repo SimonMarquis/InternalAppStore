@@ -63,10 +63,12 @@ class Store : android.app.Application() {
      * This method will inject database listeners to:
      * - check for self update (based on package name)
      * - synchronize notification channels and shortcuts
+     * - detect unreferenced apk files and delete them
      */
     private fun injectFirebaseDatabaseListeners() {
         val store = this
         val shortcuts by lazy { Shortcuts.instance(store) }
+        val detectRemovedVersions = RemovedVersionsEventListener(store)
 
         Firebase.database.applications().addChildEventListener(object : AbstractChildEventListener() {
 
@@ -74,6 +76,7 @@ class Store : android.app.Application() {
                 Application.parse(snapshot)?.let {
                     Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
                     with(Firebase.database.versions(it.key.orEmpty())) {
+                        addChildEventListener(detectRemovedVersions)
                         if (it.isMyself(store)) {
                             // SingleValueEvent will be enough
                             // since regular updates will still be delivered through notifications
@@ -93,6 +96,7 @@ class Store : android.app.Application() {
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 Application.parse(snapshot)?.let {
                     Notifications.deleteNewVersionsNotificationChannel(store, it)
+                    Firebase.database.versions(it.key.orEmpty()).removeEventListener(detectRemovedVersions)
                     shortcuts.remove(it)
                 }
             }
