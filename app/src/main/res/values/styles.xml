@@ -29,4 +29,12 @@
         <item name="roundedTextDrawableRight">@drawable/rounded_text_bg_right</item>
     </style>
 
+    <style name="ChipOutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Button</item>
+        <item name="android:insetTop">@dimen/material_baseline_grid_1x</item>
+        <item name="android:insetBottom">@dimen/material_baseline_grid_1x</item>
+        <item name="cornerRadius">@dimen/material_baseline_grid_3x</item>
+        <item name="strokeColor">@color/colorAccent</item>
+    </style>
+
 </resources>

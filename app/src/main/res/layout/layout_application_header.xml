@@ -112,6 +112,7 @@
         android:layout_height="wrap_content"
         android:fadingEdge="horizontal"
         android:fadingEdgeLength="@dimen/material_baseline_grid_1x"
+        android:overScrollMode="never"
         android:requiresFadingEdge="horizontal"
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
@@ -120,32 +121,34 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:divider="@drawable/transparent_divider_1x"
+            android:showDividers="middle">
 
             <fr.smarquis.appstore.EmojiButton
                 android:id="@+id/button_header_link1"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/ChipOutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:text="Link 1" />
 
             <fr.smarquis.appstore.EmojiButton
                 android:id="@+id/button_header_link2"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/ChipOutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:text="Link 2" />
 
             <fr.smarquis.appstore.EmojiButton
                 android:id="@+id/button_header_link3"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/ChipOutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:text="Link 3" />
 
             <fr.smarquis.appstore.EmojiButton
                 android:id="@+id/button_header_link4"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/ChipOutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:text="Link 4" />

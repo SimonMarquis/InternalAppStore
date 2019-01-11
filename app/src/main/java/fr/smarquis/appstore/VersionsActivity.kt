@@ -168,7 +168,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 val recyclerViewTopPadding = if (visible) baselineGrid else 0
                 recyclerView.setPadding(0, recyclerViewTopPadding, 0, 0)
                 val linksRightPadding = if (visible) fabSizeMini else 0
-                links.setPadding(0, 0, linksRightPadding, 0)
+                links.getChildAt(0).setPadding(0, 0, linksRightPadding, 0)
                 val firstCompletelyVisibleItemPositionAfter = layoutManager.findFirstCompletelyVisibleItemPosition()
                 // Force re-scroll to first completely visible item when padding is added
                 if (visible && firstCompletelyVisibleItemPositionBefore == 0 && firstCompletelyVisibleItemPositionAfter != firstCompletelyVisibleItemPositionBefore) {
@@ -549,7 +549,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 // This will prevent the RecyclerView to appear scrolled down by the amount of top padding
                 recyclerView.setPadding(0, baselineGrid, 0, 0)
                 // Force setting the HorizontalScrollView right padding before the animation ends to avoid flash of text
-                links.setPadding(0, 0, fabSizeMini, 0)
+                links.getChildAt(0).setPadding(0, 0, fabSizeMini, 0)
             } else {
                 fab.show(fabVisibilityChangedListener)
             }
@@ -798,7 +798,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         with(view) {
             ViewCompat.setElevation(this, context.resources.getDimension(R.dimen.design_snackbar_elevation))
             (layoutParams as? ViewGroup.MarginLayoutParams)?.setMargins(context.resources.getDimensionPixelSize(R.dimen.mtrl_snackbar_margin))
-            setBackgroundResource(R.drawable.mtrl_snackbar_background)
+            setBackgroundResource(R.drawable.design_snackbar_background)
             findViewById<TextView>(R.id.snackbar_text)?.maxLines = 2
         }
         return this

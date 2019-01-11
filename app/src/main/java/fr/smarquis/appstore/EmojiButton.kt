@@ -3,15 +3,15 @@ package fr.smarquis.appstore
 import android.content.Context
 import android.text.InputFilter
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatButton
 import androidx.emoji.widget.EmojiTextViewHelper
+import com.google.android.material.button.MaterialButton
 
 
 class EmojiButton @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0)
-    : AppCompatButton(context, attrs, defStyleAttr) {
+    : MaterialButton(context, attrs, defStyleAttr) {
 
     private var _helper: EmojiTextViewHelper? = null
 
