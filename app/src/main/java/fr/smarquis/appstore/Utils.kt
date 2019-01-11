@@ -17,6 +17,10 @@ import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.set
 import androidx.core.text.toSpannable
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 
 class Utils {
@@ -148,6 +152,40 @@ class Utils {
 
         fun relativeTimeSpan(time: Long?, now: Long = System.currentTimeMillis(), minResolution: Long = SECOND_IN_MILLIS, flags: Int = FORMAT_ABBREV_RELATIVE): CharSequence? {
             return DateUtils.getRelativeTimeSpanString(time ?: now, now, minResolution, flags)
+        }
+    }
+}
+
+abstract class AbstractChildEventListener : ChildEventListener {
+    override fun onCancelled(error: DatabaseError) {}
+    override fun onChildAdded(snapshot: DataSnapshot, previousChildKey: String?) {}
+    override fun onChildChanged(snapshot: DataSnapshot, previousChildKey: String?) {}
+    override fun onChildMoved(snapshot: DataSnapshot, previousChildKey: String?) {}
+    override fun onChildRemoved(snapshot: DataSnapshot) {}
+}
+
+abstract class AbstractValueEventListener : ValueEventListener {
+    override fun onCancelled(error: DatabaseError) {}
+    override fun onDataChange(snapshot: DataSnapshot) {}
+}
+
+class SelfUpdateEventListener(val context: Context, val application: Application) : AbstractValueEventListener() {
+
+    private val myself = Version(name = Utils.applicationVersionName(context, context.packageName))
+
+    override fun onDataChange(snapshot: DataSnapshot) {
+        var compareTo = myself
+        for (versionSnapshot in snapshot.children) {
+            // only use versions without label
+            val version = Version.parse(versionSnapshot) ?: continue
+            if (!version.semver.label.isNullOrBlank()) continue
+            // ignore same versions
+            if (version.semver > compareTo.semver) {
+                compareTo = version
+            }
+        }
+        if (compareTo != myself) {
+            Notifications.onNewVersion(context, application, compareTo)
         }
     }
 }

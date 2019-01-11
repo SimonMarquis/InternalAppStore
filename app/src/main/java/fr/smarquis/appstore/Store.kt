@@ -9,10 +9,7 @@ import androidx.emoji.text.FontRequestEmojiCompatConfig
 import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.storage.images.FirebaseImageLoader
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 
@@ -35,9 +32,10 @@ class Store : android.app.Application() {
         super.onCreate()
         Firebase.database.store().keepSynced(true)
         Firebase.auth.addAuthStateListener { Firebase.analytics.setUserId(it.currentUser?.uid) }
+        Notifications.createOrUpdateNewApplicationsNotificationChannel(this)
         ApkFileProvider.cleanUp(this)
         injectFirebaseImageLoader()
-        synchronizeNotificationChannelsAndShortcuts()
+        injectFirebaseDatabaseListeners()
         initEmojiCompat()
     }
 
@@ -61,19 +59,34 @@ class Store : android.app.Application() {
         }
     }
 
-    private fun synchronizeNotificationChannelsAndShortcuts() {
-        Notifications.createOrUpdateNewApplicationsNotificationChannel(this)
-        Firebase.database.applications().addChildEventListener(object : ChildEventListener {
+    /**
+     * This method will inject database listeners to:
+     * - check for self update (based on package name)
+     * - synchronize notification channels and shortcuts
+     */
+    private fun injectFirebaseDatabaseListeners() {
+        val store = this
+        val shortcuts by lazy { Shortcuts.instance(store) }
 
-            val store = this@Store
-            val shortcuts by lazy { Shortcuts.instance(store) }
+        Firebase.database.applications().addChildEventListener(object : AbstractChildEventListener() {
 
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildKey: String?) {
                 Application.parse(snapshot)?.let {
                     Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
-                    if (it.isMyself(store)) {
-                        checkForSelfUpdate(it)
+                    with(Firebase.database.versions(it.key.orEmpty())) {
+                        if (it.isMyself(store)) {
+                            // SingleValueEvent will be enough
+                            // since regular updates will still be delivered through notifications
+                            addListenerForSingleValueEvent(SelfUpdateEventListener(store, it))
+                        }
                     }
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildKey: String?) {
+                Application.parse(snapshot)?.let {
+                    Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
+                    shortcuts.update(it)
                 }
             }
 
@@ -84,39 +97,8 @@ class Store : android.app.Application() {
                 }
             }
 
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                Application.parse(snapshot)?.let {
-                    Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
-                    shortcuts.update(it)
-                }
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
-            override fun onCancelled(error: DatabaseError) {}
         })
-    }
 
-    private fun checkForSelfUpdate(application: Application) {
-        val myself = Version(name = Utils.applicationVersionName(this@Store, packageName))
-        Firebase.database.versions(application.key.orEmpty()).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {}
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var compareTo = myself
-                for (versionSnapshot in dataSnapshot.children) {
-                    // only use versions without label
-                    val version = Version.parse(versionSnapshot) ?: continue
-                    if (!version.semver.label.isNullOrBlank()) continue
-                    // ignore same versions
-                    if (version.semver > compareTo.semver) {
-                        compareTo = version
-                    }
-                }
-                if (compareTo != myself) {
-                    Notifications.onNewVersion(this@Store, application, compareTo)
-                }
-            }
-        })
     }
 
     private fun injectFirebaseImageLoader() {
