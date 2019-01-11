@@ -687,9 +687,9 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private fun deleteVersion(version: Version) {
         if (!version.hasApkRef()) return
         version.getActiveDownloadTask()?.cancel()
-        ApkFileProvider.apkFile(applicationContext, version).delete()
-        ApkFileProvider.tempApkFile(applicationContext, version).delete()
-        refreshVersionProperties(version)
+        ApkFileProvider.delete(applicationContext, version) {
+            refreshVersionProperties(version)
+        }
     }
 
     class DownloadProgressListener(
