@@ -125,10 +125,10 @@ AppStore.prototype.initUserInterface = function() {
   };
 
   this.ids = {
-    ofApplicationCard: key => `application_card_${key}`,
+    ofApplicationCard: key => key,
     ofApplicationModal: key => `application_modal_${key}`,
     ofApplicationDetails: key => `application_details_${key}`,
-    ofVersionItem: key => `version_item_${key}`,
+    ofVersionItem: key => key,
     ofVersionModal: key => `version_modal_${key}`
   };
 
@@ -210,7 +210,7 @@ AppStore.prototype.initRouter = function() {
 };
 
 AppStore.prototype.routerPopstate = function(event) {
-  var state = event.state;
+  let state = event.state;
   if (state && state.view == "app") {
     this.routerShowApp(state.key);
   } else {
@@ -244,7 +244,7 @@ AppStore.prototype.routerShowRoot = function(key, callback) {
     view: "root",
     key: window.location.pathname.substr(1)
   };
-  window.history.replaceState(state, null, state.key);
+  window.history.replaceState(state, null, state.key + window.location.hash);
   this.uiShowApplicationCards(key, callback);
 };
 
@@ -259,9 +259,9 @@ AppStore.prototype.routerShowApp = function(key) {
     key: key
   };
   if ((window.history.state || {}).view == "app") {
-    window.history.replaceState(state, null, state.key);
+    window.history.replaceState(state, null, state.key + window.location.hash);
   } else {
-    window.history.pushState(state, null, state.key);
+    window.history.pushState(state, null, state.key + window.location.hash);
   }
   this.uiShowApplicationDetails(app.key);
 };
@@ -529,6 +529,9 @@ AppStore.prototype.uiUpdateVersion = function(
   version,
   root
 ) {
+  if (Utils.isLocationHash(versionKey)) {
+    Ui.setActiveTargets(root);
+  }
   root.querySelector("[data-version-name]").textContent = version.name;
   root.setAttribute("sort-key-primary", version.name);
   root.setAttribute("sort-key-secondary", version.timestamp);
@@ -638,6 +641,7 @@ AppStore.prototype.uiUpdateApplicationDetails = function(details, key, app) {
 AppStore.prototype.uiShowApplicationCards = function(key, callback) {
   Ui.resetTitle();
   Ui.resetFavicon();
+  Ui.resetActiveTargets();
   Ui.show(this.ui.applicationsCards);
   $(this.ui.applicationsCards)
     .parent()
@@ -668,8 +672,20 @@ AppStore.prototype.uiShowApplicationDetails = function(key) {
   $(this.ui.applicationsDetails)
     .children()
     .slideUp();
-  $("#" + this.ids.ofApplicationDetails(key)).slideDown();
-  Ui.scrollToTop();
+  let details = document.querySelector(
+    "#" + this.ids.ofApplicationDetails(key)
+  );
+  $(details).slideDown(function() {
+    let targets = Ui.getActiveTargets(details);
+    if (targets && targets.length > 0) {
+      let target = targets[0];
+      if (!Ui.isInViewport(target)) {
+        target.scrollIntoView();
+      }
+    } else {
+      Ui.scrollToTop();
+    }
+  });
 };
 
 AppStore.prototype.uiShowApplicationModal = function(key) {
@@ -1835,11 +1851,42 @@ Ui.resetFavicon = function() {
   }
 };
 
+Ui.getActiveTargets = function(element) {
+  return element.querySelectorAll("[data-active-target]");
+};
+
+Ui.setActiveTargets = function(...elements) {
+  for (let e of elements) {
+    e.setAttribute("data-active-target", "true");
+    e.classList.add("list-group-item-primary");
+  }
+};
+
+Ui.resetActiveTargets = function() {
+  const elements = document.querySelectorAll("[data-active-target]");
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    element.removeAttribute("data-active-target");
+    element.classList.remove("list-group-item-primary");
+  }
+};
+
 Ui.scrollToTop = function() {
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
+};
+
+Ui.isInViewport = function(element) {
+  let rect = element.getBoundingClientRect();
+  let doc = document.documentElement;
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || doc.clientHeight) &&
+    rect.right <= (window.innerWidth || doc.clientWidth)
+  );
 };
 
 function Utils() {}
@@ -1982,6 +2029,10 @@ Utils.initTimestampTimer = function() {
       element.setAttribute("title", new Date(timestamp).toLocaleString());
     }
   }, 61 * 1000);
+};
+
+Utils.isLocationHash = function(hash) {
+  return window.location.hash.substr(1) == hash;
 };
 
 class SemVer {
