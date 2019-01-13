@@ -109,7 +109,19 @@ class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener
                     }
 
                     override fun onItemLongClicked(application: Application, applicationViewHolder: ApplicationViewHolder): Boolean {
-                        applicationAdapter?.onFavoriteToggle(application)
+                        val adapter = applicationAdapter ?: return false
+                        adapter.onFavoriteToggle(application)
+                        val newIndex = adapter.indexOf(application)
+                        (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
+                            when (newIndex) {
+                                // Completely visible -> prevent potential default scroll
+                                in findFirstCompletelyVisibleItemPosition()..findLastCompletelyVisibleItemPosition() -> scrollToPosition(findFirstCompletelyVisibleItemPosition())
+                                // Partially visible -> force scroll to the new index
+                                in findFirstVisibleItemPosition()..findLastVisibleItemPosition() -> scrollToPosition(newIndex)
+                                // Not visible -> scroll to the new index
+                                else -> scrollToPosition(newIndex)
+                            }
+                        }
                         return true
                     }
 

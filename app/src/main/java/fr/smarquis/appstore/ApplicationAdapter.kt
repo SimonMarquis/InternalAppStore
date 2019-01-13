@@ -175,6 +175,8 @@ class ApplicationAdapter(
         }
     }
 
+    fun indexOf(application: Application): Int = displayList.indexOf(application)
+
     private var filter: String? = null
 
     fun filter(): String? = filter
