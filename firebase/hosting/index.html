@@ -58,7 +58,7 @@
           <div class="card-body">
             <div class="row align-items-center">
               <div class="col-sm-3 text-center" data-app-image-drop>
-                <div class="spinner-grow text-secondary" data-app-image-drop-spinner hidden style="position: absolute;">
+                <div class="spinner-grow text-secondary" data-app-image-drop-spinner hidden style="position: absolute;" role="status">
                 </div>
                 <img class="card-img w-100 h-100" style="max-width: 150px;" draggable="false" data-app-image drop-zone onload="this.style.display=''" onerror="this.style.display='none'">
               </div>
@@ -281,7 +281,7 @@
         <div id="alert-container"></div>
       </div>
 
-      <div id="loader" class="spinner-grow text-secondary" style="margin: 5rem auto;">Loading…</div>
+      <div id="loader" class="spinner-grow text-secondary" style="margin: 5rem auto;" role="status"><span class="sr-only">Loading…</span></div>
 
       <div id="firebaseui-auth-container" class="card-body" hidden></div>
 
