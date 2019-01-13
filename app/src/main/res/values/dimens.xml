@@ -11,4 +11,7 @@
     <dimen name="roundedTextBorderRadius">4dp</dimen>
     <dimen name="roundedTextBorderWidth">1dp</dimen>
 
+    <dimen name="chipStrokeWidth">1dp</dimen>
+    <dimen name="chipCornerRadius">@dimen/material_baseline_grid_2x</dimen>
+
 </resources>

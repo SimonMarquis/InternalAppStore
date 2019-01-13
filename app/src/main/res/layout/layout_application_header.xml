@@ -113,6 +113,7 @@
         android:fadingEdge="horizontal"
         android:fadingEdgeLength="@dimen/material_baseline_grid_1x"
         android:overScrollMode="never"
+        android:paddingBottom="@dimen/material_baseline_grid_1x"
         android:requiresFadingEdge="horizontal"
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
@@ -125,33 +126,25 @@
             android:divider="@drawable/transparent_divider_1x"
             android:showDividers="middle">
 
-            <fr.smarquis.appstore.EmojiButton
+            <androidx.emoji.widget.EmojiButton
                 android:id="@+id/button_header_link1"
-                style="@style/ChipOutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                tools:text="Link 1" />
+                style="@style/ChipButton"
+                tools:text="LINK" />
 
-            <fr.smarquis.appstore.EmojiButton
+            <androidx.emoji.widget.EmojiButton
                 android:id="@+id/button_header_link2"
-                style="@style/ChipOutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                tools:text="Link 2" />
+                style="@style/ChipButton"
+                tools:text="LINK" />
 
-            <fr.smarquis.appstore.EmojiButton
+            <androidx.emoji.widget.EmojiButton
                 android:id="@+id/button_header_link3"
-                style="@style/ChipOutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                tools:text="Link 3" />
+                style="@style/ChipButton"
+                tools:text="LINK" />
 
-            <fr.smarquis.appstore.EmojiButton
+            <androidx.emoji.widget.EmojiButton
                 android:id="@+id/button_header_link4"
-                style="@style/ChipOutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                tools:text="Link 4" />
+                style="@style/ChipButton"
+                tools:text="LINK" />
 
         </LinearLayout>
 

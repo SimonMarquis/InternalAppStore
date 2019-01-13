@@ -29,12 +29,13 @@
         <item name="roundedTextDrawableRight">@drawable/rounded_text_bg_right</item>
     </style>
 
-    <style name="ChipOutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Button</item>
-        <item name="android:insetTop">@dimen/material_baseline_grid_1x</item>
-        <item name="android:insetBottom">@dimen/material_baseline_grid_1x</item>
-        <item name="cornerRadius">@dimen/material_baseline_grid_3x</item>
-        <item name="strokeColor">@color/colorAccent</item>
+    <style name="ChipButton" parent="Widget.AppCompat.Button.Small">
+        <item name="android:layout_height">@dimen/material_baseline_grid_4x</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/material_baseline_grid_1.5x</item>
+        <item name="android:paddingRight">@dimen/material_baseline_grid_1.5x</item>
+        <item name="android:background">@drawable/chip_background</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
 </resources>

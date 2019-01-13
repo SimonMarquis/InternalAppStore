@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/colorAccent">
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <solid android:color="#000" />
+            <corners android:radius="@dimen/chipCornerRadius" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/chip_background_normal" />
+</ripple>
