@@ -22,6 +22,8 @@
         android:theme="@style/Theme.AppStore"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
 
+        <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
+
         <activity
             android:name=".Deeplink"
             android:theme="@android:style/Theme.NoDisplay">
