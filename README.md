@@ -88,7 +88,7 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
 - In the Firebase project settings, select `ADD APP` and `Add Firebase to your web app`
 - When using Firebase Hosting and the CLI, [Web SDK auto-configuration](https://firebase.googleblog.com/2017/04/easier-configuration-for-firebase-on-web.html) is [enabled by default](https://github.com/SimonMarquis/InternalAppStore/commit/2b94dd0e7e1614a06a3126f57e2fb69cfeeab257)
 - Verify the configuration of each module
-  + Android: [Store.kt](app/src/main/java/fr/smarquis/appstore/Store.kt#L21-L32)
+  + Android: [Store.kt](app/src/main/java/fr/smarquis/appstore/Store.kt#L18-L30)
   + Web: [index.js](firebase/hosting/index.js#L5-L23)
   + Firebase Database: use your own domain
     * [database-private.rules.json (read access)](firebase/database/database-private.rules.json#L19-L20)
