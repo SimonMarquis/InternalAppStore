@@ -229,6 +229,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onRestart() {
         super.onRestart()
+        updateApplication(application)
         versionAdapter?.notifyDataSetChanged()
     }
 
