@@ -16,7 +16,8 @@ data class Application(
         val link_1: Link? = null,
         val link_2: Link? = null,
         val link_3: Link? = null,
-        val link_4: Link? = null
+        val link_4: Link? = null,
+        val link_5: Link? = null
 ) : Parcelable {
 
     val descriptionToHtml by lazy {
@@ -34,7 +35,8 @@ data class Application(
             link_1 = p.readParcelable(Link::class.java.classLoader),
             link_2 = p.readParcelable(Link::class.java.classLoader),
             link_3 = p.readParcelable(Link::class.java.classLoader),
-            link_4 = p.readParcelable(Link::class.java.classLoader)
+            link_4 = p.readParcelable(Link::class.java.classLoader),
+            link_5 = p.readParcelable(Link::class.java.classLoader)
     )
 
     override fun writeToParcel(p: Parcel, flags: Int) {
@@ -47,6 +49,7 @@ data class Application(
         p.writeParcelable(link_2, flags)
         p.writeParcelable(link_3, flags)
         p.writeParcelable(link_4, flags)
+        p.writeParcelable(link_5, flags)
     }
 
     override fun describeContents() = 0

@@ -625,7 +625,7 @@ AppStore.prototype.uiUpdateApplicationDetails = function(details, key, app) {
 
   const links = details.querySelector("[data-app-links]");
   Ui.empty(links);
-  for (let link of [app.link_1, app.link_2, app.link_3, app.link_4]) {
+  for (let link of [app.link_1, app.link_2, app.link_3, app.link_4, app.link_5]) {
     if (!link) {
       continue;
     }
@@ -707,6 +707,8 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
     link3uri: root.querySelector("[data-app-link-3-uri]"),
     link4name: root.querySelector("[data-app-link-4-name]"),
     link4uri: root.querySelector("[data-app-link-4-uri]"),
+    link5name: root.querySelector("[data-app-link-5-name]"),
+    link5uri: root.querySelector("[data-app-link-5-uri]"),
     imageInput: root.querySelector("[data-app-image-input]"),
     imageLabel: root.querySelector("[data-app-image-label]"),
     imageMaxSize: root.querySelector("[data-app-image-max-size]"),
@@ -725,7 +727,8 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
     modal.link1uri,
     modal.link2uri,
     modal.link3uri,
-    modal.link4uri
+    modal.link4uri,
+    modal.link5uri
   ]) {
     link.addEventListener("input", event =>
       Utils.validateUriInput(event.target, true)
@@ -753,6 +756,8 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
     modal.link3uri.value = app.link_3 ? app.link_3.uri : null;
     modal.link4name.value = app.link_4 ? app.link_4.name : null;
     modal.link4uri.value = app.link_4 ? app.link_4.uri : null;
+    modal.link5name.value = app.link_5 ? app.link_5.name : null;
+    modal.link5uri.value = app.link_5 ? app.link_5.uri : null;
     modal.imageInput.removeAttribute("required");
     modal.imageLabel.textContent = "Unchanged";
     modal.createGroup.remove();
@@ -858,6 +863,12 @@ AppStore.prototype.uiExtractDataFromApplicationModal = function(modal, key) {
         uri: modal.link4uri.value
       };
     }
+    if (modal.link5uri.value) {
+      data.link_5 = {
+        name: modal.link5name.value,
+        uri: modal.link5uri.value
+      };
+    }
   }
   if (modal.silent.hasAttribute("data-app-silent-flag")) {
     data.silent = true;
@@ -914,6 +925,11 @@ AppStore.prototype.uiValidateApplicationModal = function(modal, key, app) {
   if (data.link_4 && !Utils.isUriValid(data.link_4.uri)) {
     console.error("Link is invalid");
     modal.link4uri.focus();
+    return false;
+  }
+  if (data.link_5 && !Utils.isUriValid(data.link_5.uri)) {
+    console.error("Link is invalid");
+    modal.link5uri.focus();
     return false;
   }
   return data;
@@ -1330,6 +1346,12 @@ AppStore.prototype.dataUpdateApplication = function(key, data) {
       ? {
           name: data.link_4.name,
           uri: data.link_4.uri
+        }
+      : null,
+    link_5: data.link_5
+      ? {
+          name: data.link_5.name,
+          uri: data.link_5.uri
         }
       : null
   };

@@ -230,7 +230,8 @@ class Shortcuts private constructor(_context: Context) {
                     link_1 = Link.fromPersistableBundle(getPersistableBundle("link_1")),
                     link_2 = Link.fromPersistableBundle(getPersistableBundle("link_2")),
                     link_3 = Link.fromPersistableBundle(getPersistableBundle("link_3")),
-                    link_4 = Link.fromPersistableBundle(getPersistableBundle("link_4"))
+                    link_4 = Link.fromPersistableBundle(getPersistableBundle("link_4")),
+                    link_5 = Link.fromPersistableBundle(getPersistableBundle("link_5"))
             )
         }
     }
@@ -246,7 +247,8 @@ class Shortcuts private constructor(_context: Context) {
                     link_1 = Link.fromFlatBundle("$prefix.link_1", this),
                     link_2 = Link.fromFlatBundle("$prefix.link_2", this),
                     link_3 = Link.fromFlatBundle("$prefix.link_3", this),
-                    link_4 = Link.fromFlatBundle("$prefix.link_4", this)
+                    link_4 = Link.fromFlatBundle("$prefix.link_4", this),
+                    link_5 = Link.fromFlatBundle("$prefix.link_5", this)
             )
         }
     }
@@ -264,6 +266,7 @@ class Shortcuts private constructor(_context: Context) {
             putPersistableBundle("link_2", link_2?.toPersistableBundle())
             putPersistableBundle("link_3", link_3?.toPersistableBundle())
             putPersistableBundle("link_4", link_4?.toPersistableBundle())
+            putPersistableBundle("link_5", link_5?.toPersistableBundle())
         }
     }
 

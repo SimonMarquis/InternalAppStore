@@ -146,6 +146,11 @@
                 style="@style/ChipButton"
                 tools:text="LINK" />
 
+            <androidx.emoji.widget.EmojiButton
+                android:id="@+id/button_header_link5"
+                style="@style/ChipButton"
+                tools:text="LINK" />
+
         </LinearLayout>
 
     </HorizontalScrollView>

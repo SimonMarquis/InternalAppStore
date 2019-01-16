@@ -47,6 +47,9 @@
           "link_4": {
             ".validate": "newData.hasChildren(['name', 'uri']) && newData.child('name').isString() && newData.child('uri').isString()"
           },
+          "link_5": {
+            ".validate": "newData.hasChildren(['name', 'uri']) && newData.child('name').isString() && newData.child('uri').isString()"
+          },
           "silent": {
             ".validate": "newData.val() == null || newData.isBoolean()"
           },

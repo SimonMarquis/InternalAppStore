@@ -504,8 +504,9 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         updateAppLink(application.link_2, findViewById(R.id.button_header_link2))
         updateAppLink(application.link_3, findViewById(R.id.button_header_link3))
         updateAppLink(application.link_4, findViewById(R.id.button_header_link4))
+        updateAppLink(application.link_5, findViewById(R.id.button_header_link5))
         findViewById<HorizontalScrollView>(R.id.horizontalScrollView_header).apply {
-            visibility = if (application.link_1 == null && application.link_2 == null && application.link_3 == null && application.link_4 == null) GONE else VISIBLE
+            visibility = if (application.link_1 == null && application.link_2 == null && application.link_3 == null && application.link_4 == null && application.link_5 == null) GONE else VISIBLE
         }
     }
 
