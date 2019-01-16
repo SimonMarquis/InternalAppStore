@@ -4,6 +4,7 @@
 
 <!-- MarkdownTOC -->
 
+- [1.3.0](#130)
 - [1.2.0](#120)
 - [1.1.0](#110)
 - [1.0.2](#102)
@@ -12,6 +13,19 @@
 
 <!-- /MarkdownTOC -->
 </details>
+
+## 1.3.0
+> 2019.01.16
+
+- 🔍 Add search input to filter applications and versions
+- ⭐ Long press on application to bookmark
+- ♻️ Proper image cache invalidation
+- 🌀 Hide progress indicator when there is no data
+- ✨ Fix system bars flickering during transitions 
+- 💄 Fix icon placeholder and list divider rendering
+- 🔗 Support deeplinks to applications and versions
+- 🗑️ Smarter apk file cache invalidation
+- ⚪ Outlined shortcut buttons
 
 ## 1.2.0
 > 2018.10.14
