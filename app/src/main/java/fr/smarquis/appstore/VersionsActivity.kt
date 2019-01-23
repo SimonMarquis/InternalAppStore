@@ -118,9 +118,6 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var searchView: SearchView
 
     @delegate:Px
-    @delegate:SuppressLint("PrivateResource")
-    private val fabSizeMini by lazy { resources.getDimensionPixelSize(com.google.android.material.R.dimen.design_fab_size_mini) }
-    @delegate:Px
     private val baselineGrid by lazy { resources.getDimensionPixelSize(R.dimen.material_baseline_grid_1x) }
 
     private val applicationValueEventListener: ValueEventListener = object : ValueEventListener {
@@ -167,8 +164,6 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 if (ViewCompat.isLaidOut(constraintLayout)) TransitionManager.beginDelayedTransition(constraintLayout as ViewGroup)
                 val recyclerViewTopPadding = if (visible) baselineGrid else 0
                 recyclerView.setPadding(0, recyclerViewTopPadding, 0, 0)
-                val linksRightPadding = if (visible) fabSizeMini else 0
-                links.getChildAt(0).setPadding(0, 0, linksRightPadding, 0)
                 val firstCompletelyVisibleItemPositionAfter = layoutManager.findFirstCompletelyVisibleItemPosition()
                 // Force re-scroll to first completely visible item when padding is added
                 if (visible && firstCompletelyVisibleItemPositionBefore == 0 && firstCompletelyVisibleItemPositionAfter != firstCompletelyVisibleItemPositionBefore) {
@@ -506,7 +501,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         updateAppLink(application.link_3, findViewById(R.id.button_header_link3))
         updateAppLink(application.link_4, findViewById(R.id.button_header_link4))
         updateAppLink(application.link_5, findViewById(R.id.button_header_link5))
-        findViewById<HorizontalScrollView>(R.id.horizontalScrollView_header).apply {
+        links.apply {
             visibility = if (application.link_1 == null && application.link_2 == null && application.link_3 == null && application.link_4 == null && application.link_5 == null) GONE else VISIBLE
         }
     }
@@ -550,8 +545,6 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 // Force setting the RecyclerView top padding before items are added
                 // This will prevent the RecyclerView to appear scrolled down by the amount of top padding
                 recyclerView.setPadding(0, baselineGrid, 0, 0)
-                // Force setting the HorizontalScrollView right padding before the animation ends to avoid flash of text
-                links.getChildAt(0).setPadding(0, 0, fabSizeMini, 0)
             } else {
                 fab.show(fabVisibilityChangedListener)
             }
