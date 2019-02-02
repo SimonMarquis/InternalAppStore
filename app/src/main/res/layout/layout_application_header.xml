@@ -128,7 +128,7 @@
             android:paddingStart="0dp"
             android:paddingEnd="@dimen/design_fab_size_mini"
             android:showDividers="middle"
-            tools:ignore="RtlCompat">
+            tools:ignore="PrivateResource,RtlCompat">
 
             <androidx.emoji.widget.EmojiButton
                 android:id="@+id/button_header_link1"

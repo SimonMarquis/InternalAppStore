@@ -48,7 +48,7 @@
         tools:listitem="@layout/item_version" />
 
     <Space
-        android:id="@+id/space_responsive_width"
+        android:id="@+id/space_responsive_horizontal"
         android:layout_width="@dimen/activity_responsive_width"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,7 +70,7 @@
         app:elevation="@dimen/material_baseline_grid_1x"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView_versions"
-        app:layout_constraintEnd_toEndOf="@+id/space_responsive_width"
+        app:layout_constraintEnd_toEndOf="@+id/space_responsive_horizontal"
         app:layout_constraintTop_toTopOf="@+id/recyclerView_versions"
         tools:ignore="UnusedAttribute"
         tools:visibility="visible" />
