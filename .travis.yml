@@ -21,5 +21,6 @@ android:
     - extra
 before_install:
   - 'echo "$GOOGLE_SERVICES" | base64 --decode > app/google-services.json'
+  - 'chmod +x gradlew'
 script:
-  - 'chmod +x ./gradlew clean check --stacktrace'
+  - './gradlew clean check --stacktrace'
