@@ -145,7 +145,6 @@ class ApplicationAdapter(
             }
             REMOVED -> {
                 val removedApplication = backupList.removeAt(newIndex)
-                backupList.removeAt(newIndex)
                 displayList.remove(removedApplication)
             }
             else -> throw IllegalStateException("Incomplete case statement")

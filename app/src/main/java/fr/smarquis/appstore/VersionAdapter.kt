@@ -151,7 +151,6 @@ class VersionAdapter(
             }
             ChangeEventType.REMOVED -> {
                 val removedVersion = backupList.removeAt(newIndex)
-                backupList.removeAt(newIndex)
                 displayList.remove(removedVersion)
             }
             else -> throw IllegalStateException("Incomplete case statement")
