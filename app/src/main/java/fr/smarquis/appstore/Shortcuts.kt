@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
@@ -24,6 +25,7 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import fr.smarquis.appstore.Shortcuts.Type.DYNAMIC
 import fr.smarquis.appstore.Shortcuts.Type.PINNED
@@ -211,10 +213,12 @@ class Shortcuts private constructor(_context: Context) {
         glide.asBitmap()
                 .apply(options)
                 .load(application.findImageReference())
-                .into(object : com.bumptech.glide.request.target.SimpleTarget<Bitmap>() {
+                .into(object : CustomTarget<Bitmap>(options.overrideWidth, options.overrideHeight) {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         block(resource)
                     }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
                 })
     }
 

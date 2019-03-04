@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Build.VERSION_CODES.O
 import android.os.Handler
 import android.os.Looper
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.messaging.RemoteMessage
 
@@ -141,11 +143,13 @@ class Notifications {
             val requestOptions = RequestOptions().override(width, height).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop()
             Handler(Looper.getMainLooper()).post {
                 Glide.with(context).asBitmap().apply(requestOptions).load(image)
-                        .into(object : com.bumptech.glide.request.target.SimpleTarget<Bitmap>() {
+                        .into(object : CustomTarget<Bitmap>(width, height) {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 val notification = notificationBuilder.setLargeIcon(resource).build()
                                 notificationManager.notify(tag, id, notification)
                             }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {}
                         })
             }
         }
