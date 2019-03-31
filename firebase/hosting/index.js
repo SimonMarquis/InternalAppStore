@@ -233,19 +233,25 @@ AppStore.prototype.routerShouldDeeplink = function(key) {
   );
 };
 
-AppStore.prototype.routerShowRoot = function(key, callback) {
+AppStore.prototype.routerShowRoot = function(callback) {
   const currentState = window.history.state;
   if (currentState) {
-    window.history.replaceState(currentState, null, "/");
-    this.uiShowApplicationCards(key, callback);
+    if (currentState.view == "root") {
+      delete currentState.key;
+      currentState.url = "/";
+    }
+    window.history.replaceState(currentState, null, currentState.url);
+    this.uiShowApplicationCards(undefined, callback);
     return;
   }
+  const path = window.location.pathname.substr(1) || "";
   const state = {
     view: "root",
-    key: window.location.pathname.substr(1)
+    key: path,
+    url: path + window.location.hash
   };
-  window.history.replaceState(state, null, state.key + window.location.hash);
-  this.uiShowApplicationCards(key, callback);
+  window.history.replaceState(state, null, state.url);
+  this.uiShowApplicationCards(undefined, callback);
 };
 
 AppStore.prototype.routerShowApp = function(key) {
@@ -254,14 +260,17 @@ AppStore.prototype.routerShowApp = function(key) {
     this.routerShowRoot();
     return;
   }
+  const hash = window.location.hash.substr(1);
   const state = {
     view: "app",
-    key: key
+    key: key,
+    version: hash,
+    url: key + (hash ? `#${hash}` : "")
   };
   if ((window.history.state || {}).view == "app") {
-    window.history.replaceState(state, null, state.key + window.location.hash);
+    window.history.replaceState(state, null, state.url);
   } else {
-    window.history.pushState(state, null, state.key + window.location.hash);
+    window.history.pushState(state, null, state.url);
   }
   this.uiShowApplicationDetails(app.key);
 };
@@ -540,6 +549,15 @@ AppStore.prototype.uiUpdateVersion = function(
   timestampElement.textContent = TimeAgo.valueOf(timestamp);
   timestampElement.setAttribute("title", new Date(timestamp).toLocaleString());
   timestampElement.setAttribute("timestamp", timestamp);
+  timestampElement.addEventListener("click", event => {
+    event.stopPropagation();
+    const state = window.history.state;
+    state.version = versionKey;
+    state.url = applicationKey + "#" + versionKey;
+    window.history.replaceState(state, null, state.url);
+    Ui.resetActiveTargets();
+    Ui.setActiveTargets(root);
+  });
   const description = root.querySelector("[data-version-description]");
   description.innerHTML = version.description
     ? HtmlSanitizer.sanitize(version.description)
@@ -625,7 +643,13 @@ AppStore.prototype.uiUpdateApplicationDetails = function(details, key, app) {
 
   const links = details.querySelector("[data-app-links]");
   Ui.empty(links);
-  for (let link of [app.link_1, app.link_2, app.link_3, app.link_4, app.link_5]) {
+  for (let link of [
+    app.link_1,
+    app.link_2,
+    app.link_3,
+    app.link_4,
+    app.link_5
+  ]) {
     if (!link) {
       continue;
     }
@@ -676,6 +700,11 @@ AppStore.prototype.uiShowApplicationDetails = function(key) {
     "#" + this.ids.ofApplicationDetails(key)
   );
   $(details).slideDown(function() {
+    $(this)
+      .find(window.location.hash)
+      .each(function() {
+        Ui.setActiveTargets(this);
+      });
     let targets = Ui.getActiveTargets(details);
     if (targets && targets.length > 0) {
       let target = targets[0];
@@ -1222,7 +1251,7 @@ AppStore.prototype.uiOnApplicationRemoved = function(snapshot) {
   if (details) {
     // restore the application list if details are currently on screen
     if (!Ui.isHidden(details)) {
-      this.routerShowRoot(key, () => details.remove());
+      this.routerShowRoot(() => details.remove());
     } else {
       details.remove();
     }
@@ -1372,8 +1401,8 @@ AppStore.prototype.uiRemoveApplication = function(modal, key) {
   Ui.disable(...inputs, modal.create, modal.update, modal.cancel, modal.delete);
   modal.imageLabel.setAttribute("readonly", "");
 
-  this.dataRemoveApplication(key).then(
-    () => (modal ? $(modal.root).modal("hide") : null)
+  this.dataRemoveApplication(key).then(() =>
+    modal ? $(modal.root).modal("hide") : null
   );
 };
 
@@ -1515,7 +1544,7 @@ AppStore.prototype.dataUpdateVersionApk = function(
       firebase.storage.TaskEvent.STATE_CHANGED,
       snapshot =>
         (bar.style.width =
-          Math.round(snapshot.bytesTransferred / snapshot.totalBytes * 100) +
+          Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100) +
           "%"),
       error => Ui.hide(progressBar),
       complete => Ui.hide(progressBar)
