@@ -33,7 +33,7 @@
 
   <template id="template-app-card">
     <div class="col-6 col-sm-4 px-0 px-sm-3">
-      <div class="card m-2 card-selectable">
+      <div class="card m-2 card-selectable shadow-sm">
         <div style="width: 100px; height: 100px; margin: 10px auto;">
           <img class="card-img" data-app-image onload="this.style.display=''" onerror="this.style.display='none'">
         </div>
@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="card">
+        <div class="card shadow-sm">
           <div class="card-body">
             <div class="row align-items-center">
               <div class="col-sm-3 text-center" data-app-image-drop>
@@ -79,7 +79,7 @@
             </div>
           </div>
         </div>
-        <div class="list-group mt-3" data-app-versions>
+        <div class="list-group mt-3 shadow-sm" data-app-versions>
           <div class="list-group-item list-group-item-action user-select-none cursor-pointer text-muted" data-app-action-add-version hidden>
             <i class="material-icons align-bottom">&#xE03B;</i> Add a version
           </div>
@@ -253,7 +253,7 @@
 
   <div class="container">
 
-    <div class="card bg-light">
+    <div class="card bg-light shadow">
 
       <div class="card-header user-select-none">
         <nav class="navbar navbar-expand navbar-light">
