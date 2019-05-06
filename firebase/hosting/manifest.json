@@ -1,0 +1,20 @@
+{
+  "short_name": "App Store",
+  "name": "App Store",
+  "icons": [
+    {
+      "src": "192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#4285F4",
+  "theme_color": "#4285F4"
+}

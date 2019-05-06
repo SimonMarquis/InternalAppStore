@@ -31,6 +31,8 @@ AppStore.CONSTANTS = {
 // firebase.database.enableLogging(true, true);
 
 function AppStore() {
+  this.initServiceWorker();
+  this.initProgressiveWebApp();
   this.initUserInterface();
   this.initInternalData();
   this.initFirebase();
@@ -39,6 +41,40 @@ function AppStore() {
   Utils.preventDefaultDrop();
   Utils.initTimestampTimer();
 }
+
+AppStore.prototype.initServiceWorker = function() {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("sw.js", { scope: "./" })
+      .then(registration => console.log("Service Worker Registered"))
+      .catch(err => console.log("Service Worker Registration Failed: ", err));
+    navigator.serviceWorker.ready.then(registration =>
+      console.log("Service Worker Ready")
+    );
+  }
+  window.addEventListener("online", () => document.location.reload(true));
+};
+
+AppStore.prototype.initProgressiveWebApp = function() {
+  window.addEventListener("beforeinstallprompt", event => {
+    event.preventDefault();
+    this.PWA = event;
+    document.getElementById("pwa").removeAttribute("hidden");
+  });
+  document.getElementById("pwa").addEventListener(
+    "click",
+    event => {
+      this.PWA.prompt();
+      this.PWA.userChoice.then(function(result) {
+        console.log("PWA result:", result);
+        document.getElementById("pwa").setAttribute("hidden", "true");
+      });
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    false
+  );
+};
 
 AppStore.prototype.initInternalData = function(snapshot) {
   this.applications = {
