@@ -48,9 +48,7 @@ AppStore.prototype.initServiceWorker = function() {
       .register("sw.js", { scope: "./" })
       .then(registration => console.log("Service Worker Registered"))
       .catch(err => console.log("Service Worker Registration Failed: ", err));
-    navigator.serviceWorker.ready.then(registration =>
-      console.log("Service Worker Ready")
-    );
+    navigator.serviceWorker.ready.then(registration => console.log("Service Worker Ready"));
   }
   window.addEventListener("online", () => document.location.reload(true));
 };
@@ -108,25 +106,16 @@ AppStore.prototype.updateInternalData = function(snapshot) {
   if (snapshot) {
     const store = snapshot.val();
     if (store && store.applications) {
-      for (const [applicationKey, application] of Object.entries(
-        store.applications
-      )) {
+      for (const [applicationKey, application] of Object.entries(store.applications)) {
         this.applications.set(applicationKey, application);
         if (store.versions) {
-          for (const [versionKey, version] of Object.entries(
-            store.versions[applicationKey] || {}
-          )) {
+          for (const [versionKey, version] of Object.entries(store.versions[applicationKey] || {})) {
             this.versions.set(versionKey, version);
           }
         }
       }
     } else {
-      this.uiTriggerAlert(
-        "alert-secondary",
-        `<b>${
-          AppStore.CONSTANTS.shrug
-        }</b><br>The App Store is currently empty…`
-      );
+      this.uiTriggerAlert("alert-secondary", `<b>${AppStore.CONSTANTS.shrug}</b><br>The App Store is currently empty…`);
     }
   }
 };
@@ -135,9 +124,7 @@ AppStore.prototype.initUserInterface = function() {
   this.templates = {
     applicationCard: document.getElementById("template-app-card"),
     applicationDetails: document.getElementById("template-app-details"),
-    applicationLinkOutline: document.getElementById(
-      "template-app-link-outline"
-    ),
+    applicationLinkOutline: document.getElementById("template-app-link-outline"),
     applicationModal: document.getElementById("template-app-modal"),
     versionItem: document.getElementById("template-version-item"),
     versionModal: document.getElementById("template-version-modal"),
@@ -172,21 +159,12 @@ AppStore.prototype.initUserInterface = function() {
     window.history.pushState(null, null, "/");
     document.location.reload(true);
   });
-  this.ui.newAppCard
-    .querySelector(".card")
-    .addEventListener("click", () => this.uiShowApplicationModal());
-  this.ui.resetPassword.addEventListener("click", () =>
-    this.sendPasswordResetEmail()
-  );
-  this.ui.verifyEmail.addEventListener("click", () =>
-    this.sendEmailVerification()
-  );
+  this.ui.newAppCard.querySelector(".card").addEventListener("click", () => this.uiShowApplicationModal());
+  this.ui.resetPassword.addEventListener("click", () => this.sendPasswordResetEmail());
+  this.ui.verifyEmail.addEventListener("click", () => this.sendEmailVerification());
   this.ui.logout.addEventListener("click", () => this.auth.signOut());
   this.ui.login.addEventListener("click", () => this.uiShowLogin());
-  this.ui.userEmail.addEventListener(
-    "click",
-    () => this.auth.currentUser && this.auth.currentUser.getIdToken(true)
-  );
+  this.ui.userEmail.addEventListener("click", () => this.auth.currentUser && this.auth.currentUser.getIdToken(true));
 };
 
 AppStore.prototype.initFirebase = function() {
@@ -195,41 +173,26 @@ AppStore.prototype.initFirebase = function() {
   this.database = firebase.database();
   this.databaseRefs = {};
   this.databaseRefs.store = this.database.ref("store");
-  this.databaseRefs.applications = this.databaseRefs.store.child(
-    "applications"
-  );
-  this.databaseRefs.applicationsByName = this.databaseRefs.applications.orderByChild(
-    "name"
-  );
-  this.databaseRefs.application = key =>
-    this.databaseRefs.applications.child(key);
-  this.databaseRefs.versions = applicationKey =>
-    this.databaseRefs.store.child("versions").child(applicationKey);
-  this.databaseRefs.version = (applicationKey, versionKey) =>
-    this.databaseRefs.versions(applicationKey).child(versionKey);
+  this.databaseRefs.applications = this.databaseRefs.store.child("applications");
+  this.databaseRefs.applicationsByName = this.databaseRefs.applications.orderByChild("name");
+  this.databaseRefs.application = key => this.databaseRefs.applications.child(key);
+  this.databaseRefs.versions = applicationKey => this.databaseRefs.store.child("versions").child(applicationKey);
+  this.databaseRefs.version = (applicationKey, versionKey) => this.databaseRefs.versions(applicationKey).child(versionKey);
   this.databaseRefs.checks = this.database.ref("checks");
   this.databaseRefs.checkIsAdmin = this.databaseRefs.checks.child("admin");
-  this.databaseRefs.checkIsEmailVerified = this.databaseRefs.checks.child(
-    "emailVerified"
-  );
-  this.databaseRefs.checkIsEmailNotVerified = this.databaseRefs.checks.child(
-    "emailNotVerified"
-  );
+  this.databaseRefs.checkIsEmailVerified = this.databaseRefs.checks.child("emailVerified");
+  this.databaseRefs.checkIsEmailNotVerified = this.databaseRefs.checks.child("emailNotVerified");
 
   this.storage = firebase.storage();
   this.storageRefs = {};
   this.storageRefs.of = ref => {
     try {
-      return ref.match(/^https?:\/\//)
-        ? this.storage.refFromURL(ref)
-        : this.storage.ref(ref);
+      return ref.match(/^https?:\/\//) ? this.storage.refFromURL(ref) : this.storage.ref(ref);
     } catch (e) {}
   };
   this.storageRefs.applications = this.storage.ref("applications");
-  this.storageRefs.application = key =>
-    this.storageRefs.applications.child(key);
-  this.storageRefs.applicationImage = key =>
-    this.storageRefs.application(key).child("image");
+  this.storageRefs.application = key => this.storageRefs.applications.child(key);
+  this.storageRefs.applicationImage = key => this.storageRefs.application(key).child("image");
   this.storageRefs.applicationVersionApk = (applicationKey, versionKey) =>
     this.storageRefs
       .application(applicationKey)
@@ -264,9 +227,7 @@ AppStore.prototype.routerGoBack = function() {
 
 AppStore.prototype.routerShouldDeeplink = function(key) {
   const state = window.history.state;
-  return (
-    state && (state.view == "root" || state.view == "app") && state.key == key
-  );
+  return state && (state.view == "root" || state.view == "app") && state.key == key;
 };
 
 AppStore.prototype.routerShowRoot = function(callback) {
@@ -328,9 +289,7 @@ AppStore.prototype.uiInitApplications = function() {
     this.uiUpdateApplication(snapshot.key, snapshot.val());
   });
   this.databaseRefs.applicationsByName.on("child_moved", snapshot => {
-    const card = document.getElementById(
-      this.ids.ofApplicationCard(snapshot.key)
-    );
+    const card = document.getElementById(this.ids.ofApplicationCard(snapshot.key));
     if (card) {
       this.uiUpdateApplicationCard(card, snapshot.key, snapshot.val());
       card.remove();
@@ -357,9 +316,7 @@ AppStore.prototype.uiAppendApplicationCard = function(key, app) {
   card.id = this.ids.ofApplicationCard(key);
   this.uiUpdateApplicationCard(card, key, app);
   this.uiInsertApplicationCard(card, this.ui.applicationsCards);
-  card
-    .querySelector(".card")
-    .addEventListener("click", event => this.routerShowApp(key));
+  card.querySelector(".card").addEventListener("click", event => this.routerShowApp(key));
 };
 
 AppStore.prototype.uiInsertApplicationCard = function(card, root) {
@@ -385,9 +342,7 @@ AppStore.prototype.uiUpdateApplication = function(key, app) {
 AppStore.prototype.uiUpdateApplicationCard = function(card, key, app) {
   const imageRef = this.storageRefs.of(app.image);
   if (imageRef) {
-    imageRef
-      .getDownloadURL()
-      .then(url => (card.querySelector("[data-app-image]").src = url));
+    imageRef.getDownloadURL().then(url => (card.querySelector("[data-app-image]").src = url));
   } else {
     card.querySelector("[data-app-image]").src = app.image;
   }
@@ -396,14 +351,11 @@ AppStore.prototype.uiUpdateApplicationCard = function(card, key, app) {
 };
 
 AppStore.prototype.uiAppendApplicationDetails = function(key, app) {
-  const details = Ui.inflate(this.templates.applicationDetails)
-    .firstElementChild;
+  const details = Ui.inflate(this.templates.applicationDetails).firstElementChild;
   details.id = this.ids.ofApplicationDetails(key);
   this.uiUpdateApplicationDetails(details, key, app);
   this.ui.applicationsDetails.appendChild(details);
-  details
-    .querySelector("[data-app-back]")
-    .addEventListener("click", event => this.routerGoBack());
+  details.querySelector("[data-app-back]").addEventListener("click", event => this.routerGoBack());
   const edit = details.querySelector("[data-app-action-edit]");
   const add = details.querySelector("[data-app-action-add-version]");
   const drop = details.querySelector("[data-app-image-drop]");
@@ -413,22 +365,14 @@ AppStore.prototype.uiAppendApplicationDetails = function(key, app) {
   if ((this.auth.currentUser || {}).isAdmin) {
     Ui.show(edit, add);
     edit.addEventListener("click", event => this.uiShowApplicationModal(key));
-    add.addEventListener("click", event =>
-      this.uiShowVersionModal(key, undefined)
-    );
+    add.addEventListener("click", event => this.uiShowVersionModal(key, undefined));
     drop.addEventListener("dragover", event => {
-      if (
-        (Utils.extractFileFromDataTransfer(event.dataTransfer),
-        AppStore.CONFIG.imageMimeType)
-      ) {
+      if ((Utils.extractFileFromDataTransfer(event.dataTransfer), AppStore.CONFIG.imageMimeType)) {
         event.preventDefault();
       }
     });
     drop.addEventListener("drop", event => {
-      const image = Utils.extractFileFromDataTransfer(
-        event.dataTransfer,
-        AppStore.CONFIG.imageMimeType
-      );
+      const image = Utils.extractFileFromDataTransfer(event.dataTransfer, AppStore.CONFIG.imageMimeType);
       if (image) {
         event.preventDefault();
         Ui.show(spinner);
@@ -473,67 +417,42 @@ AppStore.prototype.uiAppendApplicationDetails = function(key, app) {
   });
 };
 
-AppStore.prototype.uiAppendVersion = function(
-  applicationKey,
-  versionKey,
-  version,
-  container
-) {
+AppStore.prototype.uiAppendVersion = function(applicationKey, versionKey, version, container) {
   const root = Ui.inflate(this.templates.versionItem).firstElementChild;
   root.id = this.ids.ofVersionItem(versionKey);
   root.setAttribute("data-version-key", versionKey);
   this.uiUpdateVersion(applicationKey, versionKey, version, root);
-  root
-    .querySelector("[data-version-apk]")
-    .addEventListener("click", event => event.stopPropagation());
+  root.querySelector("[data-version-apk]").addEventListener("click", event => event.stopPropagation());
   const type = AppStore.CONFIG.apkMimeType;
   const size = AppStore.CONFIG.apkMaxSize;
 
   if ((this.auth.currentUser || {}).isAdmin) {
-    root.addEventListener("click", event =>
-      this.uiShowVersionModal(applicationKey, versionKey)
-    );
+    root.addEventListener("click", event => this.uiShowVersionModal(applicationKey, versionKey));
     root.addEventListener("dragenter", event => {
       const result = Utils.parseDragDropEventsForFile(event, type, size);
-      root.classList.add(
-        result.accept ? "list-group-item-success" : "list-group-item-danger"
-      );
+      root.classList.add(result.accept ? "list-group-item-success" : "list-group-item-danger");
       root.classList.add("drop-ignore-children");
     });
     root.addEventListener("dragover", event => {
       event.preventDefault();
       const result = Utils.parseDragDropEventsForFile(event, type, size);
-      root.classList.add(
-        result.accept ? "list-group-item-success" : "list-group-item-danger"
-      );
+      root.classList.add(result.accept ? "list-group-item-success" : "list-group-item-danger");
       root.classList.add("drop-ignore-children");
     });
     root.addEventListener("dragleave", event => {
       event.preventDefault();
       if (event.target.hasAttribute("drop-zone")) {
-        root.classList.remove(
-          "list-group-item-success",
-          "list-group-item-danger"
-        );
+        root.classList.remove("list-group-item-success", "list-group-item-danger");
         root.classList.remove("drop-ignore-children");
       }
     });
     root.addEventListener("drop", event => {
       event.preventDefault();
-      root.classList.remove(
-        "list-group-item-success",
-        "list-group-item-danger"
-      );
+      root.classList.remove("list-group-item-success", "list-group-item-danger");
       root.classList.remove("drop-ignore-children");
       const result = Utils.parseDragDropEventsForFile(event, type, size);
       if (result.accept && result.file) {
-        this.dataUpdateVersionApk(
-          applicationKey,
-          versionKey,
-          result.file,
-          true,
-          root.querySelector("[data-version-progress]")
-        );
+        this.dataUpdateVersionApk(applicationKey, versionKey, result.file, true, root.querySelector("[data-version-progress]"));
       } else if (result.message) {
         this.uiTriggerAlert("alert-danger", result.message);
       }
@@ -551,29 +470,18 @@ AppStore.prototype.uiInsertVersionItem = function(item, root) {
   const itemTimestamp = Number(item.getAttribute("sort-key-secondary"));
   for (let i = 1; i < children.length; i++) {
     const currentNode = children[i];
-    const currentVersion = new SemVer(
-      currentNode.getAttribute("sort-key-primary")
-    );
+    const currentVersion = new SemVer(currentNode.getAttribute("sort-key-primary"));
     const compare = SemVer.compare(itemVersion, currentVersion);
     if (compare > 0) {
       return root.insertBefore(item, currentNode);
-    } else if (
-      compare == 0 &&
-      itemTimestamp - Number(currentNode.getAttribute("sort-key-secondary")) >=
-        0
-    ) {
+    } else if (compare == 0 && itemTimestamp - Number(currentNode.getAttribute("sort-key-secondary")) >= 0) {
       return root.insertBefore(item, currentNode);
     }
   }
   return root.append(item);
 };
 
-AppStore.prototype.uiUpdateVersion = function(
-  applicationKey,
-  versionKey,
-  version,
-  root
-) {
+AppStore.prototype.uiUpdateVersion = function(applicationKey, versionKey, version, root) {
   if (Utils.isLocationHash(versionKey)) {
     Ui.setActiveTargets(root);
   }
@@ -595,9 +503,7 @@ AppStore.prototype.uiUpdateVersion = function(
     Ui.setActiveTargets(root);
   });
   const description = root.querySelector("[data-version-description]");
-  description.innerHTML = version.description
-    ? HtmlSanitizer.sanitize(version.description)
-    : "";
+  description.innerHTML = version.description ? HtmlSanitizer.sanitize(version.description) : "";
   const internalLinks = description.querySelectorAll("a");
   for (let i = 0; i < internalLinks.length; i++) {
     const link = internalLinks[i];
@@ -607,20 +513,11 @@ AppStore.prototype.uiUpdateVersion = function(
   this.uiUpdateVersionApkLink(applicationKey, versionKey, version, root);
 };
 
-AppStore.prototype.uiUpdateVersionApkLink = function(
-  applicationKey,
-  versionKey,
-  version,
-  root
-) {
+AppStore.prototype.uiUpdateVersionApkLink = function(applicationKey, versionKey, version, root) {
   const download = root.querySelector("[data-version-apk]");
   download.removeAttribute("href");
   download.removeAttribute("download");
-  const title = `Download apk${
-    version.apkRef && version.apkSize
-      ? ` • ${Utils.formatBytesSize(version.apkSize, 2)}`
-      : ""
-  }`;
+  const title = `Download apk${version.apkRef && version.apkSize ? ` • ${Utils.formatBytesSize(version.apkSize, 2)}` : ""}`;
   download.setAttribute("title", title);
   Ui.show(download);
   if (version.apkRef) {
@@ -631,10 +528,7 @@ AppStore.prototype.uiUpdateVersionApkLink = function(
         .of(version.apkRef)
         .getDownloadURL()
         .then(url => {
-          download.setAttribute(
-            "download",
-            `${versionKey || version.name}.apk`
-          );
+          download.setAttribute("download", `${versionKey || version.name}.apk`);
           download.href = url;
           window.location = url;
         })
@@ -651,46 +545,28 @@ AppStore.prototype.uiUpdateVersionApkLink = function(
 AppStore.prototype.uiUpdateApplicationDetails = function(details, key, app) {
   const imageRef = this.storageRefs.of(app.image);
   if (imageRef) {
-    imageRef
-      .getDownloadURL()
-      .then(url => (details.querySelector("[data-app-image]").src = url));
+    imageRef.getDownloadURL().then(url => (details.querySelector("[data-app-image]").src = url));
   } else {
     details.querySelector("[data-app-image]").src = app.image;
   }
   details.querySelector("[data-app-name]").textContent = app.name;
-  details.querySelector("[data-app-description]").innerHTML = app.description
-    ? HtmlSanitizer.sanitize(app.description)
-    : "";
+  details.querySelector("[data-app-description]").innerHTML = app.description ? HtmlSanitizer.sanitize(app.description) : "";
   const packageName = details.querySelector("[data-app-package-name]");
   if (packageName.childElementCount == 0) {
-    const packageLink = Ui.inflate(this.templates.applicationLinkOutline)
-      .firstElementChild;
+    const packageLink = Ui.inflate(this.templates.applicationLinkOutline).firstElementChild;
     packageLink.querySelector("[data-app-link-icon]").innerHTML = "&#xE8C9";
     packageName.append(packageLink);
   }
-  packageName.querySelector("[data-app-link-label]").textContent =
-    app.packageName;
-  packageName
-    .querySelector("[data-app-link]")
-    .setAttribute(
-      "href",
-      `https://play.google.com/store/apps/details?id=${app.packageName}`
-    );
+  packageName.querySelector("[data-app-link-label]").textContent = app.packageName;
+  packageName.querySelector("[data-app-link]").setAttribute("href", `https://play.google.com/store/apps/details?id=${app.packageName}`);
 
   const links = details.querySelector("[data-app-links]");
   Ui.empty(links);
-  for (let link of [
-    app.link_1,
-    app.link_2,
-    app.link_3,
-    app.link_4,
-    app.link_5
-  ]) {
+  for (let link of [app.link_1, app.link_2, app.link_3, app.link_4, app.link_5]) {
     if (!link) {
       continue;
     }
-    const linkElement = Ui.inflate(this.templates.applicationLinkOutline)
-      .firstElementChild;
+    const linkElement = Ui.inflate(this.templates.applicationLinkOutline).firstElementChild;
     linkElement.classList.add("mt-1", "mr-1");
     linkElement.href = link.uri;
     linkElement.textContent = link.name || link.uri.ellipsise(30, "…");
@@ -707,9 +583,7 @@ AppStore.prototype.uiShowApplicationCards = function(key, callback) {
     .parent()
     .slideDown();
   if (key) {
-    $(document.getElementById(this.ids.ofApplicationDetails(key))).slideUp(
-      callback
-    );
+    $(document.getElementById(this.ids.ofApplicationDetails(key))).slideUp(callback);
   } else {
     $(this.ui.applicationsDetails)
       .children()
@@ -732,9 +606,7 @@ AppStore.prototype.uiShowApplicationDetails = function(key) {
   $(this.ui.applicationsDetails)
     .children()
     .slideUp();
-  let details = document.querySelector(
-    "#" + this.ids.ofApplicationDetails(key)
-  );
+  let details = document.querySelector("#" + this.ids.ofApplicationDetails(key));
   $(details).slideDown(function() {
     $(this)
       .find(window.location.hash)
@@ -785,34 +657,18 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
     update: root.querySelector("[data-app-update]"),
     delete: root.querySelector("[data-app-delete]")
   };
-  modal.imageMaxSize.textContent = Utils.formatBytesSize(
-    AppStore.CONFIG.imageMaxSize
-  );
-  for (let link of [
-    modal.link1uri,
-    modal.link2uri,
-    modal.link3uri,
-    modal.link4uri,
-    modal.link5uri
-  ]) {
-    link.addEventListener("input", event =>
-      Utils.validateUriInput(event.target, true)
-    );
+  modal.imageMaxSize.textContent = Utils.formatBytesSize(AppStore.CONFIG.imageMaxSize);
+  for (let link of [modal.link1uri, modal.link2uri, modal.link3uri, modal.link4uri, modal.link5uri]) {
+    link.addEventListener("input", event => Utils.validateUriInput(event.target, true));
   }
   modal.packageName.addEventListener("input", event =>
-    event.target.setCustomValidity(
-      event.target.value.match(AppStore.CONSTANTS.packageNameRegex)
-        ? ""
-        : "error"
-    )
+    event.target.setCustomValidity(event.target.value.match(AppStore.CONSTANTS.packageNameRegex) ? "" : "error")
   );
   const app = this.applications.get(key);
   if (app) {
     modal.name.value = app.name;
     modal.packageName.value = app.packageName;
-    modal.description.innerHTML = app.description
-      ? HtmlSanitizer.sanitize(app.description)
-      : "";
+    modal.description.innerHTML = app.description ? HtmlSanitizer.sanitize(app.description) : "";
     modal.link1name.value = app.link_1 ? app.link_1.name : null;
     modal.link1uri.value = app.link_1 ? app.link_1.uri : null;
     modal.link2name.value = app.link_2 ? app.link_2.name : null;
@@ -826,21 +682,15 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
     modal.imageInput.removeAttribute("required");
     modal.imageLabel.textContent = "Unchanged";
     modal.createGroup.remove();
-    modal.delete.addEventListener("click", event =>
-      this.uiRemoveApplication(modal, key)
-    );
-    modal.update.addEventListener("click", event =>
-      this.uiApplicationModalCommit(modal, key, app)
-    );
+    modal.delete.addEventListener("click", event => this.uiRemoveApplication(modal, key));
+    modal.update.addEventListener("click", event => this.uiApplicationModalCommit(modal, key, app));
   } else {
     modal.dialog.classList.add("modal-sm");
     modal.descriptionRoot.remove();
     modal.linksRoot.remove();
     modal.delete.remove();
     modal.update.remove();
-    modal.create.addEventListener("click", event =>
-      this.uiApplicationModalCommit(modal, key, app)
-    );
+    modal.create.addEventListener("click", event => this.uiApplicationModalCommit(modal, key, app));
     modal.silent.addEventListener("click", event => {
       const btn = modal.silent;
       const icon = modal.silent.firstElementChild;
@@ -857,16 +707,8 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
   modal.imageInput.addEventListener("change", event => {
     const file = event.target.files[0];
     if (file) {
-      modal.imageLabel.textContent = `${Utils.formatBytesSize(
-        file.size,
-        2
-      )} • ${file.name}`;
-      Utils.validateFileInput(
-        modal.imageInput,
-        file,
-        AppStore.CONFIG.imageMimeType,
-        AppStore.CONFIG.imageMaxSize
-      );
+      modal.imageLabel.textContent = `${Utils.formatBytesSize(file.size, 2)} • ${file.name}`;
+      Utils.validateFileInput(modal.imageInput, file, AppStore.CONFIG.imageMimeType, AppStore.CONFIG.imageMaxSize);
     } else {
       modal.imageLabel.textContent = app ? "Unchanged" : null;
     }
@@ -888,9 +730,7 @@ AppStore.prototype.uiApplicationModalCommit = function(modal, key, app) {
   modal.imageLabel.setAttribute("readonly", "");
   Ui.show(modal.progress);
   Ui.hide(modal.cancel, modal.delete);
-  const createOrUpdate = key
-    ? this.dataUpdateApplication(key, data)
-    : this.dataPushNewApplication(data);
+  const createOrUpdate = key ? this.dataUpdateApplication(key, data) : this.dataPushNewApplication(data);
   createOrUpdate.then(data => $(modal.root).modal("hide"));
 };
 
@@ -947,10 +787,7 @@ AppStore.prototype.uiValidateApplicationModal = function(modal, key, app) {
     modal.name.focus();
     return false;
   }
-  if (
-    !data.packageName ||
-    !data.packageName.match(AppStore.CONSTANTS.packageNameRegex)
-  ) {
+  if (!data.packageName || !data.packageName.match(AppStore.CONSTANTS.packageNameRegex)) {
     console.error("Invalid packageName");
     modal.packageName.focus();
     return false;
@@ -961,14 +798,7 @@ AppStore.prototype.uiValidateApplicationModal = function(modal, key, app) {
     return false;
   }
   if (data.image) {
-    if (
-      !Utils.validateFileInput(
-        modal.imageInput,
-        data.image,
-        AppStore.CONFIG.imageMimeType,
-        AppStore.CONFIG.imageMaxSize
-      )
-    ) {
+    if (!Utils.validateFileInput(modal.imageInput, data.image, AppStore.CONFIG.imageMimeType, AppStore.CONFIG.imageMaxSize)) {
       return false;
     }
   }
@@ -1008,12 +838,8 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
     root: root,
     name: root.querySelector("[data-version-name]"),
     description: root.querySelector("[data-version-description]"),
-    descriptionPreview: root.querySelector(
-      "[data-version-description-preview]"
-    ),
-    descriptionPreviewToggle: root.querySelector(
-      "[data-version-description-preview-toggle]"
-    ),
+    descriptionPreview: root.querySelector("[data-version-description-preview]"),
+    descriptionPreviewToggle: root.querySelector("[data-version-description-preview-toggle]"),
     timestamp: root.querySelector("[data-version-timestamp]"),
     datetime: root.querySelector("[data-version-datetime]"),
     timestampLabel: root.querySelector("[data-version-timestamp-label]"),
@@ -1031,25 +857,15 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
     update: root.querySelector("[data-version-update]"),
     delete: root.querySelector("[data-version-delete]")
   };
-  modal.apkMaxSize.textContent = Utils.formatBytesSize(
-    AppStore.CONFIG.apkMaxSize
-  );
-  modal.name.addEventListener("input", event =>
-    event.target.setCustomValidity(
-      event.target.value.match(SemVer.REGEX) ? "" : "error"
-    )
-  );
-  modal.apkUrl.addEventListener("input", event =>
-    Utils.validateUriInput(event.target)
-  );
+  modal.apkMaxSize.textContent = Utils.formatBytesSize(AppStore.CONFIG.apkMaxSize);
+  modal.name.addEventListener("input", event => event.target.setCustomValidity(event.target.value.match(SemVer.REGEX) ? "" : "error"));
+  modal.apkUrl.addEventListener("input", event => Utils.validateUriInput(event.target));
   modal.descriptionPreviewToggle.addEventListener("click", event => {
     const showPreview = Ui.isHidden(modal.descriptionPreview);
     if (showPreview) {
       modal.descriptionPreviewToggle.innerHTML = "&#xE8F5";
       Ui.hide(modal.description);
-      modal.descriptionPreview.innerHTML = HtmlSanitizer.sanitize(
-        modal.description.value || "&nbsp;"
-      );
+      modal.descriptionPreview.innerHTML = HtmlSanitizer.sanitize(modal.description.value || "&nbsp;");
       Ui.show(modal.descriptionPreview);
     } else {
       modal.descriptionPreviewToggle.innerHTML = "&#xE8F4;";
@@ -1099,34 +915,24 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
   const version = this.versions.get(versionKey);
   if (version) {
     modal.name.value = version.name;
-    modal.description.innerHTML = version.description
-      ? HtmlSanitizer.sanitize(version.description)
-      : "";
+    modal.description.innerHTML = version.description ? HtmlSanitizer.sanitize(version.description) : "";
     updateTimestamp(version.timestamp);
 
     if (version.apkRef) {
       modal.apkInput.removeAttribute("required");
-      modal.apkLabel.textContent = version.apkSize
-        ? `${Utils.formatBytesSize(version.apkSize, 2)} • Unchanged`
-        : "Unchanged";
+      modal.apkLabel.textContent = version.apkSize ? `${Utils.formatBytesSize(version.apkSize, 2)} • Unchanged` : "Unchanged";
     } else if (version.apkUrl) {
       modal.apkUrl.value = version.apkUrl;
       modal.apkToggle.click();
     }
-    modal.delete.addEventListener("click", event =>
-      this.uiRemoveVersion(modal, applicationKey, versionKey)
-    );
+    modal.delete.addEventListener("click", event => this.uiRemoveVersion(modal, applicationKey, versionKey));
     modal.createGroup.remove();
-    modal.update.addEventListener("click", event =>
-      this.uiVersionModalCommit(modal, applicationKey, versionKey, version)
-    );
+    modal.update.addEventListener("click", event => this.uiVersionModalCommit(modal, applicationKey, versionKey, version));
   } else {
     updateTimestamp(Date.now());
     modal.delete.remove();
     modal.update.remove();
-    modal.create.addEventListener("click", event =>
-      this.uiVersionModalCommit(modal, applicationKey, undefined, undefined)
-    );
+    modal.create.addEventListener("click", event => this.uiVersionModalCommit(modal, applicationKey, undefined, undefined));
     modal.silent.addEventListener("click", event => {
       const btn = modal.silent;
       const icon = modal.silent.firstElementChild;
@@ -1143,21 +949,10 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
   modal.apkInput.addEventListener("change", event => {
     const file = event.target.files[0];
     if (file) {
-      modal.apkLabel.textContent = `${Utils.formatBytesSize(file.size, 2)} • ${
-        file.name
-      }`;
-      Utils.validateFileInput(
-        modal.apkInput,
-        file,
-        AppStore.CONFIG.apkMimeType,
-        AppStore.CONFIG.apkMaxSize
-      );
+      modal.apkLabel.textContent = `${Utils.formatBytesSize(file.size, 2)} • ${file.name}`;
+      Utils.validateFileInput(modal.apkInput, file, AppStore.CONFIG.apkMimeType, AppStore.CONFIG.apkMaxSize);
     } else {
-      modal.apkLabel.textContent = version
-        ? version.apkSize
-          ? `${Utils.formatBytesSize(version.apkSize, 2)} • Unchanged`
-          : "Unchanged"
-        : null;
+      modal.apkLabel.textContent = version ? (version.apkSize ? `${Utils.formatBytesSize(version.apkSize, 2)} • Unchanged` : "Unchanged") : null;
     }
   });
   $(modal.root)
@@ -1167,12 +962,7 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
     .modal("show");
 };
 
-AppStore.prototype.uiVersionModalCommit = function(
-  modal,
-  applicationKey,
-  versionKey,
-  version
-) {
+AppStore.prototype.uiVersionModalCommit = function(modal, applicationKey, versionKey, version) {
   const data = this.uiVersionModalExtract(modal, version);
   if (!this.uiVersionModalValidate(modal, versionKey, data)) {
     return;
@@ -1233,14 +1023,7 @@ AppStore.prototype.uiVersionModalValidate = function(modal, version, data) {
       }
     }
     if (data.apk) {
-      if (
-        !Utils.validateFileInput(
-          modal.apkInput,
-          data.apk,
-          AppStore.CONFIG.apkMimeType,
-          AppStore.MAX_SIZE_APK
-        )
-      ) {
+      if (!Utils.validateFileInput(modal.apkInput, data.apk, AppStore.CONFIG.apkMimeType, AppStore.MAX_SIZE_APK)) {
         return false;
       }
     }
@@ -1257,10 +1040,7 @@ AppStore.prototype.uiVersionModalValidate = function(modal, version, data) {
 AppStore.prototype.uiOnApplicationAdded = function(snapshot) {
   // Show alert only if it's a new/unknown application
   if (!this.applications.get(snapshot.key)) {
-    this.uiTriggerAlert(
-      "alert-success",
-      `Application <b>${snapshot.val().name}</b> created`
-    );
+    this.uiTriggerAlert("alert-success", `Application <b>${snapshot.val().name}</b> created`);
   }
 };
 
@@ -1271,9 +1051,7 @@ AppStore.prototype.uiOnApplicationRemoved = function(snapshot) {
   const key = snapshot.key;
   const app = snapshot.val();
   // Version modals (new/edit) of this application
-  const versionModals = document.querySelectorAll(
-    `[data-version-app-key="${key}"]`
-  );
+  const versionModals = document.querySelectorAll(`[data-version-app-key="${key}"]`);
   for (let i = 0; i < versionModals.length; i++) {
     $(versionModals[i]).modal("hide");
   }
@@ -1299,10 +1077,7 @@ AppStore.prototype.uiOnApplicationRemoved = function(snapshot) {
   }
 
   if (this.applications.get(snapshot.key)) {
-    this.uiTriggerAlert(
-      "alert-danger",
-      `Application <b>${snapshot.val().name}</b> removed`
-    );
+    this.uiTriggerAlert("alert-danger", `Application <b>${snapshot.val().name}</b> removed`);
   }
 };
 
@@ -1310,12 +1085,7 @@ AppStore.prototype.uiOnVersionAdded = function(applicationKey, snapshot) {
   const application = this.applications.get(applicationKey);
   const version = this.versions.get(snapshot.key);
   if (!version && application) {
-    this.uiTriggerAlert(
-      "alert-success",
-      `<b>${application.name}</b><br>Version <b>${
-        snapshot.val().name
-      }</b> created`
-    );
+    this.uiTriggerAlert("alert-success", `<b>${application.name}</b><br>Version <b>${snapshot.val().name}</b> created`);
   }
 };
 
@@ -1338,12 +1108,7 @@ AppStore.prototype.uiOnVersionRemoved = function(applicationKey, snapshot) {
   const application = this.applications.get(applicationKey);
   const version = this.versions.get(snapshot.key);
   if (version && application) {
-    this.uiTriggerAlert(
-      "alert-danger",
-      `<b>${application.name}</b><br>Version <b>${
-        snapshot.val().name
-      }</b> removed`
-    );
+    this.uiTriggerAlert("alert-danger", `<b>${application.name}</b><br>Version <b>${snapshot.val().name}</b> removed`);
   }
 };
 
@@ -1356,8 +1121,7 @@ AppStore.prototype.dataPushNewApplication = function(app) {
   if (app.silent === true) {
     data.silent = true;
   }
-  const updateImage = snapshot =>
-    this.dataUpdateApplicationImage(snapshot.key, app.image);
+  const updateImage = snapshot => this.dataUpdateApplicationImage(snapshot.key, app.image);
   console.log("Push application", data);
   return this.databaseRefs.applications.push(data).then(updateImage);
 };
@@ -1368,12 +1132,7 @@ AppStore.prototype.dataUpdateApplicationImage = function(key, file) {
     return false;
   }
   if (file.size > AppStore.CONFIG.imageMaxSize) {
-    console.error(
-      `Invalid file size [${Utils.formatBytesSize(
-        file.size,
-        2
-      )}], expected [${Utils.formatBytesSize(AppStore.CONFIG.imageMaxSize, 2)}]`
-    );
+    console.error(`Invalid file size [${Utils.formatBytesSize(file.size, 2)}], expected [${Utils.formatBytesSize(AppStore.CONFIG.imageMaxSize, 2)}]`);
     return false;
   }
   return this.storageRefs
@@ -1420,8 +1179,7 @@ AppStore.prototype.dataUpdateApplication = function(key, data) {
         }
       : null
   };
-  const updateImageIfNeeded = () =>
-    data.image ? this.dataUpdateApplicationImage(key, data.image) : null;
+  const updateImageIfNeeded = () => (data.image ? this.dataUpdateApplicationImage(key, data.image) : null);
   return this.databaseRefs
     .application(key)
     .update(update)
@@ -1437,9 +1195,7 @@ AppStore.prototype.uiRemoveApplication = function(modal, key) {
   Ui.disable(...inputs, modal.create, modal.update, modal.cancel, modal.delete);
   modal.imageLabel.setAttribute("readonly", "");
 
-  this.dataRemoveApplication(key).then(() =>
-    modal ? $(modal.root).modal("hide") : null
-  );
+  this.dataRemoveApplication(key).then(() => (modal ? $(modal.root).modal("hide") : null));
 };
 
 AppStore.prototype.dataRemoveApplication = function(key) {
@@ -1471,11 +1227,7 @@ AppStore.prototype.dataRemoveApplication = function(key) {
     );
 };
 
-AppStore.prototype.dataPushNewVersion = function(
-  applicationKey,
-  version,
-  progressBar
-) {
+AppStore.prototype.dataPushNewVersion = function(applicationKey, version, progressBar) {
   const data = {
     name: version.name,
     timestamp: Number(version.timestamp),
@@ -1486,15 +1238,7 @@ AppStore.prototype.dataPushNewVersion = function(
     data.silent = true;
   }
   const updateApkIfNeeded = snapshot =>
-    version.apk
-      ? this.dataUpdateVersionApk(
-          applicationKey,
-          snapshot.key,
-          version.apk,
-          false,
-          progressBar
-        )
-      : null;
+    version.apk ? this.dataUpdateVersionApk(applicationKey, snapshot.key, version.apk, false, progressBar) : null;
 
   console.log("Push version", data);
   return this.databaseRefs
@@ -1503,12 +1247,7 @@ AppStore.prototype.dataPushNewVersion = function(
     .then(updateApkIfNeeded);
 };
 
-AppStore.prototype.dataUpdateVersion = function(
-  applicationKey,
-  versionKey,
-  data,
-  progressBar
-) {
+AppStore.prototype.dataUpdateVersion = function(applicationKey, versionKey, data, progressBar) {
   const currentVersion = this.versions.get(versionKey);
   const currentApkRef = currentVersion ? currentVersion.apkRef : null;
 
@@ -1526,13 +1265,7 @@ AppStore.prototype.dataUpdateVersion = function(
   }
   const updateOrRemoveApk = snapshot => {
     if (data.apk) {
-      return this.dataUpdateVersionApk(
-        applicationKey,
-        versionKey,
-        data.apk,
-        false,
-        progressBar
-      );
+      return this.dataUpdateVersionApk(applicationKey, versionKey, data.apk, false, progressBar);
     } else if (data.apkUrl && currentApkRef) {
       const ref = this.storageRefs.of(currentApkRef);
       console.log("Delete apk", ref.toString());
@@ -1545,13 +1278,7 @@ AppStore.prototype.dataUpdateVersion = function(
   return ref.update(update).then(updateOrRemoveApk);
 };
 
-AppStore.prototype.dataUpdateVersionApk = function(
-  applicationKey,
-  versionKey,
-  file,
-  updateTimestamp,
-  progressBar
-) {
+AppStore.prototype.dataUpdateVersionApk = function(applicationKey, versionKey, file, updateTimestamp, progressBar) {
   const updateVersion = snapshot => {
     const update = {
       apkRef: snapshot.metadata.fullPath,
@@ -1566,10 +1293,7 @@ AppStore.prototype.dataUpdateVersionApk = function(
     console.log("Update version", ref.toString(), update);
     return ref.update(update);
   };
-  const ref = this.storageRefs.applicationVersionApk(
-    applicationKey,
-    versionKey
-  );
+  const ref = this.storageRefs.applicationVersionApk(applicationKey, versionKey);
   console.log("Push apk file", ref.toString(), file);
   const uploadTask = ref.put(file);
   if (progressBar) {
@@ -1578,10 +1302,7 @@ AppStore.prototype.dataUpdateVersionApk = function(
     Ui.show(progressBar);
     uploadTask.on(
       firebase.storage.TaskEvent.STATE_CHANGED,
-      snapshot =>
-        (bar.style.width =
-          Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100) +
-          "%"),
+      snapshot => (bar.style.width = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100) + "%"),
       error => Ui.hide(progressBar),
       complete => Ui.hide(progressBar)
     );
@@ -1589,30 +1310,17 @@ AppStore.prototype.dataUpdateVersionApk = function(
   return uploadTask.then(updateVersion);
 };
 
-AppStore.prototype.uiRemoveVersion = function(
-  modal,
-  applicationKey,
-  versionKey
-) {
+AppStore.prototype.uiRemoveVersion = function(modal, applicationKey, versionKey) {
   if (!confirm("Delete this version?")) {
     return;
   }
 
   // disable modal elements
   const inputs = modal.root.querySelectorAll("input, textarea, button");
-  Ui.disable(
-    ...inputs,
-    modal.now,
-    modal.delete,
-    modal.cancel,
-    modal.update,
-    modal.create
-  );
+  Ui.disable(...inputs, modal.now, modal.delete, modal.cancel, modal.update, modal.create);
   modal.apkLabel.setAttribute("readonly", "");
 
-  this.dataRemoveVersion(applicationKey, versionKey).then(() =>
-    $(modal.root).modal("hide")
-  );
+  this.dataRemoveVersion(applicationKey, versionKey).then(() => $(modal.root).modal("hide"));
 };
 
 AppStore.prototype.dataRemoveVersion = function(applicationKey, versionKey) {
@@ -1637,16 +1345,10 @@ AppStore.prototype.dataRemoveVersion = function(applicationKey, versionKey) {
   return deleteApkIfNeeded().then(removeVersion);
 };
 
-AppStore.prototype.uiTriggerAlert = function(
-  type,
-  content,
-  durationInSeconds = 10
-) {
+AppStore.prototype.uiTriggerAlert = function(type, content, durationInSeconds = 10) {
   const alert = Ui.inflate(this.templates.alert).firstElementChild;
   alert.classList.add(type);
-  alert.querySelector(
-    "[data-alert-message]"
-  ).innerHTML = HtmlSanitizer.sanitize(content);
+  alert.querySelector("[data-alert-message]").innerHTML = HtmlSanitizer.sanitize(content);
   this.ui.alertContainer.prepend(alert);
   window.setTimeout(() => {
     alert.classList.add("show");
@@ -1698,18 +1400,13 @@ AppStore.prototype.onUserLoggedIn = function(user) {
       user.isAllowed = false;
       /*user.delete().catch(error => {});*/
       this.auth.signOut();
-      this.uiTriggerAlert(
-        "alert-danger",
-        `<b>${AppStore.CONSTANTS.shrug}</b><br>Anonymous users not allowed!`
-      );
+      this.uiTriggerAlert("alert-danger", `<b>${AppStore.CONSTANTS.shrug}</b><br>Anonymous users not allowed!`);
       return Promise.reject(new Error("Anonymous user"));
     }
     if (!user.emailVerified && !AppStore.CONFIG.allowUnverifiedEmail) {
       this.uiTriggerAlert(
         "alert-warning",
-        `Email not verified yet.<br>Click on ${
-          this.ui.userDetails.innerHTML
-        } and <b>${this.ui.verifyEmail.textContent}</b>.`,
+        `Email not verified yet.<br>Click on ${this.ui.userDetails.innerHTML} and <b>${this.ui.verifyEmail.textContent}</b>.`,
         Infinity
       );
       Ui.hide(this.ui.authContainer, this.ui.loader);
@@ -1740,9 +1437,7 @@ AppStore.prototype.onUserLoggedIn = function(user) {
         if (!user.emailVerified && AppStore.CONFIG.allowUnverifiedEmail) {
           this.uiTriggerAlert(
             "alert-warning",
-            `Email not verified yet.<br>Click on ${
-              this.ui.userDetails.innerHTML
-            } and <b>${this.ui.verifyEmail.textContent}</b>.`,
+            `Email not verified yet.<br>Click on ${this.ui.userDetails.innerHTML} and <b>${this.ui.verifyEmail.textContent}</b>.`,
             Infinity
           );
           Ui.hide(this.ui.authContainer, this.ui.loader);
@@ -1751,10 +1446,7 @@ AppStore.prototype.onUserLoggedIn = function(user) {
 
         /*user.delete().catch(error => {});*/
         this.auth.signOut();
-        this.uiTriggerAlert(
-          "alert-danger",
-          `<b>${AppStore.CONSTANTS.shrug}</b><br>You are not allowed here!`
-        );
+        this.uiTriggerAlert("alert-danger", `<b>${AppStore.CONSTANTS.shrug}</b><br>You are not allowed here!`);
         return Promise.reject(new Error("Not allowed"));
       });
   };
@@ -1821,10 +1513,7 @@ AppStore.prototype.uiShowLogin = function() {
     },
     uiShown: () => Ui.hide(this.ui.loader)
   };
-  this.firebaseUI.start(
-    "#firebaseui-auth-container",
-    AppStore.CONFIG.firebaseUi
-  );
+  this.firebaseUI.start("#firebaseui-auth-container", AppStore.CONFIG.firebaseUi);
 };
 
 AppStore.prototype.sendEmailVerification = function() {
@@ -1832,17 +1521,12 @@ AppStore.prototype.sendEmailVerification = function() {
   if (user.emailVerified) {
     return;
   }
-  const success = () =>
-    this.uiTriggerAlert(
-      "alert-success",
-      `Verification email sent to <b>${user.email}</b>.`
-    );
+  const success = () => this.uiTriggerAlert("alert-success", `Verification email sent to <b>${user.email}</b>.`);
   user.sendEmailVerification().then(success);
 };
 
 AppStore.prototype.sendPasswordResetEmail = function() {
-  const success = () =>
-    this.uiTriggerAlert("alert-success", "Password reset email sent.");
+  const success = () => this.uiTriggerAlert("alert-success", "Password reset email sent.");
   this.auth.sendPasswordResetEmail(this.auth.currentUser.email).then(success);
 };
 
@@ -1969,10 +1653,7 @@ Ui.isInViewport = function(element) {
   let rect = element.getBoundingClientRect();
   let doc = document.documentElement;
   return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || doc.clientHeight) &&
-    rect.right <= (window.innerWidth || doc.clientWidth)
+    rect.top >= 0 && rect.left >= 0 && rect.bottom <= (window.innerHeight || doc.clientHeight) && rect.right <= (window.innerWidth || doc.clientWidth)
   );
 };
 
@@ -2027,10 +1708,7 @@ Utils.validateFileInput = function(input, file, type, size) {
     return false;
   }
   if (file.size > size) {
-    const msg = `Invalid file size [${Utils.formatBytesSize(
-      file.size,
-      2
-    )}], expected [${Utils.formatBytesSize(size, 2)}]`;
+    const msg = `Invalid file size [${Utils.formatBytesSize(file.size, 2)}], expected [${Utils.formatBytesSize(size, 2)}]`;
     console.error(msg);
     input.focus();
     input.setCustomValidity(msg);
@@ -2043,12 +1721,7 @@ Utils.validateFileInput = function(input, file, type, size) {
 Utils.extractFileFromDataTransfer = function(dataTransfer, type) {
   const types = dataTransfer.types;
   const items = dataTransfer.items;
-  if (
-    types.length == 1 &&
-    types[0] == "Files" &&
-    items.length == 1 &&
-    items[0].type.match(type)
-  ) {
+  if (types.length == 1 && types[0] == "Files" && items.length == 1 && items[0].type.match(type)) {
     return items[0];
   }
 };
@@ -2059,12 +1732,7 @@ Utils.parseDragDropEventsForFile = function(event, type, size) {
   };
   const types = event.dataTransfer.types;
   const items = event.dataTransfer.items;
-  if (
-    types.length == 1 &&
-    types[0] == "Files" &&
-    items.length == 1 &&
-    items[0].type.match(type)
-  ) {
+  if (types.length == 1 && types[0] == "Files" && items.length == 1 && items[0].type.match(type)) {
     const file = items[0].getAsFile();
     result.file = file;
     // When event is not 'drop', getAsFile() will return null
@@ -2072,18 +1740,13 @@ Utils.parseDragDropEventsForFile = function(event, type, size) {
       return result;
     }
     if (!file.type.match(type)) {
-      result.message = `Expected file type: <b>${type}</b>, but file type was <b>${
-        file.type
-      }</b>`;
+      result.message = `Expected file type: <b>${type}</b>, but file type was <b>${file.type}</b>`;
       result.accept = false;
       Utils.disableDragAndDropEvent(event);
       return result;
     }
     if (file.size > size) {
-      result.message = `File size is too large: <b>${Utils.formatBytesSize(
-        file.size,
-        2
-      )}</b> (max: <b>${Utils.formatBytesSize(size, 2)}</b>)`;
+      result.message = `File size is too large: <b>${Utils.formatBytesSize(file.size, 2)}</b> (max: <b>${Utils.formatBytesSize(size, 2)}</b>)`;
       result.accept = false;
       Utils.disableDragAndDropEvent(event);
       return result;
@@ -2186,34 +1849,22 @@ TimeAgo.valueOf = function(time) {
     if (count == 0) {
       return "now";
     }
-    return `${TimeAgo.futurePrefix(future)} ${count} second${TimeAgo.pluralize(
-      count
-    )} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)} ${count} second${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
   } else if (elapsed < msPerHour) {
     const count = Math.round(elapsed / msPerMinute);
-    return `${TimeAgo.futurePrefix(future)} ${count} minute${TimeAgo.pluralize(
-      count
-    )} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)} ${count} minute${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
   } else if (elapsed < msPerDay) {
     const count = Math.round(elapsed / msPerHour);
-    return `${TimeAgo.futurePrefix(future)} ${count} hour${TimeAgo.pluralize(
-      count
-    )} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)} ${count} hour${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
   } else if (elapsed < msPerMonth) {
     const count = Math.round(elapsed / msPerDay);
-    return `${TimeAgo.futurePrefix(future)} ${count} day${TimeAgo.pluralize(
-      count
-    )} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)} ${count} day${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
   } else if (elapsed < msPerYear) {
     const count = Math.round(elapsed / msPerMonth);
-    return `${TimeAgo.futurePrefix(future)} ${count} month${TimeAgo.pluralize(
-      count
-    )} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)} ${count} month${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
   } else {
     const count = Math.round(elapsed / msPerYear);
-    return `${TimeAgo.futurePrefix(future)} ${count} year${TimeAgo.pluralize(
-      count
-    )} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)} ${count} year${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
   }
 };
 
