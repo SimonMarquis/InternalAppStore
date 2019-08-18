@@ -1664,9 +1664,7 @@ function Utils() {}
 Utils.preventDefaultDrop = function() {
   const preventDefaultBehavior = e => {
     if (e.target.tagName != "INPUT" && !e.target.hasAttribute("drop-zone")) {
-      e.preventDefault();
-      e.dataTransfer.effectAllowed = "none";
-      e.dataTransfer.dropEffect = "none";
+      Utils.disableDragAndDropEvent(e);
     }
   };
   window.addEventListener("dragenter", preventDefaultBehavior, false);
@@ -1675,8 +1673,10 @@ Utils.preventDefaultDrop = function() {
 };
 
 Utils.disableDragAndDropEvent = function(event) {
-  event.dataTransfer.effectAllowed = "none";
-  event.dataTransfer.dropEffect = "none";
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = "none";
+    event.dataTransfer.dropEffect = "none";
+  }
   event.preventDefault();
 };
 
