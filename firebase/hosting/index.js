@@ -950,7 +950,8 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
     const file = event.target.files[0];
     if (file) {
       modal.apkLabel.textContent = `${Utils.formatBytesSize(file.size, 2)} • ${file.name}`;
-      Utils.validateFileInput(modal.apkInput, file, AppStore.CONFIG.apkMimeType, AppStore.CONFIG.apkMaxSize);
+      let mimeType = file.type || !file.name.endsWith(".apk") ? AppStore.CONFIG.apkMimeType : undefined;
+      Utils.validateFileInput(modal.apkInput, file, mimeType, AppStore.CONFIG.apkMaxSize);
     } else {
       modal.apkLabel.textContent = version ? (version.apkSize ? `${Utils.formatBytesSize(version.apkSize, 2)} • Unchanged` : "Unchanged") : null;
     }
@@ -1023,7 +1024,8 @@ AppStore.prototype.uiVersionModalValidate = function(modal, version, data) {
       }
     }
     if (data.apk) {
-      if (!Utils.validateFileInput(modal.apkInput, data.apk, AppStore.CONFIG.apkMimeType, AppStore.MAX_SIZE_APK)) {
+      let mimeType = data.apk.type || !data.apk.name.endsWith(".apk") ? AppStore.CONFIG.apkMimeType : undefined;
+      if (!Utils.validateFileInput(modal.apkInput, data.apk, mimeType, AppStore.CONFIG.apkMaxSize)) {
         return false;
       }
     }
