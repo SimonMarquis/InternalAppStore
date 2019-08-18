@@ -1663,7 +1663,7 @@ function Utils() {}
 
 Utils.preventDefaultDrop = function() {
   const preventDefaultBehavior = e => {
-    if (e.target.tagName != "INPUT" && !e.target.hasAttribute("drop-zone")) {
+    if (e.target.tagName != "INPUT" && !(e.target instanceof Element && e.target.hasAttribute("drop-zone"))) {
       Utils.disableDragAndDropEvent(e);
     }
   };
@@ -1721,6 +1721,9 @@ Utils.validateFileInput = function(input, file, type, size) {
 };
 
 Utils.extractFileFromDataTransfer = function(dataTransfer, type) {
+  if (!dataTransfer) {
+    return;
+  }
   const types = dataTransfer.types;
   const items = dataTransfer.items;
   if (types.length == 1 && types[0] == "Files" && items.length == 1 && items[0].type.match(type)) {
@@ -1732,6 +1735,9 @@ Utils.parseDragDropEventsForFile = function(event, type, size) {
   const result = {
     accept: true
   };
+  if (!event.dataTransfer) {
+    return result;
+  }
   const types = event.dataTransfer.types;
   const items = event.dataTransfer.items;
   if (types.length == 1 && types[0] == "Files" && items.length == 1 && items[0].type.match(type)) {
