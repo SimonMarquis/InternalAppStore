@@ -180,6 +180,7 @@ AppStore.prototype.initFirebase = function() {
   this.databaseRefs.application = key => this.databaseRefs.applications.child(key);
   this.databaseRefs.versions = applicationKey => this.databaseRefs.store.child("versions").child(applicationKey);
   this.databaseRefs.version = (applicationKey, versionKey) => this.databaseRefs.versions(applicationKey).child(versionKey);
+  this.databaseRefs.analytics = this.database.ref("analytics");
   this.databaseRefs.checks = this.database.ref("checks");
   this.databaseRefs.checkIsAdmin = this.databaseRefs.checks.child("admin");
   this.databaseRefs.checkIsEmailVerified = this.databaseRefs.checks.child("emailVerified");
@@ -532,8 +533,8 @@ AppStore.prototype.uiUpdateVersionApkLink = function(applicationKey, versionKey,
         .getDownloadURL()
         .then(url => {
           download.setAttribute("download", `${versionKey || version.name}.apk`);
-          download.href = url;
           window.location = url;
+          this.databaseRefs.analytics.child("downloads").child(applicationKey).child(versionKey).child(this.auth.currentUser.uid).set(firebase.database.ServerValue.TIMESTAMP);
         })
         .catch(error => Ui.hide(download));
     };
