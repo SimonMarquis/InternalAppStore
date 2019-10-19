@@ -88,6 +88,12 @@
             "silent": {
               ".validate": "newData.val() == null || newData.isBoolean()"
             },
+            "downloads": {
+              ".validate": "newData.isNumber()"
+            },
+            "installs": {
+              ".validate": "newData.isNumber()"
+            },
             "$other": {
               ".validate": false
             }
@@ -97,6 +103,36 @@
       "$other": {
         ".validate": false
       }
+    },
+    "analytics": {
+      "downloads": {
+        "$application_id": {
+          "$version_id": {
+            ".validate": "root.child('store').child('applications').child($application_id).exists() && root.child('store').child('versions').child($application_id).child($version_id).exists()",
+            "$uid": {
+              ".write": "$uid === auth.uid",
+              ".validate": "newData.isNumber()"
+            }
+          }
+        }
+      },
+      "installs": {
+        "$application_id": {
+          "$version_id": {
+            ".validate": "root.child('store').child('applications').child($application_id).exists() && root.child('store').child('versions').child($application_id).child($version_id).exists()",
+            "$uid": {
+              ".write": "$uid === auth.uid",
+              ".validate": "newData.isNumber()"
+            }
+          }
+        }
+      },
+      "$other": {
+        ".validate": false
+      }
+    },
+    "$other": {
+      ".validate": false
     }
   }
 }

@@ -18,7 +18,7 @@ exports.notifyNewApplications = functions.database
   .onCreate((snapshot, context) => {
     const application = snapshot.val();
     const applicationUid = context.params.applicationUid;
-    console.log("New application detected!", application.name, applicationUid);
+    console.log("New application detected!", applicationUid, application);
 
     if (application.silent === true) {
       console.log("Silent application, don't send notifications.");
@@ -66,7 +66,7 @@ exports.notifyNewVersions = functions.database
     const version = snapshot.val();
     const applicationUid = context.params.applicationUid;
     const versionUid = context.params.versionUid;
-    console.log("New version detected!", applicationUid, versionUid);
+    console.log("New version detected!", applicationUid, versionUid, version);
     if (version.silent === true) {
       console.log("Silent version, don't send notifications.");
       return Promise.resolve();
@@ -111,3 +111,24 @@ exports.notifyNewVersions = functions.database
         return Promise.reject(error);
       });
   });
+
+exports.analyticsDownloads = functions.database.ref("/analytics/downloads/{application_id}/{version_id}/{uid}").onCreate((change, context) => {
+  return admin.database().ref(`/store/versions/${context.params.application_id}/${context.params.version_id}/downloads`).transaction(current => {
+      return (current || 0) + 1;
+    });
+});
+
+exports.analyticsInstalls = functions.database.ref("/analytics/installs/{application_id}/{version_id}/{uid}").onCreate((change, context) => {
+  return admin.database().ref(`/store/versions/${context.params.application_id}/${context.params.version_id}/installs`).transaction(current => {
+      return (current || 0) + 1;
+    });
+});
+
+exports.analyticsVersionDeleted = functions.database.ref("/store/versions/{application_id}/{version_id}").onDelete((snapshot, context) => {
+  console.log("Version deleted:", context.params);
+  const downloads = admin.database().ref(`/analytics/downloads/${context.params.application_id}/${context.params.version_id}`);
+  const installs = admin.database().ref(`/analytics/installs/${context.params.application_id}/${context.params.version_id}`);
+  console.log("Cleaning up analytics:", downloads.path.toString(), installs.path.toString());
+  return Promise.all([downloads.remove(), installs.remove()]);
+});
+

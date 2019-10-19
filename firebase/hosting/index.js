@@ -488,6 +488,7 @@ AppStore.prototype.uiUpdateVersion = function(applicationKey, versionKey, versio
     Ui.setActiveTargets(root);
   }
   root.querySelector("[data-version-name]").textContent = version.name;
+  root.setAttribute("title", `Downloads • ${version.downloads || 0}\nInstallations • ${version.installs || 0}`);
   root.setAttribute("sort-key-primary", version.name);
   root.setAttribute("sort-key-secondary", version.timestamp);
   const timestampElement = root.querySelector("[data-version-timestamp]");

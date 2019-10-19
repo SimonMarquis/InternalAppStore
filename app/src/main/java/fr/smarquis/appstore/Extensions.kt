@@ -12,6 +12,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -51,11 +52,31 @@ fun FirebaseDatabase.applications(): DatabaseReference = store().child("applicat
 
 fun FirebaseDatabase.application(key: String): DatabaseReference = applications().child(key)
 
-fun FirebaseDatabase.versions(): DatabaseReference = store().child("versions")
+private fun FirebaseDatabase.versions(): DatabaseReference = store().child("versions")
 
 fun FirebaseDatabase.versions(applicationKey: String): DatabaseReference = versions().child(applicationKey)
 
 fun FirebaseDatabase.version(applicationKey: String, versionKey: String): DatabaseReference = versions(applicationKey).child(versionKey)
+
+typealias DatabaseReferenceForAnalytics = DatabaseReference
+
+fun FirebaseDatabase.analytics(): DatabaseReferenceForAnalytics = reference.child("analytics")
+
+fun DatabaseReferenceForAnalytics.downloaded(application: Application?, version: Version?) {
+    child("downloads")
+            .child(application?.key ?: return)
+            .child(version?.key ?: return)
+            .child(Firebase.auth.currentUser?.uid ?: return)
+            .setValue(ServerValue.TIMESTAMP)
+}
+
+fun DatabaseReferenceForAnalytics.installed(application: Application?, version: Version?) {
+    child("installs")
+            .child(application?.key ?: return)
+            .child(version?.key ?: return)
+            .child(Firebase.auth.currentUser?.uid ?: return)
+            .setValue(ServerValue.TIMESTAMP)
+}
 
 //endregion
 

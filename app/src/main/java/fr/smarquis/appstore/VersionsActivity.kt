@@ -614,6 +614,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         Firebase.storage.getReference(version.apkRef!!).getFile(ApkFileProvider.tempApkFile(applicationContext, version))
                 .addOnProgressListener(DownloadProgressListener(this, version))
                 .addOnCompleteListener(DownloadCompleteListener(this, version, primary = true, continuation = continuation))
+                .addOnCompleteListener { Firebase.database.analytics().downloaded(application, version) }
     }
 
     private fun openVersion(version: Version): Boolean {
@@ -767,6 +768,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 INSTALL -> {
                     when {
                         resultCode == RESULT_OK -> {
+                            Firebase.database.analytics().installed(application, version)
                             version?.let { Firebase.logSelectedContent(application, it) }
                             Snackbar.make(constraintLayout, R.string.versions_toast_application_installed, Snackbar.LENGTH_LONG).setAction(R.string.versions_toast_application_installed_action) { startApplication() }.customize().show()
                         }

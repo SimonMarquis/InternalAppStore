@@ -98,28 +98,39 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
 
     ```
     ├──admins
-    │   └──{admin-uid}
-    └──store
-        ├──applications
-        │   └──{application-uid}
-        │       ├──name
-        │       ├──packageName
-        │       ├──description
-        │       ├──image
-        │       ├──link_{#}
-        │       │   ├──name
-        │       │   └──uri
-        │       └──silent
-        └──versions
-            └──{application-uid}
-                └──{version-uid}
-                    ├──name
-                    ├──description
-                    ├──timestamp
-                    ├──apkRef
-                    ├──apkGeneration
-                    ├──apkUrl
-                    └──silent
+    │   └──{$uid}
+    ├──store
+    │   ├──applications
+    │   │   └──{$application_id}
+    │   │       ├──name
+    │   │       ├──packageName
+    │   │       ├──description
+    │   │       ├──image
+    │   │       ├──link_{#}
+    │   │       │   ├──name
+    │   │       │   └──uri
+    │   │       └──silent
+    │   └──versions
+    │       └──{$application_id}
+    │           └──{$version_id}
+    │               ├──name
+    │               ├──description
+    │               ├──timestamp
+    │               ├──apkRef
+    │               ├──apkGeneration
+    │               ├──apkUrl
+    │               ├──silent
+    │               ├──downloads
+    │               └──installs
+    └──analytics
+        ├──downloads
+        │   └──{$application_id}
+        │       └──{$version_id}
+        │           └──{$uid}
+        └──installs
+            └──{$application_id}
+                └──{$version_id}
+                    └──{$uid}
     ```
 
     </details>
@@ -131,10 +142,10 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
 
     ```
     └──applications
-        └──{application-uid}
+        └──{$applicationUid}
             │──image
             └──versions
-                └──{version-uid}.apk
+                └──{$versionUid}.apk
     ```
 
     </details>
