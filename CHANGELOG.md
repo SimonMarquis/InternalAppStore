@@ -4,6 +4,7 @@
 
 <!-- MarkdownTOC -->
 
+- [1.4.0](#140)
 - [1.3.2](#132)
 - [1.3.1](#131)
 - [1.3.0](#130)
@@ -15,6 +16,12 @@
 
 <!-- /MarkdownTOC -->
 </details>
+
+## 1.4.0
+> 2019.10.19
+
+- 📊 Track number of downloads and installations
+- 📦 Update dependencies
 
 ## 1.3.2
 > 2019.03.04
