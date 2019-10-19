@@ -16,8 +16,8 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-28.0.3
-    - android-28
+    - build-tools-29.0.2
+    - android-29
     - extra
 before_install:
   - 'echo "$GOOGLE_SERVICES" | base64 --decode > app/google-services.json'
