@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
+    android:clipChildren="false"
     tools:context="fr.smarquis.appstore.VersionsActivity"
     tools:ignore="Overdraw">
 
