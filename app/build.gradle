@@ -10,11 +10,11 @@ def versionPatch = 2
 def versionBuild = 0
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId 'fr.smarquis.appstore'
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
@@ -29,6 +29,9 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -37,26 +40,26 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.emoji:emoji:1.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.core:core-ktx:1.0.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
-    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
-    implementation 'com.firebaseui:firebase-ui-database:4.3.1'
-    implementation 'com.firebaseui:firebase-ui-storage:4.3.1'
-    implementation 'com.google.firebase:firebase-core:16.0.7'
-    implementation 'com.google.firebase:firebase-analytics:16.3.0'
-    implementation 'com.google.firebase:firebase-auth:16.1.0'
-    implementation 'com.google.firebase:firebase-database:16.1.0'
-    implementation 'com.google.firebase:firebase-storage:16.1.0'
-    implementation 'com.google.firebase:firebase-messaging:17.4.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta05'
+    implementation 'androidx.core:core-ktx:1.2.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
+    implementation 'com.firebaseui:firebase-ui-database:6.0.2'
+    implementation 'com.firebaseui:firebase-ui-storage:6.0.2'
+    implementation 'com.google.android.material:material:1.1.0-beta01'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
+    implementation 'com.google.firebase:firebase-auth:19.1.0'
+    implementation 'com.google.firebase:firebase-database:19.2.0'
+    implementation 'com.google.firebase:firebase-storage:19.1.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.jakewharton.byteunits:byteunits:0.9.1'
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
 
     // Run `gradlew dependencyUpdates` to check for updates
 }

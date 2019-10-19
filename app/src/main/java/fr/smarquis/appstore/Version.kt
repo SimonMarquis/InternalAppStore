@@ -77,8 +77,7 @@ data class Version(
     }
 
     override fun compareTo(other: Version): Int {
-        val compared = SemVer.nonNull(semver).compareTo(SemVer.nonNull(other.semver))
-        return -when (compared) {
+        return -when (val compared = SemVer.nonNull(semver).compareTo(SemVer.nonNull(other.semver))) {
             0 -> (timestamp ?: 0L).compareTo(other.timestamp ?: 0L)
             else -> compared
         }

@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.messaging.RemoteMessage
+import kotlin.math.min
 
 class Notifications {
 
@@ -59,7 +60,7 @@ class Notifications {
             if (nm.getNotificationChannel(channelId) == null) {
                 // If new apps notification is disabled, then create but disable this notification channel
                 val shouldMuteNotificationChannel = nm.getNotificationChannel(context.getString(R.string.notification_channel_new_applications_id))?.importance == NotificationManagerCompat.IMPORTANCE_NONE
-                nm.createNotificationChannel(NotificationChannel(channelId, application.name, if (application.isMyself(context)) NotificationManager.IMPORTANCE_HIGH else if (shouldMuteNotificationChannel) NotificationManagerCompat.IMPORTANCE_NONE else NotificationManager.IMPORTANCE_LOW))
+                nm.createNotificationChannel(NotificationChannel(channelId, application.name, if (application.isMyself(context)) NotificationManager.IMPORTANCE_HIGH else if (shouldMuteNotificationChannel) NotificationManager.IMPORTANCE_NONE else NotificationManager.IMPORTANCE_LOW))
             } else {
                 nm.createNotificationChannel(NotificationChannel(channelId, application.name, if (application.isMyself(context)) NotificationManager.IMPORTANCE_HIGH else NotificationManager.IMPORTANCE_LOW))
             }
@@ -125,7 +126,7 @@ class Notifications {
                     .setContentTitle(title)
                     .setContentText(text)
                     .setContentIntent(pendingIntent)
-                    .setWhen(if (timestamp <= 0) now else Math.min(timestamp, now))
+                    .setWhen(if (timestamp <= 0) now else min(timestamp, now))
                     .setAutoCancel(autoCancel)
                     .setOnlyAlertOnce(true)
                     .setLocalOnly(true)

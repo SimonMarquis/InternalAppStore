@@ -26,7 +26,6 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
-import androidx.annotation.Px
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
@@ -34,6 +33,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.core.text.bold
@@ -70,6 +70,7 @@ import fr.smarquis.appstore.VersionRequest.Companion.create
 import java.lang.ref.WeakReference
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import kotlin.math.hypot
 
 class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
@@ -117,7 +118,6 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var fab: FloatingActionButton
     private lateinit var searchView: SearchView
 
-    @delegate:Px
     private val baselineGrid by lazy { resources.getDimensionPixelSize(R.dimen.material_baseline_grid_1x) }
 
     private val applicationValueEventListener: ValueEventListener = object : ValueEventListener {
@@ -402,7 +402,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
                 override fun onTransitionStart(p0: Transition?) {
                     val radiusInvisible = 0F
-                    val radiusVisible = Math.hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
+                    val radiusVisible = hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
                     val start = if (activityTransitionFlag) radiusVisible else radiusInvisible
                     val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
                     ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
@@ -531,7 +531,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             } else null)
             setOnLongClickListener(if (link?.uri != null) {
                 View.OnLongClickListener {
-                    (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip = ClipData.newPlainText(packageName, link.uri)
+                    getSystemService<ClipboardManager>()?.setPrimaryClip(ClipData.newPlainText(packageName, link.uri))
                     Toast.makeText(this@VersionsActivity, getString(R.string.versions_toast_link_to_clipboard), LENGTH_SHORT).show()
                     true
                 }
@@ -641,7 +641,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
         version.updateStatus(INSTALLING)
         versionAdapter?.updateVersionProgress(version)
-        val install = Intent().apply {
+        @Suppress("DEPRECATION") val install = Intent().apply {
             action = Intent.ACTION_INSTALL_PACKAGE
             data = if (Utils.isAtLeast(N)) {
                 ApkFileProvider.uri(apkFile, applicationContext)
@@ -655,7 +655,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             putExtra(Intent.EXTRA_ALLOW_REPLACE, true)
             putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME, applicationInfo.packageName)
         }
-        val requestCode = VersionRequest.create(INSTALL, version)
+        val requestCode = create(INSTALL, version)
         safeStartActivityForResult(install, requestCode)
     }
 
@@ -694,7 +694,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         private val activityReference: WeakReference<VersionsActivity> = WeakReference(activity)
 
-        override fun onProgress(task: FileDownloadTask.TaskSnapshot?) {
+        override fun onProgress(task: FileDownloadTask.TaskSnapshot) {
             update(task, version, activityReference.get()?.versionAdapter)
         }
 

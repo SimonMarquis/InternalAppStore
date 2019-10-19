@@ -63,10 +63,10 @@ class ApplicationViewHolder(
                 val name = Utils.applicationVersionName(itemView.context, packageName)
                 val time = Utils.relativeTimeSpan(Utils.applicationLastUpdateTime(itemView.context, packageName))
                 text = resources.getString(R.string.item_application_installed, name, time)
-                visibility = View.VISIBLE
+                visibility = VISIBLE
             } else {
                 text = null
-                visibility = View.GONE
+                visibility = GONE
             }
         }
     }

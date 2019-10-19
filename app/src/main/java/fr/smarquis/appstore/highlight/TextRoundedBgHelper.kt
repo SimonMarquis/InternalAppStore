@@ -66,7 +66,7 @@ class TextRoundedBgHelper(
         // invalidation of the cache is required whenever anything related to text has changed.
         val spans = text.getSpans(0, text.length, Annotation::class.java)
         spans.forEach { span ->
-            if (span.value.equals("rounded")) {
+            if (span.value == "rounded") {
                 val spanStart = text.getSpanStart(span)
                 val spanEnd = text.getSpanEnd(span)
                 val startLine = layout.getLineForOffset(spanStart)

@@ -14,7 +14,7 @@ class Firebase {
 
     companion object {
 
-        val app: FirebaseApp by lazy { FirebaseApp.getInstance()!! }
+        val app: FirebaseApp by lazy { FirebaseApp.getInstance() }
 
         val analytics: FirebaseAnalytics by lazy {
             FirebaseAnalytics.getInstance(app.applicationContext).apply {
@@ -32,10 +32,10 @@ class Firebase {
 
         val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance(app) }
 
-        val messaging: FirebaseMessaging by lazy { FirebaseMessaging.getInstance() }
+        private val messaging: FirebaseMessaging by lazy { FirebaseMessaging.getInstance() }
 
         val signInIntent by lazy {
-            AuthUI.getInstance(Firebase.app)
+            AuthUI.getInstance(app)
                     .createSignInIntentBuilder()
                     .setTheme(R.style.Theme_AppStore)
                     .setAvailableProviders(Store.AUTH_PROVIDERS)
@@ -45,15 +45,15 @@ class Firebase {
         }
 
         fun subscribeToStore() {
-            Firebase.messaging.subscribeToTopic("store")
+            messaging.subscribeToTopic("store")
         }
 
         fun unsubscribeFromStore() {
-            Firebase.messaging.unsubscribeFromTopic("store")
+            messaging.unsubscribeFromTopic("store")
         }
 
         fun logSelectedContent(application: Application?, version: Version) {
-            Firebase.analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, Bundle().apply {
+            analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, Bundle().apply {
                 putString(FirebaseAnalytics.Param.ITEM_ID, "${version.name} (${version.key})")
                 putString(FirebaseAnalytics.Param.ITEM_NAME, "${application?.packageName} ${version.name} (${version.key})")
                 putString(FirebaseAnalytics.Param.CONTENT_TYPE, application?.packageName ?: "unknown")

@@ -20,7 +20,7 @@ class VersionRequest(
         /**
          * Creates the wrapper and returns the request code
          */
-        fun create(action: VersionRequest.Action, version: Version? = null): Int {
+        fun create(action: Action, version: Version? = null): Int {
             requestIds.incrementAndGet().let {
                 requests.put(it, VersionRequest(action, version))
                 return it

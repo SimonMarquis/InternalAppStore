@@ -140,7 +140,7 @@ class Utils {
                 null
             } else {
                 description.replace("\n", "<br>").let {
-                    if (Utils.isAtLeast(N)) {
+                    if (isAtLeast(N)) {
                         Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY)
                     } else {
                         @Suppress("DEPRECATION")

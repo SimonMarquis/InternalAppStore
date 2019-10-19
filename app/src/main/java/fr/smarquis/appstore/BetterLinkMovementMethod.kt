@@ -24,7 +24,7 @@ class BetterLinkMovementMethod : LinkMovementMethod() {
                 clear(view)
             } else {
                 view.setTag(R.id.better_link_movement_method_forward_to, forwardTo)
-                view.movementMethod = BetterLinkMovementMethod.instance
+                view.movementMethod = instance
             }
         }
 

@@ -13,15 +13,12 @@ class MessagingService : FirebaseMessagingService() {
 
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
     }
 
     @WorkerThread
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
-        if (remoteMessage == null) {
-            return
-        }
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         val data = remoteMessage.data
         when (data["type"]) {
             "new_application" -> onNewApplication(remoteMessage)

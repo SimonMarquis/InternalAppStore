@@ -11,7 +11,6 @@ import android.content.pm.ShortcutManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.*
 import android.os.Bundle
@@ -68,7 +67,7 @@ class Shortcuts private constructor(_context: Context) {
         private val EXTRAS = VersionsActivity::class.java.`package`
         private val EXTRA_SHORTCUT_APPLICATION = "$EXTRAS.EXTRA_SHORTCUT_APPLICATION"
 
-        private fun has(versionCode: Int) = if (Build.VERSION.SDK_INT >= versionCode) TRUE else null
+        private fun has(versionCode: Int) = if (SDK_INT >= versionCode) TRUE else null
 
     }
 

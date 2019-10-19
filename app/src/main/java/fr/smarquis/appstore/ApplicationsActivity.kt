@@ -364,13 +364,13 @@ class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener
         when (requestCode) {
             REQUEST_CODE_AUTO_SIGN_IN -> {
                 when (resultCode) {
-                    AppCompatActivity.RESULT_OK -> checkStoreAccess(sendEmailVerification = true, reloadUser = true)
+                    RESULT_OK -> checkStoreAccess(sendEmailVerification = true, reloadUser = true)
                     else -> finish()
                 }
             }
             REQUEST_CODE_MANUAL_SIGN_IN -> {
                 when (resultCode) {
-                    AppCompatActivity.RESULT_OK -> checkStoreAccess(sendEmailVerification = true, reloadUser = true)
+                    RESULT_OK -> checkStoreAccess(sendEmailVerification = true, reloadUser = true)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)

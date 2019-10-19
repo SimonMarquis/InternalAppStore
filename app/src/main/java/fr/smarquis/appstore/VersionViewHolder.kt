@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_version.view.*
 class VersionViewHolder(
         v: View,
         private val callback: VersionAdapter.Callback
-) : RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
+) : RecyclerView.ViewHolder(v), OnClickListener, OnLongClickListener {
 
     private val name: TextView = v.textView_version_name
     private val timestamp: TextView = v.textView_version_timestamp
