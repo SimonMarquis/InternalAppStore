@@ -386,6 +386,7 @@ AppStore.prototype.uiAppendApplicationDetails = function(key, app) {
       }
     });
   } else {
+    add.parentNode.removeChild(add);
     image.removeAttribute("drop-zone");
   }
 
@@ -471,8 +472,12 @@ AppStore.prototype.uiInsertVersionItem = function(item, root) {
   const children = root.children;
   const itemVersion = new SemVer(item.getAttribute("sort-key-primary"));
   const itemTimestamp = Number(item.getAttribute("sort-key-secondary"));
-  for (let i = 1; i < children.length; i++) {
+  for (let i = 0; i < children.length; i++) {
     const currentNode = children[i];
+    // ignore the "Add a version" item if it exists
+    if (currentNode.hasAttribute("data-app-action-add-version")) {
+      continue;
+    }
     const currentVersion = new SemVer(currentNode.getAttribute("sort-key-primary"));
     const compare = SemVer.compare(itemVersion, currentVersion);
     if (compare > 0) {
