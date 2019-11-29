@@ -10,6 +10,24 @@ body {
   padding-bottom: 1.5rem;
 }
 
+#logo {
+  width: 60px;
+  height: 60px;
+  padding: 0px;
+}
+
+#title {
+  line-height: 110%;
+}
+
+#subtitle {
+  font-size: 70%;
+}
+
+#loader {
+  margin: 5rem auto;
+}
+
 #apps-cards {
   margin-right: 0;
   margin-left: 0;
@@ -19,6 +37,20 @@ body {
 #apps-cards > .col {
   padding-right: 0;
   padding-left: 0;
+}
+
+.flex-03 {
+  flex: 0.3 !important;
+}
+
+.flex-04 {
+  flex: 0.4 !important;
+}
+
+.card-img-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 10px auto;
 }
 
 .bi-size-25 {

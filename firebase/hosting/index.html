@@ -39,7 +39,7 @@
   <template id="template-app-card">
     <div class="col">
       <div class="card m-2 card-selectable shadow-sm">
-        <div style="width: 100px; height: 100px; margin: 10px auto;">
+        <div class="card-img-wrapper">
           <img class="card-img" data-app-image onload="this.style.display=''" onerror="this.style.display='none'">
         </div>
         <div class="card-footer text-truncate text-center">
@@ -124,23 +124,23 @@
               <div class="form-group" data-app-links-root>
                 <label class="col-form-label">Links</label>
                 <div class="input-group mb-1" data-app-link-1>
-                  <input type="text" class="form-control text-truncate" style="flex: 0.3;" autocomplete="off" placeholder="Title" data-app-link-1-name>
+                  <input type="text" class="form-control text-truncate flex-03" autocomplete="off" placeholder="Title" data-app-link-1-name>
                   <input type="text" class="form-control text-truncate" autocomplete="off" placeholder="Value" data-app-link-1-uri>
                 </div>
                 <div class="input-group mb-1" data-app-link-2>
-                  <input type="text" class="form-control text-truncate" style="flex: 0.3;" autocomplete="off" placeholder="Title" data-app-link-2-name>
+                  <input type="text" class="form-control text-truncate flex-03" autocomplete="off" placeholder="Title" data-app-link-2-name>
                   <input type="text" class="form-control text-truncate" autocomplete="off" placeholder="Value" data-app-link-2-uri>
                 </div>
                 <div class="input-group mb-1" data-app-link-3>
-                  <input type="text" class="form-control text-truncate" style="flex: 0.3;" autocomplete="off" placeholder="Title" data-app-link-3-name>
+                  <input type="text" class="form-control text-truncate flex-03" autocomplete="off" placeholder="Title" data-app-link-3-name>
                   <input type="text" class="form-control text-truncate" autocomplete="off" placeholder="Value" data-app-link-3-uri>
                 </div>
                 <div class="input-group mb-1" data-app-link-4>
-                  <input type="text" class="form-control text-truncate" style="flex: 0.3;" autocomplete="off" placeholder="Title" data-app-link-4-name>
+                  <input type="text" class="form-control text-truncate flex-03" autocomplete="off" placeholder="Title" data-app-link-4-name>
                   <input type="text" class="form-control text-truncate" autocomplete="off" placeholder="Value" data-app-link-4-uri>
                 </div>
                 <div class="input-group mb-1" data-app-link-5>
-                  <input type="text" class="form-control text-truncate" style="flex: 0.3;" autocomplete="off" placeholder="Title" data-app-link-5-name>
+                  <input type="text" class="form-control text-truncate flex-03" autocomplete="off" placeholder="Title" data-app-link-5-name>
                   <input type="text" class="form-control text-truncate" autocomplete="off" placeholder="Value" data-app-link-5-uri>
                 </div>
               </div>
@@ -211,7 +211,7 @@
               <div class="form-group">
                 <label class="col-form-label">Timestamp</label>
                 <div class="input-group">
-                  <input type="number" class="form-control" style="flex: 0.4;" autocomplete="off" data-version-timestamp required>
+                  <input type="number" class="form-control flex-04" autocomplete="off" data-version-timestamp required>
                   <input type="text" class="form-control" autocomplete="off" data-version-datetime required>
                   <div class="input-group-append user-select-none cursor-pointer" data-version-timestamp-now>
                     <span class="input-group-text">Now</span>
@@ -302,8 +302,8 @@
 
       <div class="card-header user-select-none">
         <nav class="navbar navbar-expand navbar-light">
-          <img id="logo" src="logo-resized.png" class="navbar-brand mr-0 cursor-pointer" style="width: 60px; height: 60px; padding: 0px;" alt="Logo">
-          <div class="navbar-brand text-secondary no-wrap-ellipsis mr-auto ml-4" style="line-height: 110%;">App Store<br><a href="https://github.com/SimonMarquis/" target="_blank" class="text-muted" style="font-size: 70%;">@SimonMarquis</a></div>
+          <img id="logo" src="logo-resized.png" class="navbar-brand mr-0 cursor-pointer" alt="Logo">
+          <div class="navbar-brand text-secondary no-wrap-ellipsis mr-auto ml-4" id="title">App Store<br><a id="subtitle" href="https://github.com/SimonMarquis/" target="_blank" class="text-muted">@SimonMarquis</a></div>
           <div class="navbar-nav ml-auto">
             <div class="nav-item dropdown cursor-pointer">
               <a id="user-details" class="nav-link disabled" role="button" data-toggle="dropdown" disabled hidden>
@@ -327,7 +327,7 @@
         <div id="alert-container"></div>
       </div>
 
-      <div id="loader" class="spinner-grow text-secondary" style="margin: 5rem auto;" role="status"><span class="sr-only">Loading…</span></div>
+      <div id="loader" class="spinner-grow text-secondary" role="status"><span class="sr-only">Loading…</span></div>
 
       <div id="firebaseui-auth-container" class="card-body" hidden></div>
 
