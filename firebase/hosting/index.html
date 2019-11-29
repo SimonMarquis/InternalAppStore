@@ -32,12 +32,12 @@
   <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/4.2.0/firebaseui.css" />
   <script defer src="index.js"></script>
 
-  <style type="text/css">html{width:100vw;overflow-x:hidden}body{padding-top:1.5rem;padding-bottom:1.5rem}@media (min-width:48em){.container{max-width:46rem}}</style>
+  <style type="text/css">html{width:100vw;overflow-x:hidden}body{padding-top:1.5rem;padding-bottom:1.5rem}</style>
 </head>
 <body>
 
   <template id="template-app-card">
-    <div class="col-6 col-sm-4 px-0 px-sm-3">
+    <div class="col">
       <div class="card m-2 card-selectable shadow-sm">
         <div style="width: 100px; height: 100px; margin: 10px auto;">
           <img class="card-img" data-app-image onload="this.style.display=''" onerror="this.style.display='none'">
@@ -332,9 +332,9 @@
       <div id="firebaseui-auth-container" class="card-body" hidden></div>
 
       <div>
-        <div id="apps-cards" class="row card-body user-select-none" hidden style="min-height: 12rem;">
+        <div id="apps-cards" class="card-body user-select-none row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5" hidden>
 
-          <div id="new-app-card" class="col-6 col-sm-4 px-0 px-sm-3" hidden>
+          <div id="new-app-card" class="col" hidden>
             <div class="card m-2 card-selectable">
               <a class="text-muted card-img-wrapper">
                 <svg class="bi bi-plus" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

@@ -10,10 +10,15 @@ body {
   padding-bottom: 1.5rem;
 }
 
-@media (min-width: 48em) {
-  .container {
-    max-width: 46rem;
-  }
+#apps-cards {
+  margin-right: 0;
+  margin-left: 0;
+  min-height: 12rem;
+}
+
+#apps-cards > .col {
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .bi-size-25 {
