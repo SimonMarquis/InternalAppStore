@@ -563,7 +563,6 @@ AppStore.prototype.uiUpdateApplicationDetails = function(details, key, app) {
   const packageName = details.querySelector("[data-app-package-name]");
   if (packageName.childElementCount == 0) {
     const packageLink = Ui.inflate(this.templates.applicationLinkOutline).firstElementChild;
-    packageLink.querySelector("[data-app-link-icon]").innerHTML = "&#xE8C9";
     packageName.append(packageLink);
   }
   packageName.querySelector("[data-app-link-label]").textContent = app.packageName;
@@ -702,13 +701,20 @@ AppStore.prototype.uiShowApplicationModal = function(key) {
     modal.create.addEventListener("click", event => this.uiApplicationModalCommit(modal, key, app));
     modal.silent.addEventListener("click", event => {
       const btn = modal.silent;
-      const icon = modal.silent.firstElementChild;
+      const bell = modal.silent.querySelector(".bi-bell");
+      const bellFilled = modal.silent.querySelector(".bi-bell-fill");
       if (btn.hasAttribute("data-app-silent-flag")) {
         btn.removeAttribute("data-app-silent-flag");
-        icon.innerHTML = "&#xE7F4;";
+        btn.classList.remove("btn-outline-secondary");
+        btn.classList.add("btn-outline-primary");
+        Ui.hide(bell);
+        Ui.show(bellFilled);
       } else {
         btn.setAttribute("data-app-silent-flag", "true");
-        icon.innerHTML = "&#xE7F6;";
+        btn.classList.remove("btn-outline-primary");
+        btn.classList.add("btn-outline-secondary");
+        Ui.hide(bellFilled);
+        Ui.show(bell);
       }
       btn.blur();
     });
@@ -871,16 +877,16 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
   modal.apkUrl.addEventListener("input", event => Utils.validateUriInput(event.target));
   modal.descriptionPreviewToggle.addEventListener("click", event => {
     const showPreview = Ui.isHidden(modal.descriptionPreview);
+    const previewRich = modal.descriptionPreviewToggle.querySelector(".bi-document-richtext");
+    const previewCode = modal.descriptionPreviewToggle.querySelector(".bi-document-code");
     if (showPreview) {
-      modal.descriptionPreviewToggle.innerHTML = "&#xE8F5";
-      Ui.hide(modal.description);
+      Ui.hide(previewCode, modal.description);
       modal.descriptionPreview.innerHTML = HtmlSanitizer.sanitize(modal.description.value || "&nbsp;");
-      Ui.show(modal.descriptionPreview);
+      Ui.show(previewRich, modal.descriptionPreview);
     } else {
-      modal.descriptionPreviewToggle.innerHTML = "&#xE8F4;";
-      Ui.show(modal.description);
-      Ui.hide(modal.descriptionPreview);
+      Ui.hide(previewRich, modal.descriptionPreview);
       modal.descriptionPreview.innerHTML = null;
+      Ui.show(previewCode, modal.description);
     }
   });
 
@@ -944,13 +950,21 @@ AppStore.prototype.uiShowVersionModal = function(applicationKey, versionKey) {
     modal.create.addEventListener("click", event => this.uiVersionModalCommit(modal, applicationKey, undefined, undefined));
     modal.silent.addEventListener("click", event => {
       const btn = modal.silent;
-      const icon = modal.silent.firstElementChild;
+      const bell = modal.silent.querySelector(".bi-bell");
+      const bellFilled = modal.silent.querySelector(".bi-bell-fill");
+
       if (btn.hasAttribute("data-version-silent-flag")) {
         btn.removeAttribute("data-version-silent-flag");
-        icon.innerHTML = "&#xE7F4;";
+        btn.classList.remove("btn-outline-secondary");
+        btn.classList.add("btn-outline-primary");
+        Ui.hide(bell);
+        Ui.show(bellFilled);
       } else {
         btn.setAttribute("data-version-silent-flag", "true");
-        icon.innerHTML = "&#xE7F6;";
+        btn.classList.remove("btn-outline-primary");
+        btn.classList.add("btn-outline-secondary");
+        Ui.hide(bellFilled);
+        Ui.show(bell);
       }
       btn.blur();
     });

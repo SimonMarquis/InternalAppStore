@@ -16,7 +16,6 @@
   <link rel="manifest" href="manifest.json">
 
   <link href="index.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" integrity="sha384-SI27wrMjH3ZZ89r4o+fGIJtnzkAnFs3E4qz9DIYioCQ5l9Rd/7UAa8DHcaL8jkWt" crossorigin="anonymous">
 
   <script defer src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -53,10 +52,19 @@
   <template id="template-app-details">
     <div class="w-100" style="display: none;">
       <div class="card-header user-select-none">
-        <div class="card-title text-secondary cursor-pointer" style="display:inline;" title="Back" data-app-back><a class="text-secondary"><i class="material-icons align-top">&#xE5C4;</i> <span class="h5" data-app-name></span></a>
+        <div class="card-title text-secondary cursor-pointer" style="display:inline;" title="Back" data-app-back>
+          <a class="text-secondary">
+            <svg class="bi bi-chevron-left bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M13.354 3.646a.5.5 0 010 .708L7.707 10l5.647 5.646a.5.5 0 01-.708.708l-6-6a.5.5 0 010-.708l6-6a.5.5 0 01.708 0z" clip-rule="evenodd"/>
+            </svg>
+          <span class="h5 align-middle" data-app-name></span></a>
         </div>
         <div class="align-middle float-right">
-          <a class="material-icons text-secondary cursor-pointer" title="Edit" data-app-action-edit hidden>&#xE5D4;</a>
+          <a class="text-secondary cursor-pointer" title="Edit" data-app-action-edit hidden>
+            <svg class="bi bi-three-dots-vertical bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M11.5 15a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0-5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0-5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" clip-rule="evenodd"/>
+            </svg>
+          </a>
         </div>
       </div>
       <div class="card-body">
@@ -72,14 +80,7 @@
                 <p data-app-description class="pre-wrap"></p>
                 <div data-app-package-name class="mt-3">
                 </div>
-                <div style="clear: both;">
-                </div>
                 <div data-app-links>
-                  <a data-app-link-1 hidden class="btn btn-sm btn-outline-secondary no-wrap-ellipsis mt-1" target="_blank"><i class="material-icons align-middle md-24">&#xE157;</i>&nbsp;<span data-app-link-label-1 class="align-middle"></span></a>
-                  <a data-app-link-2 hidden class="btn btn-sm btn-outline-secondary no-wrap-ellipsis mt-1" target="_blank"><i class="material-icons align-middle md-24">&#xE157;</i>&nbsp;<span data-app-link-label-2 class="align-middle"></span></a>
-                  <a data-app-link-3 hidden class="btn btn-sm btn-outline-secondary no-wrap-ellipsis mt-1" target="_blank"><i class="material-icons align-middle md-24">&#xE157;</i>&nbsp;<span data-app-link-label-3 class="align-middle"></span></a>
-                  <a data-app-link-4 hidden class="btn btn-sm btn-outline-secondary no-wrap-ellipsis mt-1" target="_blank"><i class="material-icons align-middle md-24">&#xE157;</i>&nbsp;<span data-app-link-label-4 class="align-middle"></span></a>
-                  <a data-app-link-5 hidden class="btn btn-sm btn-outline-secondary no-wrap-ellipsis mt-1" target="_blank"><i class="material-icons align-middle md-24">&#xE157;</i>&nbsp;<span data-app-link-label-5 class="align-middle"></span></a>
                 </div>
               </div>
             </div>
@@ -87,7 +88,11 @@
         </div>
         <div class="list-group mt-3 shadow-sm" data-app-versions>
           <div class="list-group-item list-group-item-action user-select-none cursor-pointer text-muted" data-app-action-add-version hidden>
-            <i class="material-icons align-bottom">&#xE03B;</i> Add a version
+            <svg class="bi bi-plus bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M10 5.5a.5.5 0 01.5.5v4a.5.5 0 01-.5.5H6a.5.5 0 010-1h3.5V6a.5.5 0 01.5-.5z" clip-rule="evenodd"/>
+              <path fill-rule="evenodd" d="M9.5 10a.5.5 0 01.5-.5h4a.5.5 0 010 1h-3.5V14a.5.5 0 01-1 0v-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="align-middle"> Add a version</span> 
           </div>
         </div>
       </div>
@@ -95,9 +100,7 @@
   </template>
 
   <template id="template-app-link-outline">
-    <a data-app-link class="btn btn-sm btn-outline-secondary no-wrap-ellipsis" target="_blank">
-      <i data-app-link-icon class="material-icons align-middle md-24">&#xE157;</i>&nbsp;<span class="align-middle" data-app-link-label></span>
-    </a>
+    <a data-app-link class="btn btn-sm btn-outline-secondary no-wrap-ellipsis" target="_blank">🔗&nbsp;<span data-app-link-label></span></a>
   </template>
 
   <template id="template-app-modal">
@@ -158,7 +161,15 @@
             <button type="button" class="btn btn-outline-danger mr-auto" data-app-delete>Delete</button>
             <button type="button" class="btn btn-outline-secondary" data-app-cancel data-dismiss="modal">Cancel</button>
             <div class="btn-group" role="group" data-app-create-group>
-              <button type="button" class="btn btn-outline-primary" style="padding: 0rem 0.4rem;" data-app-silent title="Notification"><i class="material-icons align-bottom md-24">&#xE7F4;</i></button>
+              <button type="button" class="btn btn-outline-primary" style="padding: 0rem 0.4rem;" data-app-silent title="Notification">
+                <svg class="bi bi-bell-fill bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 18a2 2 0 002-2H8a2 2 0 002 2zm.995-14.901a1 1 0 10-1.99 0A5.002 5.002 0 005 8c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+                </svg>
+                <svg hidden class="bi bi-bell bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 18a2 2 0 002-2H8a2 2 0 002 2z"/>
+                  <path fill-rule="evenodd" d="M10 3.918l-.797.161A4.002 4.002 0 006 8c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C14.134 10.197 14 8.628 14 8a4.002 4.002 0 00-3.203-3.92L10 3.917zM16.22 14c.223.447.482.801.78 1H3c.299-.199.557-.553.78-1C4.68 12.2 5 8.88 5 8c0-2.42 1.72-4.44 4.005-4.901a1 1 0 111.99 0A5.002 5.002 0 0115 8c0 .88.32 4.2 1.22 6z" clip-rule="evenodd"/>
+                </svg>
+              </button>
               <button type="button" class="btn btn-primary" data-app-create>Create</button>
             </div>
             <button type="button" class="btn btn-primary" data-app-update>Update</button>
@@ -182,7 +193,16 @@
               <div class="form-group">
                 <div class="d-flex">
                   <label>Description</label>
-                  <a class="material-icons md-24 text-secondary cursor-pointer user-select-none ml-auto" title="Toggle preview" data-version-description-preview-toggle>&#xE8F4;</a>
+                  <a class="text-secondary cursor-pointer user-select-none ml-auto" title="Toggle preview" data-version-description-preview-toggle>
+                    <svg class="bi bi-document-code bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M6 3h8a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2zm0 1a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V5a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                      <path fill-rule="evenodd" d="M10.646 7.646a.5.5 0 01.708 0l2 2a.5.5 0 010 .708l-2 2a.5.5 0 01-.708-.708L12.293 10l-1.647-1.646a.5.5 0 010-.708zm-1.292 0a.5.5 0 00-.708 0l-2 2a.5.5 0 000 .708l2 2a.5.5 0 00.708-.708L7.707 10l1.647-1.646a.5.5 0 000-.708z" clip-rule="evenodd"/>
+                    </svg>
+                    <svg hidden class="bi bi-document-richtext bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M6 3h8a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2zm0 1a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V5a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                      <path fill-rule="evenodd" d="M6.5 14a.5.5 0 01.5-.5h3a.5.5 0 010 1H7a.5.5 0 01-.5-.5zm0-2a.5.5 0 01.5-.5h6a.5.5 0 010 1H7a.5.5 0 01-.5-.5zm1.639-3.958l1.33.886 1.854-1.855a.25.25 0 01.289-.047L13.5 8v1.75a.5.5 0 01-.5.5H7a.5.5 0 01-.5-.5v-.5s1.54-1.274 1.639-1.208zM8.25 7a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd"/>
+                    </svg>
+                  </a>
                 </div>
                 <textarea class="form-control" rows="5" data-version-description></textarea>
                 <div class="form-control border border-success pre-wrap" data-version-description-preview hidden style="height: auto;"></div>
@@ -202,7 +222,12 @@
               <div class="form-group">
                 <div class="d-flex">
                   <label>APK</label>
-                  <a class="material-icons md-24 text-secondary cursor-pointer user-select-none ml-auto" title="Toggle upload" data-version-apk-toggle>&#xE157;</a>
+                  <a class="text-secondary cursor-pointer user-select-none ml-auto" title="Toggle upload" data-version-apk-toggle>
+                    <svg class="bi bi-gear bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M8.505 2.93A.5.5 0 019 2.5h2a.5.5 0 01.495.43l.266 1.858c.234.079.46.173.68.282l1.502-1.127a.5.5 0 01.653.047l1.414 1.414a.5.5 0 01.047.653L14.93 7.56c.109.218.203.445.282.68l1.859.265A.5.5 0 0117.5 9v2a.5.5 0 01-.43.495l-1.858.266c-.079.234-.173.46-.282.68l1.127 1.502a.5.5 0 01-.047.653l-1.414 1.414a.5.5 0 01-.653.047L12.44 14.93a5.484 5.484 0 01-.68.282l-.265 1.859A.5.5 0 0111 17.5H9a.5.5 0 01-.495-.43l-.266-1.858a5.485 5.485 0 01-.68-.282l-1.502 1.127a.5.5 0 01-.653-.047L3.99 14.596a.5.5 0 01-.047-.653L5.07 12.44a5.467 5.467 0 01-.282-.68l-1.859-.265A.5.5 0 012.5 11V9a.5.5 0 01.43-.495l1.858-.266c.079-.234.173-.46.282-.68L3.943 6.058a.5.5 0 01.047-.653L5.404 3.99a.5.5 0 01.653-.047L7.56 5.07c.218-.109.445-.203.68-.282l.265-1.859zm5.834 9.556l-.433-.25c.188-.328.337-.682.438-1.056a.5.5 0 01.412-.364l1.744-.25V9.434l-1.744-.25a.5.5 0 01-.412-.364 4.472 4.472 0 00-.438-1.057.5.5 0 01.033-.549l1.058-1.41-.801-.8-1.41 1.057a.5.5 0 01-.55.033 4.47 4.47 0 00-1.056-.438.5.5 0 01-.364-.412l-.25-1.744H9.434l-.25 1.744a.5.5 0 01-.364.412 4.47 4.47 0 00-1.057.438.5.5 0 01-.549-.033l-1.41-1.058-.8.801 1.057 1.41a.5.5 0 01.033.55 4.47 4.47 0 00-.438 1.056.5.5 0 01-.412.364l-1.744.25v1.132l1.744.25a.5.5 0 01.412.364c.101.374.25.728.438 1.057a.5.5 0 01-.033.549l-1.058 1.41.801.8 1.41-1.057a.5.5 0 01.55-.033c.328.188.682.337 1.056.438a.5.5 0 01.364.412l.25 1.744h1.132l.25-1.744a.5.5 0 01.364-.412 4.49 4.49 0 001.057-.438.5.5 0 01.549.033l1.41 1.058.8-.801-1.057-1.41.4-.3z" clip-rule="evenodd"/>
+                      <path fill-rule="evenodd" d="M7.5 10a2.5 2.5 0 115 0 2.5 2.5 0 01-5 0zM10 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" clip-rule="evenodd"/>
+                    </svg>
+                  </a>
                 </div>
                 <div>
                   <div class="custom-file">
@@ -222,7 +247,15 @@
             <button type="button" class="btn btn-outline-danger mr-auto" data-version-delete>Delete</button>
             <button type="button" class="btn btn-outline-secondary" data-version-cancel data-dismiss="modal">Cancel</button>
             <div class="btn-group" role="group" data-version-create-group>
-              <button type="button" class="btn btn-outline-primary" style="padding: 0rem 0.4rem;" data-version-silent title="Notification"><i class="material-icons align-bottom md-24">&#xE7F4;</i></button>
+              <button type="button" class="btn btn-outline-primary" style="padding: 0rem 0.4rem;" data-version-silent title="Notification">
+                <svg class="bi bi-bell-fill bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 18a2 2 0 002-2H8a2 2 0 002 2zm.995-14.901a1 1 0 10-1.99 0A5.002 5.002 0 005 8c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+                </svg>
+                <svg hidden class="bi bi-bell bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 18a2 2 0 002-2H8a2 2 0 002 2z"/>
+                  <path fill-rule="evenodd" d="M10 3.918l-.797.161A4.002 4.002 0 006 8c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C14.134 10.197 14 8.628 14 8a4.002 4.002 0 00-3.203-3.92L10 3.917zM16.22 14c.223.447.482.801.78 1H3c.299-.199.557-.553.78-1C4.68 12.2 5 8.88 5 8c0-2.42 1.72-4.44 4.005-4.901a1 1 0 111.99 0A5.002 5.002 0 0115 8c0 .88.32 4.2 1.22 6z" clip-rule="evenodd"/>
+                </svg>
+              </button>
               <button type="button" class="btn btn-primary" data-version-create>Create</button>
             </div>
             <button type="button" class="btn btn-primary" data-version-update>Update</button>
@@ -238,7 +271,13 @@
         <h5 class="mb-0" data-version-name></h5>
         <div class="user-select-none">
           <small class="text-muted" data-version-timestamp auto-timestamp></small>
-          <a data-version-apk class="material-icons align-middle md-20 ml-2 text-secondary cursor-pointer" style="text-decoration: none;" target="_blank">&#xE2C4;</a>
+          <a data-version-apk class="align-middle ml-2 text-secondary cursor-pointer" style="text-decoration: none;" target="_blank">
+            <svg class="bi bi-box-arrow-down bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M6.646 13.646a.5.5 0 01.708 0L10 16.293l2.646-2.647a.5.5 0 01.708.708l-3 3a.5.5 0 01-.708 0l-3-3a.5.5 0 010-.708z" clip-rule="evenodd"/>
+              <path fill-rule="evenodd" d="M10 6.5a.5.5 0 01.5.5v9a.5.5 0 01-1 0V7a.5.5 0 01.5-.5z" clip-rule="evenodd"/>
+              <path fill-rule="evenodd" d="M4.5 4A1.5 1.5 0 016 2.5h8A1.5 1.5 0 0115.5 4v7a1.5 1.5 0 01-1.5 1.5h-1.5a.5.5 0 010-1H14a.5.5 0 00.5-.5V4a.5.5 0 00-.5-.5H6a.5.5 0 00-.5.5v7a.5.5 0 00.5.5h1.5a.5.5 0 010 1H6A1.5 1.5 0 014.5 11V4z" clip-rule="evenodd"/>
+            </svg>
+          </a>
         </div>
       </div>
       <p class="mb-0 mt-2 pre-wrap" data-version-description></p>
@@ -268,7 +307,9 @@
           <div class="navbar-nav ml-auto">
             <div class="nav-item dropdown cursor-pointer">
               <a id="user-details" class="nav-link disabled" role="button" data-toggle="dropdown" disabled hidden>
-                <i class="material-icons align-middle">&#xE7FD;</i>
+                <svg class="bi bi-person-fill bi-size-25" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M5 16s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H5zm5-6a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                </svg>
               </a>
               <div class="dropdown-menu dropdown-menu-right">
                 <h6 id="user-email" class="dropdown-header"></h6>
@@ -295,7 +336,12 @@
 
           <div id="new-app-card" class="col-6 col-sm-4 px-0 px-sm-3" hidden>
             <div class="card m-2 card-selectable">
-              <a class="material-icons text-muted" style="width: 100px; height: 100px; margin: 10px auto; font-size: 100px;">&#xE145;</a>
+              <a class="text-muted card-img-wrapper">
+                <svg class="bi bi-plus" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M10 5.5a.5.5 0 01.5.5v4a.5.5 0 01-.5.5H6a.5.5 0 010-1h3.5V6a.5.5 0 01.5-.5z" clip-rule="evenodd"/>
+                  <path fill-rule="evenodd" d="M9.5 10a.5.5 0 01.5-.5h4a.5.5 0 010 1h-3.5V14a.5.5 0 01-1 0v-4z" clip-rule="evenodd"/>
+                </svg>
+              </a>
               <div class="card-footer text-truncate text-center">
                 <small class="text-muted">New application</small>
               </div>
