@@ -1999,7 +1999,18 @@ function HtmlSanitizer(escape, tags, css, urls) {
       strike: globalAttributes,
       strong: globalAttributes,
       sub: globalAttributes,
-      sup: globalAttributes
+      sup: globalAttributes,
+      svg: HtmlSanitizer.mergeMap(globalAttributes, {
+        viewBox: unconstrainted,
+        fill: unconstrainted,
+        xmlns: url_sanitizer,
+        width: unconstrainted
+      }),
+      path: HtmlSanitizer.mergeMap(globalAttributes, {
+        'fill-rule': unconstrainted,
+        d: unconstrainted,
+        'clip-rule': url_sanitizer
+      })
     };
   }
 }
