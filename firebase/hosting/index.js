@@ -1880,22 +1880,22 @@ TimeAgo.valueOf = function(time) {
     if (count == 0) {
       return "now";
     }
-    return `${TimeAgo.futurePrefix(future)} ${count} second${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)}${count} second${TimeAgo.pluralize(count)}${TimeAgo.pastSuffix(future)}`;
   } else if (elapsed < msPerHour) {
     const count = Math.round(elapsed / msPerMinute);
-    return `${TimeAgo.futurePrefix(future)} ${count} minute${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)}${count} minute${TimeAgo.pluralize(count)}${TimeAgo.pastSuffix(future)}`;
   } else if (elapsed < msPerDay) {
     const count = Math.round(elapsed / msPerHour);
-    return `${TimeAgo.futurePrefix(future)} ${count} hour${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)}${count} hour${TimeAgo.pluralize(count)}${TimeAgo.pastSuffix(future)}`;
   } else if (elapsed < msPerMonth) {
     const count = Math.round(elapsed / msPerDay);
-    return `${TimeAgo.futurePrefix(future)} ${count} day${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)}${count} day${TimeAgo.pluralize(count)}${TimeAgo.pastSuffix(future)}`;
   } else if (elapsed < msPerYear) {
     const count = Math.round(elapsed / msPerMonth);
-    return `${TimeAgo.futurePrefix(future)} ${count} month${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)}${count} month${TimeAgo.pluralize(count)}${TimeAgo.pastSuffix(future)}`;
   } else {
     const count = Math.round(elapsed / msPerYear);
-    return `${TimeAgo.futurePrefix(future)} ${count} year${TimeAgo.pluralize(count)} ${TimeAgo.pastSuffix(future)}`;
+    return `${TimeAgo.futurePrefix(future)}${count} year${TimeAgo.pluralize(count)}${TimeAgo.pastSuffix(future)}`;
   }
 };
 
