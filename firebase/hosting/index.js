@@ -170,7 +170,7 @@ AppStore.prototype.initUserInterface = function() {
 AppStore.prototype.initFirebase = function() {
   // On-Demand Firebase SDK Auto-configuration
   // https://firebase.googleblog.com/2017/04/easier-configuration-for-firebase-on-web.html
-  this.analytics = firebase.analytics();
+  this.analytics = firebase.analytics?.();
 
   this.database = firebase.database();
   this.databaseRefs = {};
