@@ -181,6 +181,7 @@ AppStore.prototype.initFirebase = function() {
   this.databaseRefs.versions = applicationKey => this.databaseRefs.store.child("versions").child(applicationKey);
   this.databaseRefs.version = (applicationKey, versionKey) => this.databaseRefs.versions(applicationKey).child(versionKey);
   this.databaseRefs.analytics = this.database.ref("analytics");
+  this.databaseRefs.analyticsDownloads = (applicationKey, versionKey, uid) => this.databaseRefs.analytics.child("downloads").child(applicationKey).child(versionKey).child(uid);
   this.databaseRefs.checks = this.database.ref("checks");
   this.databaseRefs.checkIsAdmin = this.databaseRefs.checks.child("admin");
   this.databaseRefs.checkIsEmailVerified = this.databaseRefs.checks.child("emailVerified");
@@ -539,9 +540,17 @@ AppStore.prototype.uiUpdateVersionApkLink = function(applicationKey, versionKey,
         .then(url => {
           download.setAttribute("download", `${versionKey || version.name}.apk`);
           window.location = url;
-          this.databaseRefs.analytics.child("downloads").child(applicationKey).child(versionKey).child(this.auth.currentUser.uid).set(firebase.database.ServerValue.TIMESTAMP);
         })
-        .catch(error => Ui.hide(download));
+        .catch(error => Ui.hide(download))
+        .then(() => {
+          const uid = (this.auth.currentUser || {}).uid;
+          if (uid) {
+            this.databaseRefs.analyticsDownloads(applicationKey, versionKey, uid).set(firebase.database.ServerValue.TIMESTAMP);
+          } else {
+            Promise.resolve();
+          }
+        })
+        .catch(error => console.error(error));
     };
     download.addEventListener("click", listener);
   } else if (version.apkUrl) {
