@@ -33,8 +33,10 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
 ## Features
 
 - Public or private access to the store
-  - User roles (anonymous or verified users)
-  - Account restrictions (only admins have write access)
+  + User roles (anonymous or verified users)
+  + Account restrictions (only admins have write access)
+
+  <br>
   <details>
   <summary>📷 <b><i>Screenshots</i></b></summary>
 
@@ -47,14 +49,16 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
   + Notifications for new applications
   + Description with html support
   + Shortcuts for frequent actions
+
+  <br>
   <details>
   <summary>📷 <b><i>Screenshots</i></b></summary>
 
   | Web | Android |
   |:---:|:---:|
+  | <img src="art/web_applications_admin.png" width="500px" title="List of applications"> | <img src="art/android_applications.png" width="300px" title="List of applications"> |
   | <img src="art/web_applications_add.png" title="Add application"> |  |
   | <img src="art/web_applications_edit.png" title="Edit application"> |  |
-  | <img src="art/web_applications_admin.png" width="500px" title="List of applications"> | <img src="art/android_applications.png" width="300px" title="List of applications"> |
 
   </details>
 - Manage multiple versions
@@ -62,13 +66,15 @@ The latest Android apk can also be downloaded [here](https://github.com/SimonMar
   + Upload apks or external links
   + Changelog with html support
   + Apk files are cached
+
+  <br>
   <details>
   <summary>📷 <b><i>Screenshots</i></b></summary>
 
   | Web | Android |
   |:---:|:---:|
-  | <img src="art/web_versions_add.png" width="500px" title="Add version"> |  |
   | <img src="art/web_versions.png" width="500px" title="List of versions"> | <img src="art/android_versions_downloading.png" width="300px" title="List of versions"> |
+  | <img src="art/web_versions_add.png" width="500px" title="Add version"> |  |
 
   </details>
 
