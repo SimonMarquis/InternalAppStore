@@ -1,6 +1,6 @@
 "use strict";
 
-const cacheName = "store-1.0.5";
+const cacheName = "store-1.0.6";
 
 self.addEventListener("install", event => {
   event.waitUntil(
