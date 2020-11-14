@@ -9,6 +9,9 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
+  "engines": {
+    "node": "12"
+  },
   "dependencies": {
     "firebase-admin": "^8.6.1",
     "firebase-functions": "^3.3.0"
@@ -17,8 +20,5 @@
     "eslint": "^6.5.1",
     "eslint-plugin-promise": "^4.2.1"
   },
-  "private": true,
-  "engines": {
-    "node": "8"
-  }
+  "private": true
 }
