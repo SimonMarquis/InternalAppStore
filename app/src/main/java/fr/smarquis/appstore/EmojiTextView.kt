@@ -12,10 +12,10 @@ import fr.smarquis.appstore.highlight.TextRoundedBgAttributeReader
 import fr.smarquis.appstore.highlight.TextRoundedBgHelper
 
 class EmojiTextView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0)
-    : AppCompatTextView(context, attrs, defStyleAttr) {
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     private var _helper: EmojiTextViewHelper? = null
 
@@ -30,12 +30,12 @@ class EmojiTextView @JvmOverloads constructor(
     private val textRoundedBgHelper: TextRoundedBgHelper by lazy {
         TextRoundedBgAttributeReader(context, attrs).let {
             TextRoundedBgHelper(
-                    horizontalPadding = it.horizontalPadding,
-                    verticalPadding = it.verticalPadding,
-                    drawable = it.drawable,
-                    drawableLeft = it.drawableLeft,
-                    drawableMid = it.drawableMid,
-                    drawableRight = it.drawableRight
+                horizontalPadding = it.horizontalPadding,
+                verticalPadding = it.verticalPadding,
+                drawable = it.drawable,
+                drawableLeft = it.drawableLeft,
+                drawableMid = it.drawableMid,
+                drawableRight = it.drawableRight,
             )
         }
     }

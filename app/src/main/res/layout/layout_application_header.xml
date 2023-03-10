@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView_header_icon"
+        android:id="@+id/header_icon"
         android:layout_width="@dimen/material_baseline_grid_12x"
         android:layout_height="@dimen/material_baseline_grid_12x"
         app:layout_constraintStart_toStartOf="@id/space_responsive_width"
@@ -32,17 +32,17 @@
         tools:src="@mipmap/ic_launcher" />
 
     <View
-        android:id="@+id/view_center_icon"
+        android:id="@+id/center_icon"
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView_header_icon"
-        app:layout_constraintEnd_toEndOf="@+id/imageView_header_icon"
-        app:layout_constraintStart_toStartOf="@+id/imageView_header_icon"
-        app:layout_constraintTop_toTopOf="@+id/imageView_header_icon" />
+        app:layout_constraintBottom_toBottomOf="@+id/header_icon"
+        app:layout_constraintEnd_toEndOf="@+id/header_icon"
+        app:layout_constraintStart_toStartOf="@+id/header_icon"
+        app:layout_constraintTop_toTopOf="@+id/header_icon" />
 
     <fr.smarquis.appstore.EmojiTextView
-        android:id="@+id/textView_header_installedInfo"
+        android:id="@+id/header_installedInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_baseline_grid_2x"
@@ -55,17 +55,17 @@
         android:textSize="12sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/textView_header_description"
+        app:layout_constraintBottom_toTopOf="@+id/header_description"
         app:layout_constraintEnd_toEndOf="@id/space_responsive_width"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView_header_icon"
+        app:layout_constraintStart_toEndOf="@+id/header_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Installed\n1.2.3 (10203000) • 2 min. ago"
         tools:visibility="visible" />
 
     <fr.smarquis.appstore.EmojiTextView
-        android:id="@+id/textView_header_description"
+        android:id="@+id/header_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_baseline_grid_2x"
@@ -81,8 +81,8 @@
         app:layout_constraintBottom_toTopOf="@+id/barrier_header"
         app:layout_constraintEnd_toEndOf="@id/space_responsive_width"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView_header_icon"
-        app:layout_constraintTop_toBottomOf="@+id/textView_header_installedInfo"
+        app:layout_constraintStart_toEndOf="@+id/header_icon"
+        app:layout_constraintTop_toBottomOf="@+id/header_installedInfo"
         tools:text="@tools:sample/lorem" />
 
     <!--@tools:sample/lorem/random makes the editor bug...-->
@@ -92,7 +92,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="imageView_header_icon,textView_header_description"
+        app:constraint_referenced_ids="header_icon,header_description"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="@id/space_responsive_width"
         app:layout_constraintStart_toStartOf="@id/space_responsive_width"
@@ -107,7 +107,7 @@
         app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
 
     <HorizontalScrollView
-        android:id="@+id/horizontalScrollView_header"
+        android:id="@+id/header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fadingEdge="horizontal"
@@ -131,27 +131,27 @@
             tools:ignore="PrivateResource,RtlCompat">
 
             <androidx.emoji.widget.EmojiButton
-                android:id="@+id/button_header_link1"
+                android:id="@+id/link1"
                 style="@style/ChipButton"
                 tools:text="LINK" />
 
             <androidx.emoji.widget.EmojiButton
-                android:id="@+id/button_header_link2"
+                android:id="@+id/link2"
                 style="@style/ChipButton"
                 tools:text="LINK" />
 
             <androidx.emoji.widget.EmojiButton
-                android:id="@+id/button_header_link3"
+                android:id="@+id/link3"
                 style="@style/ChipButton"
                 tools:text="LINK" />
 
             <androidx.emoji.widget.EmojiButton
-                android:id="@+id/button_header_link4"
+                android:id="@+id/link4"
                 style="@style/ChipButton"
                 tools:text="LINK" />
 
             <androidx.emoji.widget.EmojiButton
-                android:id="@+id/button_header_link5"
+                android:id="@+id/link5"
                 style="@style/ChipButton"
                 tools:text="LINK" />
 

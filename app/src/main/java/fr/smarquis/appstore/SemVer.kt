@@ -7,10 +7,10 @@ import androidx.annotation.Keep
  */
 @Keep
 data class SemVer(
-        val major: Int = 0,
-        val minor: Int = 0,
-        val patch: Int = 0,
-        val label: String? = null
+    val major: Int = 0,
+    val minor: Int = 0,
+    val patch: Int = 0,
+    val label: String? = null,
 ) : Comparable<SemVer> {
 
     companion object {
@@ -25,19 +25,13 @@ data class SemVer(
             }
             val pattern = Regex("""(\d+)(?:\.(\d+)(?:\.(\d+))?)?(?:-(.+))?""")
             val result = pattern.matchEntire(version)
-                    ?: throw IllegalArgumentException("Invalid version string [$version]")
+                ?: throw IllegalArgumentException("Invalid version string [$version]")
             return SemVer(
-                    major = result.groupValues[1].toIntOr(0),
-                    minor = result.groupValues[2].toIntOr(0),
-                    patch = result.groupValues[3].toIntOr(0),
-                    label = result.groupValues[4].let { if (it.isEmpty()) null else it }
+                major = result.groupValues[1].toIntOrNull() ?: 0,
+                minor = result.groupValues[2].toIntOrNull() ?: 0,
+                patch = result.groupValues[3].toIntOrNull() ?: 0,
+                label = result.groupValues[4].ifEmpty { null },
             )
-        }
-
-        private fun String.toIntOr(fallback: Int): Int = try {
-            toInt()
-        } catch (e: NumberFormatException) {
-            fallback
         }
 
     }
@@ -65,7 +59,7 @@ data class SemVer(
         if (label == other.label) return 0
         if (label.isNullOrEmpty()) return 1 // 1.0.0 > 1.0.0-alpha
         if (other.label.isNullOrEmpty()) return -1  // 1.0.0-alpha < 1.0.0
-        return (label.orEmpty()).compareTo(other.label.orEmpty(), ignoreCase = true)
+        return label.compareTo(other.label, ignoreCase = true)
     }
 
 }

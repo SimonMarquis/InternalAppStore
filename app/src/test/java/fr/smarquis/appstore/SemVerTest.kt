@@ -1,8 +1,10 @@
 package fr.smarquis.appstore
 
-import org.junit.Assert.fail
 import org.junit.Test
-import java.lang.NullPointerException
+import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class SemVerTest {
 
@@ -25,57 +27,29 @@ class SemVerTest {
         SemVer.parse("1.2.3-test")
 
         val version = SemVer.parse("$MAJOR.$MINOR.$PATCH-$LABEL")
-        assert(version.major == MAJOR)
-        assert(version.minor == MINOR)
-        assert(version.patch == PATCH)
-        assert(version.label == LABEL)
+        assertEquals(MAJOR, version.major)
+        assertEquals(MINOR, version.minor)
+        assertEquals(PATCH, version.patch)
+        assertEquals(LABEL, version.label)
     }
 
     @Test
     fun parseInvalid() {
-        try {
-            SemVer.parse(null)
-            fail()
-        } catch (e: NullPointerException) {
-        }
-        try {
-            SemVer.parse("")
-            fail()
-        } catch (e: Exception) {
-        }
-        try {
-            SemVer.parse(".1")
-            fail()
-        } catch (e: Exception) {
-        }
-        try {
-            SemVer.parse("1.")
-            fail()
-        } catch (e: Exception) {
-        }
-        try {
-            SemVer.parse("1.a")
-            fail()
-        } catch (e: Exception) {
-        }
-        try {
-            SemVer.parse("1.1.1.1")
-            fail()
-        } catch (e: Exception) {
-        }
-        try {
-            SemVer.parse("0-")
-            fail()
-        } catch (e: Exception) {
-        }
+        assertFailsWith<NullPointerException> { SemVer.parse(null) }
+        assertFails { SemVer.parse("") }
+        assertFails { SemVer.parse(".1") }
+        assertFails { SemVer.parse("1.") }
+        assertFails { SemVer.parse("1.a") }
+        assertFails { SemVer.parse("1.1.1.1") }
+        assertFails { SemVer.parse("0-") }
     }
 
 
     @Test
     fun compareTo() {
-        assert(VERSION_1_2_3_SNAPSHOT.compareTo(VERSION_1_2_3_SNAPSHOT) == 0)
-        assert(SemVer(1, 2, 3) < SemVer(3, 2, 1))
-        assert(VERSION_1_2_3_SNAPSHOT.compareTo(VERSION_1_2_3_SNAPSHOT) == 0)
-        assert(SemVer(1) > SemVer(1, label = "alpha"))
+        assertEquals(0, VERSION_1_2_3_SNAPSHOT.compareTo(VERSION_1_2_3_SNAPSHOT))
+        assertTrue(SemVer(1, 2, 3) < SemVer(3, 2, 1))
+        assertEquals(0, VERSION_1_2_3_SNAPSHOT.compareTo(VERSION_1_2_3_SNAPSHOT))
+        assertTrue(SemVer(1) > SemVer(1, label = "alpha"))
     }
 }

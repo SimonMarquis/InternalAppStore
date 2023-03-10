@@ -13,8 +13,8 @@ import kotlin.math.min
  * @param verticalPadding the padding to be applied to top & bottom of the background
  */
 internal abstract class TextRoundedBgRenderer(
-        val horizontalPadding: Int,
-        val verticalPadding: Int
+    val horizontalPadding: Int,
+    val verticalPadding: Int,
 ) {
 
     /**
@@ -33,7 +33,7 @@ internal abstract class TextRoundedBgRenderer(
         startLine: Int,
         endLine: Int,
         startOffset: Int,
-        endOffset: Int
+        endOffset: Int,
     )
 
     /**
@@ -69,7 +69,7 @@ internal abstract class TextRoundedBgRenderer(
 internal class SingleLineRenderer(
     horizontalPadding: Int,
     verticalPadding: Int,
-    val drawable: Drawable
+    val drawable: Drawable,
 ) : TextRoundedBgRenderer(horizontalPadding, verticalPadding) {
 
     override fun draw(
@@ -78,7 +78,7 @@ internal class SingleLineRenderer(
         startLine: Int,
         endLine: Int,
         startOffset: Int,
-        endOffset: Int
+        endOffset: Int,
     ) {
         val lineTop = getLineTop(layout, startLine)
         val lineBottom = getLineBottom(layout, startLine)
@@ -105,7 +105,7 @@ internal class MultiLineRenderer(
     verticalPadding: Int,
     val drawableLeft: Drawable,
     val drawableMid: Drawable,
-    val drawableRight: Drawable
+    val drawableRight: Drawable,
 ) : TextRoundedBgRenderer(horizontalPadding, verticalPadding) {
 
     override fun draw(
@@ -114,7 +114,7 @@ internal class MultiLineRenderer(
         startLine: Int,
         endLine: Int,
         startOffset: Int,
-        endOffset: Int
+        endOffset: Int,
     ) {
         // draw the first line
         val paragDir = layout.getParagraphDirection(startLine)
@@ -136,7 +136,7 @@ internal class MultiLineRenderer(
                 (layout.getLineLeft(line).toInt() - horizontalPadding),
                 lineTop,
                 (layout.getLineRight(line).toInt() + horizontalPadding),
-                lineBottom
+                lineBottom,
             )
             drawableMid.draw(canvas)
         }

@@ -44,9 +44,7 @@ fun Layout.getLineBottomWithoutSpacing(line: Int): Int {
 /**
  * Get the line height of a line.
  */
-fun Layout.getLineHeight(line: Int): Int {
-    return getLineTop(line + 1) - getLineTop(line)
-}
+fun Layout.getLineHeight(line: Int): Int = getLineTop(line + 1) - getLineTop(line)
 
 /**
  * Returns the top of the Layout after removing the extra padding applied by  the Layout.

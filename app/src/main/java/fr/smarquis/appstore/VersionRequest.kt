@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * Wrap an action on a version to a unique request code
  */
 class VersionRequest(
-        val action: Action,
-        val version: Version?
+    val action: Action,
+    val version: Version?,
 ) {
 
     companion object {

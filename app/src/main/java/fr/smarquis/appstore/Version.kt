@@ -8,14 +8,15 @@ import java.text.NumberFormat
 
 @Keep
 data class Version(
-        var key: String? = null,
-        val name: String? = null,
-        val description: String? = null,
-        val timestamp: Long? = null,
-        val apkRef: String? = null,
-        var apkSize: Long? = null,
-        val apkGeneration: Long? = null,
-        val apkUrl: String? = null) : Comparable<Version> {
+    var key: String? = null,
+    val name: String? = null,
+    val description: String? = null,
+    val timestamp: Long? = null,
+    val apkRef: String? = null,
+    var apkSize: Long? = null,
+    val apkGeneration: Long? = null,
+    val apkUrl: String? = null,
+) : Comparable<Version> {
 
     companion object {
 

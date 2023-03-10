@@ -3,7 +3,6 @@ package fr.smarquis.appstore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.NonNull
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -18,17 +17,16 @@ import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.Query
+import fr.smarquis.appstore.databinding.ItemVersionBinding
 
 class VersionAdapter(
-        lifecycleOwner: LifecycleOwner,
-        query: Query,
-        private val callback: Callback
+    lifecycleOwner: LifecycleOwner,
+    query: Query,
+    private val callback: Callback,
 ) : RecyclerView.Adapter<VersionViewHolder>(), LifecycleObserver, ChangeEventListener {
 
     companion object {
-
         val PAYLOAD_PROGRESS_CHANGED = Any()
-
     }
 
     interface Callback {
@@ -76,14 +74,14 @@ class VersionAdapter(
         stableIds.clear()
     }
 
-    @NonNull
     fun getItem(position: Int): Version = displayList[position]
 
     override fun getItemId(position: Int): Long = stableIds.getOrPut(getItem(position).key.orEmpty()) { stableIds.size.toLong() }
 
     override fun getItemCount(): Int = displayList.size()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VersionViewHolder = VersionViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_version, parent, false), callback)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VersionViewHolder =
+        VersionViewHolder(ItemVersionBinding.inflate(LayoutInflater.from(parent.context), parent, false), callback)
 
     override fun onBindViewHolder(holder: VersionViewHolder, position: Int) {
         val version = getItem(position)
@@ -127,6 +125,7 @@ class VersionAdapter(
                 }
                 callback.onChildAdded(version)
             }
+
             ChangeEventType.CHANGED -> {
                 val version = snapshots[newIndex]
                 val removedVersion = backupList.removeAt(newIndex)
@@ -138,6 +137,7 @@ class VersionAdapter(
                     displayList.removeItemAt(oldDisplayIndex)
                 }
             }
+
             ChangeEventType.MOVED -> {
                 val version = snapshots[newIndex]
                 val removedVersion = backupList.removeAt(oldIndex)
@@ -148,10 +148,12 @@ class VersionAdapter(
                     displayList.remove(removedVersion)
                 }
             }
+
             ChangeEventType.REMOVED -> {
                 val removedVersion = backupList.removeAt(newIndex)
                 displayList.remove(removedVersion)
             }
+
             else -> throw IllegalStateException("Incomplete case statement")
         }
     }

@@ -15,9 +15,14 @@ import android.os.Bundle
 import android.os.Process
 import android.transition.Transition
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewAnimationUtils
+import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
@@ -64,11 +69,17 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.OnProgressListener
-import fr.smarquis.appstore.Version.Status.*
-import fr.smarquis.appstore.VersionRequest.Action.*
+import fr.smarquis.appstore.Version.*
+import fr.smarquis.appstore.Version.Status.DEFAULT
+import fr.smarquis.appstore.Version.Status.DOWNLOADING
+import fr.smarquis.appstore.Version.Status.INSTALLING
+import fr.smarquis.appstore.Version.Status.OPENING
+import fr.smarquis.appstore.VersionRequest.Action.INSTALL
+import fr.smarquis.appstore.VersionRequest.Action.OPEN
+import fr.smarquis.appstore.VersionRequest.Action.UNINSTALL
 import fr.smarquis.appstore.VersionRequest.Companion.create
+import fr.smarquis.appstore.databinding.ActivityVersionsBinding
 import java.lang.ref.WeakReference
-import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import kotlin.math.hypot
 
@@ -106,6 +117,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }
 
+    private lateinit var binding: ActivityVersionsBinding
     private var firebaseApplicationDatabaseRef: DatabaseReference? = null
     private var versionAdapter: VersionAdapter? = null
     private var application: Application? = null
@@ -188,13 +200,11 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val application = intent?.let {
             it.extras?.getParcelable(EXTRA_APPLICATION) ?: shortcuts.extract(it)
         }
-        if (application?.key == null) {
-            finish()
-            return
-        }
+        if (application?.key == null) return finish()
         reportShortcutUsage = savedInstanceState == null
 
-        setContentView(R.layout.activity_versions)
+        setContentView(ActivityVersionsBinding.inflate(layoutInflater).also { binding = it }.root)
+
         excludeTransitionTargets()
         initUi(savedInstanceState, application)
         initCircularReveal(savedInstanceState)
@@ -252,10 +262,10 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     private fun initUi(savedInstanceState: Bundle?, application: Application) {
-        ViewCompat.setTransitionName(findViewById(R.id.imageView_header_icon), if (savedInstanceState == null) application.imageTransitionName() else null)
-        constraintLayout = findViewById(R.id.constraintLayout)
-        recyclerView = findViewById(R.id.recyclerView_versions)
-        contentLoadingProgressBar = findViewById(R.id.contentLoadingProgressBar_versions)
+        ViewCompat.setTransitionName(binding.includeHeader.headerIcon, if (savedInstanceState == null) application.imageTransitionName() else null)
+        constraintLayout = binding.constraintLayout
+        recyclerView = binding.versions
+        contentLoadingProgressBar = binding.progressVersions
         contentLoadingProgressBar.show()
 
         supportActionBar?.apply {
@@ -264,62 +274,56 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
 
         versionAdapter = VersionAdapter(
-                lifecycleOwner = this,
-                query = Firebase.database.versions(application.key.orEmpty()),
-                callback = object : VersionAdapter.Callback {
+            lifecycleOwner = this,
+            query = Firebase.database.versions(application.key.orEmpty()),
+            callback = object : VersionAdapter.Callback {
 
-                    override fun onDataChanged() {
-                        contentLoadingProgressBar.hide()
-                    }
+                override fun onDataChanged() = contentLoadingProgressBar.hide()
 
-                    override fun onChildAdded(version: Version) {
-                        refreshVersionProperties(version)
-                    }
+                override fun onChildAdded(version: Version) = refreshVersionProperties(version)
 
-                    override fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder) {
-                        when {
-                            version.hasApkUrl() -> openVersion(version)
-                            version.hasApkRef() -> downloadVersion(version, false) { installVersion(it) }
-                        }
-                    }
-
-                    override fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean {
-                        return when {
-                            version.hasApkUrl() || version.hasApkRef() -> popupMenu(version, versionViewHolder)
-                            else -> return false
-                        }
-                    }
-
-                    private fun popupMenu(version: Version, versionViewHolder: VersionViewHolder): Boolean {
-                        val hasApkUrl = version.hasApkUrl()
-                        val hasApkRef = version.hasApkRef()
-                        val isDownloading = hasApkRef && version.getActiveDownloadTask()?.isComplete == false
-                        PopupMenu(this@VersionsActivity, versionViewHolder.anchor, Gravity.END).apply {
-                            menuInflater.inflate(R.menu.menu_version, menu)
-                            menu.findItem(R.id.menu_version_cancel).isVisible = hasApkRef && isDownloading
-                            menu.findItem(R.id.menu_version_download).isVisible = hasApkUrl || hasApkRef && !isDownloading && !version.apkFileAvailable
-                            menu.findItem(R.id.menu_version_install).isVisible = hasApkRef && !isDownloading
-                            menu.findItem(R.id.menu_version_share).isVisible = hasApkUrl || hasApkRef && !isDownloading
-                            menu.findItem(R.id.menu_version_delete).isVisible = hasApkRef && !isDownloading && version.apkFileAvailable
-                            setOnMenuItemClickListener { item ->
-                                when (item.itemId) {
-                                    R.id.menu_version_cancel -> version.getActiveDownloadTask()?.cancel()
-                                    R.id.menu_version_download -> if (hasApkUrl) openVersion(version) else downloadVersion(version, true)
-                                    R.id.menu_version_install -> downloadVersion(version) { installVersion(it) }
-                                    R.id.menu_version_share -> if (hasApkUrl) shareVersion(version) else downloadVersion(version) { shareVersion(it) }
-                                    R.id.menu_version_delete -> deleteVersion(version)
-                                }
-                                true
-                            }
-                            show()
-                            // Dismiss popup if download completes
-                            if (isDownloading) {
-                                version.getActiveDownloadTask()?.addOnCompleteListener(this@VersionsActivity) { dismiss() }
-                            }
-                        }
-                        return true
+                override fun onItemClicked(version: Version, versionViewHolder: VersionViewHolder) {
+                    when {
+                        version.hasApkUrl() -> openVersion(version)
+                        version.hasApkRef() -> downloadVersion(version, false) { installVersion(it) }
                     }
                 }
+
+                override fun onItemLongClicked(version: Version, versionViewHolder: VersionViewHolder): Boolean = when {
+                    version.hasApkUrl() || version.hasApkRef() -> popupMenu(version, versionViewHolder)
+                    else -> false
+                }
+
+                private fun popupMenu(version: Version, versionViewHolder: VersionViewHolder): Boolean {
+                    val hasApkUrl = version.hasApkUrl()
+                    val hasApkRef = version.hasApkRef()
+                    val isDownloading = hasApkRef && version.getActiveDownloadTask()?.isComplete == false
+                    PopupMenu(this@VersionsActivity, versionViewHolder.anchor, Gravity.END).apply {
+                        menuInflater.inflate(R.menu.menu_version, menu)
+                        menu.findItem(R.id.menu_version_cancel).isVisible = hasApkRef && isDownloading
+                        menu.findItem(R.id.menu_version_download).isVisible = hasApkUrl || hasApkRef && !isDownloading && !version.apkFileAvailable
+                        menu.findItem(R.id.menu_version_install).isVisible = hasApkRef && !isDownloading
+                        menu.findItem(R.id.menu_version_share).isVisible = hasApkUrl || hasApkRef && !isDownloading
+                        menu.findItem(R.id.menu_version_delete).isVisible = hasApkRef && !isDownloading && version.apkFileAvailable
+                        setOnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.menu_version_cancel -> version.getActiveDownloadTask()?.cancel()
+                                R.id.menu_version_download -> if (hasApkUrl) openVersion(version) else downloadVersion(version, true)
+                                R.id.menu_version_install -> downloadVersion(version) { installVersion(it) }
+                                R.id.menu_version_share -> if (hasApkUrl) shareVersion(version) else downloadVersion(version) { shareVersion(it) }
+                                R.id.menu_version_delete -> deleteVersion(version)
+                            }
+                            true
+                        }
+                        show()
+                        // Dismiss popup if download completes
+                        if (isDownloading) {
+                            version.getActiveDownloadTask()?.addOnCompleteListener(this@VersionsActivity) { dismiss() }
+                        }
+                    }
+                    return true
+                }
+            },
         ).apply {
             // Scroll to the highlighted version
             val highlightVersionKey = intent.extras?.getString(EXTRA_HIGHLIGHT_VERSION_KEY)
@@ -343,17 +347,17 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             isScrollbarFadingEnabled = DEBUG_SCREENSHOT_STATUS == null
         }
 
-        links = findViewById(R.id.horizontalScrollView_header)
-        fab = findViewById(R.id.floatingActionButton)
+        links = binding.includeHeader.header
+        fab = binding.fab
         fab.setOnClickListener { startApplication() }
     }
 
     private var scrollToHighlightedVersionDataObserver: ScrollToHighlightedVersionDataObserver? = null
 
     class ScrollToHighlightedVersionDataObserver(
-            private val recycler: RecyclerView,
-            private val adapter: VersionAdapter,
-            private val key: String
+        private val recycler: RecyclerView,
+        private val adapter: VersionAdapter,
+        private val key: String,
     ) : RecyclerView.AdapterDataObserver() {
 
         private var found: Boolean = false
@@ -377,76 +381,73 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     @TargetApi(LOLLIPOP)
     private fun initCircularReveal(savedInstanceState: Bundle?) {
-        if (SDK_INT < LOLLIPOP) {
-            return
-        }
-        if (savedInstanceState != null) {
-            // SharedElementTransition is not run when Activity is recreated during configuration change
-            return
-        }
-        if (intent?.getBooleanExtra(EXTRA_SHARED_ELEMENT_TRANSITION, false) != true) {
-            // SharedElementTransition is not run when Activity is started from a Notification
-            return
-        }
+        if (SDK_INT < LOLLIPOP) return
+        // SharedElementTransition is not run when Activity is recreated during configuration change
+        if (savedInstanceState != null) return
+        // SharedElementTransition is not run when Activity is started from a Notification
+        if (intent?.getBooleanExtra(EXTRA_SHARED_ELEMENT_TRANSITION, false) != true) return
         // assuming sharedElementEnterTransition and sharedElementReturnTransition are the same
         window.sharedElementEnterTransition?.let { enterTransition ->
             isCircularRevealPending = true
-            val header = findViewById<View>(R.id.includeHeader).apply {
+            val header = binding.includeHeader.root.apply {
                 // Initially visible, laid out for shared element transition, then invisible
                 post { visibility = View.INVISIBLE }
             }
-            val center = findViewById<View>(R.id.view_center_icon)
-            enterTransition.addListener(object : Transition.TransitionListener {
+            val center = binding.includeHeader.centerIcon
+            enterTransition.addListener(
+                object : Transition.TransitionListener {
 
-                private var activityTransitionFlag: Boolean = false
+                    private var activityTransitionFlag: Boolean = false
 
-                override fun onTransitionStart(p0: Transition?) {
-                    val radiusInvisible = 0F
-                    val radiusVisible = hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
-                    val start = if (activityTransitionFlag) radiusVisible else radiusInvisible
-                    val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
-                    ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
-                        duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-                        interpolator = if (activityTransitionFlag) DecelerateInterpolator(2F) else AccelerateInterpolator(2F)
-                        addListener(
+                    override fun onTransitionStart(p0: Transition?) {
+                        val radiusInvisible = 0F
+                        val radiusVisible = hypot(header.width.toDouble() - center.left, header.height.toDouble() - center.top).toFloat()
+                        val start = if (activityTransitionFlag) radiusVisible else radiusInvisible
+                        val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
+                        ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
+                            duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                            interpolator = if (activityTransitionFlag) DecelerateInterpolator(2F) else AccelerateInterpolator(2F)
+                            addListener(
                                 onStart = { header.visibility = VISIBLE },
                                 onEnd = {
                                     isCircularRevealPending = false
                                     application?.let { app -> updateFab(app) }
-                                })
-                    }.start()
-                    if (activityTransitionFlag) {
-                        window.sharedElementEnterTransition?.removeListener(this)
-                    } else {
-                        activityTransitionFlag = true
+                                },
+                            )
+                        }.start()
+                        if (activityTransitionFlag) {
+                            window.sharedElementEnterTransition?.removeListener(this)
+                        } else {
+                            activityTransitionFlag = true
+                        }
                     }
-                }
 
-                override fun onTransitionResume(p0: Transition?) {}
+                    override fun onTransitionResume(p0: Transition?) {}
 
-                override fun onTransitionPause(p0: Transition?) {}
+                    override fun onTransitionPause(p0: Transition?) {}
 
-                override fun onTransitionCancel(p0: Transition?) {}
+                    override fun onTransitionCancel(p0: Transition?) {}
 
-                override fun onTransitionEnd(p0: Transition?) {}
-            })
+                    override fun onTransitionEnd(p0: Transition?) {}
+                },
+            )
         }
     }
 
     private fun refreshVersionProperties(version: Version) {
         // Restore active downloads and check for file size and apk file availability
         version.getActiveDownloadTask()?.apply { DownloadProgressListener.update(snapshot, version, versionAdapter) }
-                ?.addOnProgressListener(DownloadProgressListener(this, version))
-                ?.addOnCompleteListener(DownloadCompleteListener(this, version))
+            ?.addOnProgressListener(DownloadProgressListener(this, version))
+            ?.addOnCompleteListener(DownloadCompleteListener(this, version))
         if (!version.hasApkRef()) return
 
         val context = applicationContext
         val fileSizeTask = if (version.apkSize == null) Firebase.storage.getReference(version.apkRef!!).metadata.addOnSuccessListener(this) { version.updateApkSize(it.sizeBytes) } else null
-        val fileAvailabilityTask = Tasks.call(executor, Callable {
+        val fileAvailabilityTask = Tasks.call(executor) {
             ApkFileProvider.apkFile(context, version).let {
                 version.apkFileAvailable = it.exists() && it.length() > 0
             }
-        })
+        }
         Tasks.whenAllComplete(listOfNotNull(fileSizeTask, fileAvailabilityTask)).addOnCompleteListener(this) { versionAdapter?.updateVersionProgress(version) }
     }
 
@@ -475,12 +476,12 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     private fun updateAppIcon(application: Application) {
-        application.loadImageInto(findViewById(R.id.imageView_header_icon), Glide.with(this))
+        application.loadImageInto(binding.includeHeader.headerIcon, Glide.with(this))
     }
 
     private fun updateAppDescription(application: Application) {
-        val textView: TextView = findViewById(R.id.textView_header_description)
-        val textView2: TextView = findViewById(R.id.textView_header_installedInfo)
+        val textView: TextView = binding.includeHeader.headerDescription
+        val textView2: TextView = binding.includeHeader.headerInstalledInfo
         val appInstalled = Utils.isApplicationInstalled(this, application.packageName.orEmpty())
         textView2.visibility = if (appInstalled) VISIBLE else GONE
         if (appInstalled) {
@@ -496,13 +497,13 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     private fun updateAppLinks(application: Application) {
-        updateAppLink(application.link_1, findViewById(R.id.button_header_link1))
-        updateAppLink(application.link_2, findViewById(R.id.button_header_link2))
-        updateAppLink(application.link_3, findViewById(R.id.button_header_link3))
-        updateAppLink(application.link_4, findViewById(R.id.button_header_link4))
-        updateAppLink(application.link_5, findViewById(R.id.button_header_link5))
+        updateAppLink(application.link1, binding.includeHeader.link1)
+        updateAppLink(application.link2, binding.includeHeader.link2)
+        updateAppLink(application.link3, binding.includeHeader.link3)
+        updateAppLink(application.link4, binding.includeHeader.link4)
+        updateAppLink(application.link5, binding.includeHeader.link5)
         links.apply {
-            visibility = if (application.link_1 == null && application.link_2 == null && application.link_3 == null && application.link_4 == null && application.link_5 == null) GONE else VISIBLE
+            visibility = if (application.link1 == null && application.link2 == null && application.link3 == null && application.link4 == null && application.link5 == null) GONE else VISIBLE
         }
     }
 
@@ -510,37 +511,41 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         view.apply {
             text = link?.name
             visibility = if (link != null) VISIBLE else GONE
-            setOnClickListener(if (link?.uri != null) {
-                View.OnClickListener {
-                    val intent = Intent(Intent.ACTION_VIEW, link.uri.toUri()).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
-                    if (!intent.isSafe(this@VersionsActivity)) {
-                        val text = buildSpannedString {
-                            append(getString(R.string.versions_toast_link_error))
-                            append("\n")
-                            bold {
-                                italic {
-                                    append("${link.uri}")
+            setOnClickListener(
+                if (link?.uri != null) {
+                    View.OnClickListener {
+                        val intent = Intent(Intent.ACTION_VIEW, link.uri.toUri()).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+                        if (!intent.isSafe(this@VersionsActivity)) {
+                            val text = buildSpannedString {
+                                append(getString(R.string.versions_toast_link_error))
+                                append("\n")
+                                bold {
+                                    italic {
+                                        append("${link.uri}")
+                                    }
                                 }
                             }
+                            Toast.makeText(this@VersionsActivity, text, LENGTH_SHORT).show()
+                        } else {
+                            safeStartActivity(intent)
                         }
-                        Toast.makeText(this@VersionsActivity, text, LENGTH_SHORT).show()
-                    } else {
-                        safeStartActivity(intent)
                     }
-                }
-            } else null)
-            setOnLongClickListener(if (link?.uri != null) {
-                View.OnLongClickListener {
-                    getSystemService<ClipboardManager>()?.setPrimaryClip(ClipData.newPlainText(packageName, link.uri))
-                    Toast.makeText(this@VersionsActivity, getString(R.string.versions_toast_link_to_clipboard), LENGTH_SHORT).show()
-                    true
-                }
-            } else null)
+                } else null,
+            )
+            setOnLongClickListener(
+                if (link?.uri != null) {
+                    View.OnLongClickListener {
+                        getSystemService<ClipboardManager>()?.setPrimaryClip(ClipData.newPlainText(packageName, link.uri))
+                        Toast.makeText(this@VersionsActivity, getString(R.string.versions_toast_link_to_clipboard), LENGTH_SHORT).show()
+                        true
+                    }
+                } else null,
+            )
         }
     }
 
     private fun updateFab(application: Application) {
-        if (isApplicationInstalled(application) && Utils.getLaunchIntent(applicationContext, packageName).isSafe(this)) {
+        if (isApplicationInstalled(application) && Utils.getLaunchIntent(applicationContext, packageName)?.isSafe(this) == true) {
             if (isCircularRevealPending) {
                 // Force setting the RecyclerView top padding before items are added
                 // This will prevent the RecyclerView to appear scrolled down by the amount of top padding
@@ -554,7 +559,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     private fun startApplication() {
-        application?.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it)) }
+        application?.packageName?.let { safeStartActivity(Utils.getLaunchIntent(applicationContext, it) ?: return) }
     }
 
     private fun openApplicationInfo() {
@@ -612,9 +617,9 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         versionAdapter?.updateVersionProgress(version)
 
         Firebase.storage.getReference(version.apkRef!!).getFile(ApkFileProvider.tempApkFile(applicationContext, version))
-                .addOnProgressListener(DownloadProgressListener(this, version))
-                .addOnCompleteListener(DownloadCompleteListener(this, version, primary = true, continuation = continuation))
-                .addOnCompleteListener { Firebase.database.analytics().downloaded(application, version) }
+            .addOnProgressListener(DownloadProgressListener(this, version))
+            .addOnCompleteListener(DownloadCompleteListener(this, version, primary = true, continuation = continuation))
+            .addOnCompleteListener { Firebase.database.analytics().downloaded(application, version) }
     }
 
     private fun openVersion(version: Version): Boolean {
@@ -663,13 +668,16 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private fun shareVersion(version: Version) {
         when {
             version.hasApkUrl() -> {
-                safeStartActivity(Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_SUBJECT, "${application?.name} ${version.name}")
-                    putExtra(Intent.EXTRA_TEXT, version.apkUrl)
-                })
+                safeStartActivity(
+                    Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_SUBJECT, "${application?.name} ${version.name}")
+                        putExtra(Intent.EXTRA_TEXT, version.apkUrl)
+                    },
+                )
                 return
             }
+
             version.hasApkRef() && version.apkFileAvailable -> {
                 val apkFile = ApkFileProvider.apkFile(applicationContext, version)
                 if (!apkFile.exists() || apkFile.length() <= 0) {
@@ -689,8 +697,8 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     class DownloadProgressListener(
-            activity: VersionsActivity,
-            val version: Version
+        activity: VersionsActivity,
+        val version: Version,
     ) : OnProgressListener<FileDownloadTask.TaskSnapshot> {
 
         private val activityReference: WeakReference<VersionsActivity> = WeakReference(activity)
@@ -715,10 +723,10 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     class DownloadCompleteListener(
-            activity: VersionsActivity,
-            val version: Version,
-            val primary: Boolean = false,
-            private val continuation: ((version: Version) -> Unit)? = null
+        activity: VersionsActivity,
+        val version: Version,
+        val primary: Boolean = false,
+        private val continuation: ((version: Version) -> Unit)? = null,
     ) : OnCompleteListener<FileDownloadTask.TaskSnapshot> {
 
         private val appContext: Context = activity.applicationContext
@@ -757,7 +765,6 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 }
             }
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -770,16 +777,25 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                         resultCode == RESULT_OK -> {
                             Firebase.database.analytics().installed(application, version)
                             version?.let { Firebase.logSelectedContent(application, it) }
-                            Snackbar.make(constraintLayout, R.string.versions_toast_application_installed, Snackbar.LENGTH_LONG).setAction(R.string.versions_toast_application_installed_action) { startApplication() }.customize().show()
+                            Snackbar.make(constraintLayout, R.string.versions_toast_application_installed, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.versions_toast_application_installed_action) { startApplication() }.customize().show()
                         }
-                        resultCode == RESULT_CANCELED || !isApplicationInstalled(application) -> Snackbar.make(constraintLayout, R.string.versions_toast_application_not_installed, Snackbar.LENGTH_LONG).customize().show()
-                        else -> Snackbar.make(constraintLayout, R.string.versions_toast_application_not_installed_uninstall_first, Snackbar.LENGTH_LONG).setAction(R.string.versions_toast_application_not_installed_uninstall_first_action) { uninstallApplication() }.customize().show()
+
+                        resultCode == RESULT_CANCELED || !isApplicationInstalled(application) -> Snackbar.make(
+                            constraintLayout,
+                            R.string.versions_toast_application_not_installed,
+                            Snackbar.LENGTH_LONG,
+                        ).customize().show()
+
+                        else -> Snackbar.make(constraintLayout, R.string.versions_toast_application_not_installed_uninstall_first, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.versions_toast_application_not_installed_uninstall_first_action) { uninstallApplication() }.customize().show()
                     }
                     if (version?.status == INSTALLING) {
                         version.updateStatus(DEFAULT)
                         versionAdapter?.updateVersionProgress(version)
                     }
                 }
+
                 OPEN -> {
                     if (version?.status == OPENING) {
                         version.updateStatus(DEFAULT)

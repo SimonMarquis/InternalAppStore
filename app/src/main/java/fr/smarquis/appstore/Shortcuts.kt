@@ -12,7 +12,9 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.N_MR1
+import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
@@ -55,9 +57,9 @@ class Shortcuts private constructor(_context: Context) {
         val launcherLargeIconSize = (context.getSystemService(ACTIVITY_SERVICE) as ActivityManager).launcherLargeIconSize
         val appIconSize = context.resources.getDimensionPixelSize(android.R.dimen.app_icon_size)
         RequestOptions()
-                .override(max(launcherLargeIconSize, appIconSize))
-                .fallback(R.drawable.item_application_icon_placeholder)
-                .centerCrop()
+            .override(max(launcherLargeIconSize, appIconSize))
+            .fallback(R.drawable.item_application_icon_placeholder)
+            .centerCrop()
     }
 
     companion object : SingletonHolder<Shortcuts, Context>(::Shortcuts) {
@@ -77,25 +79,25 @@ class Shortcuts private constructor(_context: Context) {
     private fun shortcutInfoCompat(type: Type, application: Application, bitmap: Bitmap): ShortcutInfoCompat {
         val label = application.name.orEmpty()
         return ShortcutInfoCompat.Builder(context, type.idOf(application))
-                .setShortLabel(label)
-                .setLongLabel(label)
-                .setIntents(intents(application))
-                .setIcon(IconCompat.createWithBitmap(bitmap))
-                .setDisabledMessage(context.getString(R.string.shortcut_application_removed))
-                .build()
+            .setShortLabel(label)
+            .setLongLabel(label)
+            .setIntents(intents(application))
+            .setIcon(IconCompat.createWithBitmap(bitmap))
+            .setDisabledMessage(context.getString(R.string.shortcut_application_removed))
+            .build()
     }
 
     @RequiresApi(N_MR1)
     private fun shortcutInfo(type: Type, application: Application, bitmap: Bitmap, rank: Int? = null): ShortcutInfo {
         val label = application.name.orEmpty()
         return ShortcutInfo.Builder(context, type.idOf(application))
-                .setShortLabel(label)
-                .setLongLabel(label)
-                .setIntents(intents(application))
-                .setIcon(Icon.createWithBitmap(bitmap))
-                .setDisabledMessage(context.getString(R.string.shortcut_application_removed))
-                .apply { rank?.let { setRank(max(0, it)) } }
-                .build()
+            .setShortLabel(label)
+            .setLongLabel(label)
+            .setIntents(intents(application))
+            .setIcon(Icon.createWithBitmap(bitmap))
+            .setDisabledMessage(context.getString(R.string.shortcut_application_removed))
+            .apply { rank?.let { setRank(max(0, it)) } }
+            .build()
     }
 
     @TargetApi(LOLLIPOP)
@@ -110,11 +112,9 @@ class Shortcuts private constructor(_context: Context) {
         return TaskStackBuilder.create(context).addNextIntentWithParentStack(intent).intents
     }
 
-    fun extract(intent: Intent): Application? {
-        return when {
-            SDK_INT >= O -> Application.fromPersistableBundle(intent.getParcelableExtra(EXTRA_SHORTCUT_APPLICATION))
-            else -> Application.fromFlatBundle(EXTRA_SHORTCUT_APPLICATION, intent.extras)
-        }
+    fun extract(intent: Intent): Application? = when {
+        SDK_INT >= O -> Application.fromPersistableBundle(intent.getParcelableExtra(EXTRA_SHORTCUT_APPLICATION))
+        else -> Application.fromFlatBundle(EXTRA_SHORTCUT_APPLICATION, intent.extras)
     }
 
     fun request(application: Application) {
@@ -207,34 +207,35 @@ class Shortcuts private constructor(_context: Context) {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun loadImage(application: Application, block: (bitmap: Bitmap) -> Unit) {
         glide.asBitmap()
-                .apply(options)
-                .load(application.findImageReference())
-                .into(object : CustomTarget<Bitmap>(options.overrideWidth, options.overrideHeight) {
+            .apply(options)
+            .load(application.findImageReference())
+            .into(
+                object : CustomTarget<Bitmap>(options.overrideWidth, options.overrideHeight) {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         block(resource)
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
-                })
+                },
+            )
     }
 
     @RequiresApi(LOLLIPOP)
     private fun Application.Companion.fromPersistableBundle(bundle: PersistableBundle?): Application? {
         return with(bundle ?: return null) {
             Application(
-                    key = getString("key"),
-                    name = getString("name"),
-                    packageName = getString("packageName"),
-                    description = getString("description"),
-                    image = getString("image"),
-                    link_1 = Link.fromPersistableBundle(getPersistableBundle("link_1")),
-                    link_2 = Link.fromPersistableBundle(getPersistableBundle("link_2")),
-                    link_3 = Link.fromPersistableBundle(getPersistableBundle("link_3")),
-                    link_4 = Link.fromPersistableBundle(getPersistableBundle("link_4")),
-                    link_5 = Link.fromPersistableBundle(getPersistableBundle("link_5"))
+                key = getString("key"),
+                name = getString("name"),
+                packageName = getString("packageName"),
+                description = getString("description"),
+                image = getString("image"),
+                link1 = getPersistableBundle("link_1")?.toLink(),
+                link2 = getPersistableBundle("link_2")?.toLink(),
+                link3 = getPersistableBundle("link_3")?.toLink(),
+                link4 = getPersistableBundle("link_4")?.toLink(),
+                link5 = getPersistableBundle("link_5")?.toLink(),
             )
         }
     }
@@ -242,16 +243,16 @@ class Shortcuts private constructor(_context: Context) {
     private fun Application.Companion.fromFlatBundle(prefix: String, bundle: Bundle?): Application? {
         return with(bundle ?: return null) {
             Application(
-                    key = getString("$prefix.key"),
-                    name = getString("$prefix.name"),
-                    packageName = getString("$prefix.packageName"),
-                    description = getString("$prefix.description"),
-                    image = getString("$prefix.image"),
-                    link_1 = Link.fromFlatBundle("$prefix.link_1", this),
-                    link_2 = Link.fromFlatBundle("$prefix.link_2", this),
-                    link_3 = Link.fromFlatBundle("$prefix.link_3", this),
-                    link_4 = Link.fromFlatBundle("$prefix.link_4", this),
-                    link_5 = Link.fromFlatBundle("$prefix.link_5", this)
+                key = getString("$prefix.key"),
+                name = getString("$prefix.name"),
+                packageName = getString("$prefix.packageName"),
+                description = getString("$prefix.description"),
+                image = getString("$prefix.image"),
+                link1 = toLink("$prefix.link_1"),
+                link2 = toLink("$prefix.link_2"),
+                link3 = toLink("$prefix.link_3"),
+                link4 = toLink("$prefix.link_4"),
+                link5 = toLink("$prefix.link_5"),
             )
         }
     }
@@ -265,58 +266,44 @@ class Shortcuts private constructor(_context: Context) {
             putString("packageName", packageName)
             putString("description", description)
             putString("image", image)
-            putPersistableBundle("link_1", link_1?.toPersistableBundle())
-            putPersistableBundle("link_2", link_2?.toPersistableBundle())
-            putPersistableBundle("link_3", link_3?.toPersistableBundle())
-            putPersistableBundle("link_4", link_4?.toPersistableBundle())
-            putPersistableBundle("link_5", link_5?.toPersistableBundle())
+            putPersistableBundle("link_1", link1?.toPersistableBundle())
+            putPersistableBundle("link_2", link2?.toPersistableBundle())
+            putPersistableBundle("link_3", link3?.toPersistableBundle())
+            putPersistableBundle("link_4", link4?.toPersistableBundle())
+            putPersistableBundle("link_5", link5?.toPersistableBundle())
         }
     }
 
-    private fun Application.toFlatBundle(prefix: String): Bundle {
-        return Bundle().apply {
-            putString("$prefix.key", key)
-            putString("$prefix.name", name)
-            putString("$prefix.packageName", packageName)
-            putString("$prefix.description", description)
-            putString("$prefix.image", image)
-            putAll(link_1?.toFlatBundle("$prefix.link_1"))
-        }
+    private fun Application.toFlatBundle(prefix: String): Bundle = Bundle().apply {
+        putString("$prefix.key", key)
+        putString("$prefix.name", name)
+        putString("$prefix.packageName", packageName)
+        putString("$prefix.description", description)
+        putString("$prefix.image", image)
+        putAll(link1?.toFlatBundle("$prefix.link_1"))
     }
 
 
     @RequiresApi(LOLLIPOP)
-    private fun Link.Companion.fromPersistableBundle(bundle: PersistableBundle?): Link? {
-        return with(bundle ?: return null) {
-            Link(
-                    name = getString("name"),
-                    uri = getString("uri")
-            )
-        }
-    }
+    private fun PersistableBundle.toLink() = Link(
+        name = getString("name"),
+        uri = getString("uri"),
+    )
 
-    private fun Link.Companion.fromFlatBundle(prefix: String, bundle: Bundle?): Link? {
-        return with(bundle ?: return null) {
-            Link(
-                    name = getString("$prefix.name"),
-                    uri = getString("$prefix.uri")
-            )
-        }
-    }
+    private fun Bundle.toLink(prefix: String) = Link(
+        name = getString("$prefix.name"),
+        uri = getString("$prefix.uri"),
+    )
 
     @RequiresApi(LOLLIPOP)
-    private fun Link.toPersistableBundle(): PersistableBundle {
-        return PersistableBundle().apply {
-            putString("name", name)
-            putString("uri", uri)
-        }
+    private fun Link.toPersistableBundle(): PersistableBundle = PersistableBundle().apply {
+        putString("name", name)
+        putString("uri", uri)
     }
 
-    private fun Link.toFlatBundle(prefix: String): Bundle {
-        return Bundle().apply {
-            putString("$prefix.name", name)
-            putString("$prefix.uri", uri)
-        }
+    private fun Link.toFlatBundle(prefix: String): Bundle = Bundle().apply {
+        putString("$prefix.name", name)
+        putString("$prefix.uri", uri)
     }
 
 }

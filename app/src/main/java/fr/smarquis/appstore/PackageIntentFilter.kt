@@ -3,7 +3,9 @@ package fr.smarquis.appstore
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.*
+import android.content.Intent.ACTION_PACKAGE_ADDED
+import android.content.Intent.ACTION_PACKAGE_REMOVED
+import android.content.Intent.ACTION_PACKAGE_REPLACED
 import android.content.IntentFilter
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity

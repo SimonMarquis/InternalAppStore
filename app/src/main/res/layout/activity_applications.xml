@@ -7,7 +7,7 @@
     tools:context="fr.smarquis.appstore.ApplicationsActivity">
 
     <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/contentLoadingProgressBar_applications"
+        android:id="@+id/progress_applications"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_applications"
+        android:id="@+id/applications"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipChildren="false"

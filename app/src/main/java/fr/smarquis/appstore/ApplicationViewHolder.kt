@@ -4,25 +4,18 @@ import android.graphics.Typeface
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import kotlinx.android.synthetic.main.item_application.view.*
+import fr.smarquis.appstore.databinding.ItemApplicationBinding
 
 class ApplicationViewHolder(
-        v: View,
-        private val callback: ApplicationAdapter.Callback,
-        private val glide: RequestManager
-) : RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
-
-    private val title: TextView = v.textView_application_title
-    private val installed: TextView = v.textView_application_installed
-    private val image: ImageView = v.imageView_application_icon
-    private val favorite: ImageView = v.imageView_application_favorite
+    private val binding: ItemApplicationBinding,
+    private val callback: ApplicationAdapter.Callback,
+    private val glide: RequestManager,
+) : RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
     private var application: Application? = null
     private var filter: String? = null
@@ -33,30 +26,30 @@ class ApplicationViewHolder(
     }
 
     private val colorAccent = ContextCompat.getColor(itemView.context, R.color.colorAccent)
-    private val defaultColor = title.currentTextColor
+    private val defaultColor = binding.title.currentTextColor
 
     fun bind(application: Application, filter: String?) {
         this.application = application
         this.filter = filter
-        ViewCompat.setTransitionName(image, application.imageTransitionName())
+        ViewCompat.setTransitionName(binding.icon, application.imageTransitionName())
         renderFavorite()
         renderImage()
         renderText()
     }
 
     private fun renderFavorite() {
-        favorite.visibility = if (application?.isFavorite == true) VISIBLE else GONE
+        binding.favorite.visibility = if (application?.isFavorite == true) VISIBLE else GONE
     }
 
     private fun renderImage() {
-        application?.loadImageInto(image, glide)
+        application?.loadImageInto(binding.icon, glide)
     }
 
     fun renderText() {
-        title.setTextColor(if (application?.isFavorite == true) colorAccent else defaultColor)
-        title.setTypeface(null, if (application?.isFavorite == true) Typeface.BOLD else Typeface.NORMAL)
-        title.text = Utils.highlightFilter(application?.name, filter)
-        installed.apply {
+        binding.title.setTextColor(if (application?.isFavorite == true) colorAccent else defaultColor)
+        binding.title.setTypeface(null, if (application?.isFavorite == true) Typeface.BOLD else Typeface.NORMAL)
+        binding.title.text = Utils.highlightFilter(application?.name, filter)
+        binding.installed.apply {
             setTextColor(if (application?.isFavorite == true) colorAccent else defaultColor)
             val packageName = application?.packageName
             if (packageName != null && Utils.isApplicationInstalled(itemView.context, packageName)) {
@@ -80,11 +73,11 @@ class ApplicationViewHolder(
     }
 
     fun unbind(glide: RequestManager) {
-        glide.clear(image)
+        glide.clear(binding.icon)
     }
 
     fun sharedElement(): Pair<View, String> {
-        return Pair.create(image, ViewCompat.getTransitionName(image))
+        return Pair.create(binding.icon, ViewCompat.getTransitionName(binding.icon))
     }
 
 }
