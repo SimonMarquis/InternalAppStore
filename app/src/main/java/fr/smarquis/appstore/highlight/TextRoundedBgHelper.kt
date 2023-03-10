@@ -33,24 +33,24 @@ class TextRoundedBgHelper(
     drawable: Drawable,
     drawableLeft: Drawable,
     drawableMid: Drawable,
-    drawableRight: Drawable
+    drawableRight: Drawable,
 ) {
 
     private val singleLineRenderer: TextRoundedBgRenderer by lazy {
         SingleLineRenderer(
-                horizontalPadding = horizontalPadding,
-                verticalPadding = verticalPadding,
-                drawable = drawable
+            horizontalPadding = horizontalPadding,
+            verticalPadding = verticalPadding,
+            drawable = drawable,
         )
     }
 
     private val multiLineRenderer: TextRoundedBgRenderer by lazy {
         MultiLineRenderer(
-                horizontalPadding = horizontalPadding,
-                verticalPadding = verticalPadding,
-                drawableLeft = drawableLeft,
-                drawableMid = drawableMid,
-                drawableRight = drawableRight
+            horizontalPadding = horizontalPadding,
+            verticalPadding = verticalPadding,
+            drawableLeft = drawableLeft,
+            drawableMid = drawableMid,
+            drawableRight = drawableRight,
         )
     }
 

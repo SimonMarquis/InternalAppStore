@@ -10,7 +10,7 @@
     android:focusable="true">
 
     <ImageView
-        android:id="@+id/imageView_application_icon"
+        android:id="@+id/icon"
         android:layout_width="@dimen/material_baseline_grid_5x"
         android:layout_height="@dimen/material_baseline_grid_5x"
         android:layout_marginStart="@dimen/material_baseline_grid_2x"
@@ -24,19 +24,19 @@
         tools:src="@tools:sample/avatars" />
 
     <ImageView
-        android:id="@+id/imageView_application_favorite"
+        android:id="@+id/favorite"
         android:layout_width="@dimen/material_baseline_grid_1.5x"
         android:layout_height="@dimen/material_baseline_grid_1.5x"
         android:layout_marginStart="@dimen/material_baseline_grid_2x"
         android:layout_marginLeft="@dimen/material_baseline_grid_2x"
         android:src="@drawable/ic_stars_24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView_application_title"
-        app:layout_constraintStart_toEndOf="@+id/imageView_application_icon"
-        app:layout_constraintTop_toTopOf="@+id/textView_application_title"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintStart_toEndOf="@+id/icon"
+        app:layout_constraintTop_toTopOf="@+id/title"
         tools:ignore="ContentDescription" />
 
     <fr.smarquis.appstore.EmojiTextView
-        android:id="@+id/textView_application_title"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_baseline_grid_0.5x"
@@ -45,8 +45,8 @@
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="?android:attr/textColorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/textView_application_installed"
-        app:layout_constraintStart_toEndOf="@+id/imageView_application_favorite"
+        app:layout_constraintBottom_toTopOf="@+id/installed"
+        app:layout_constraintStart_toEndOf="@+id/favorite"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_goneMarginLeft="@dimen/material_baseline_grid_2x"
@@ -54,7 +54,7 @@
         tools:text="@tools:sample/full_names" />
 
     <TextView
-        android:id="@+id/textView_application_installed"
+        android:id="@+id/installed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/material_baseline_grid_2x"
@@ -64,8 +64,8 @@
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView_application_icon"
-        app:layout_constraintTop_toBottomOf="@+id/textView_application_title"
+        app:layout_constraintStart_toEndOf="@+id/icon"
+        app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Installed • 1.2.3 • 2 min. ago" />
 </androidx.constraintlayout.widget.ConstraintLayout>

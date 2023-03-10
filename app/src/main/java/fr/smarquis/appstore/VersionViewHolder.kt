@@ -1,31 +1,27 @@
 package fr.smarquis.appstore
 
 import android.view.View
-import android.view.View.*
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.View.GONE
+import android.view.View.INVISIBLE
+import android.view.View.OnClickListener
+import android.view.View.OnLongClickListener
+import android.view.View.VISIBLE
 import androidx.recyclerview.widget.RecyclerView
 import fr.smarquis.appstore.Utils.Companion.highlightFilter
-import fr.smarquis.appstore.Version.Status.*
-import kotlinx.android.synthetic.main.item_version.view.*
+import fr.smarquis.appstore.Version.Status.DEFAULT
+import fr.smarquis.appstore.Version.Status.DOWNLOADING
+import fr.smarquis.appstore.Version.Status.INSTALLING
+import fr.smarquis.appstore.Version.Status.OPENING
+import fr.smarquis.appstore.databinding.ItemVersionBinding
 
 class VersionViewHolder(
-        v: View,
-        private val callback: VersionAdapter.Callback
-) : RecyclerView.ViewHolder(v), OnClickListener, OnLongClickListener {
-
-    private val name: TextView = v.textView_version_name
-    private val timestamp: TextView = v.textView_version_timestamp
-    private val description: TextView = v.textView_version_description
-    private val size: TextView = v.textView_version_size
-    private val progress: ProgressBar = v.progressBar_version
-    private val type: ImageView = v.imageView_version_type
-    private val highlight: View = v.view_version_highlight
-    val anchor: View = v.anchor
+    private val binding: ItemVersionBinding,
+    private val callback: VersionAdapter.Callback,
+) : RecyclerView.ViewHolder(binding.root), OnClickListener, OnLongClickListener {
 
     private var version: Version? = null
     private var filter: String? = null
+    val anchor = binding.anchor
 
     init {
         itemView.setOnClickListener(this)
@@ -45,12 +41,12 @@ class VersionViewHolder(
     }
 
     private fun renderHighlight(key: String?) {
-        this.highlight.visibility = if (version?.key == key) VISIBLE else INVISIBLE
+        binding.highlight.visibility = if (version?.key == key) VISIBLE else INVISIBLE
     }
 
     private fun renderTitleAndDescription() {
-        name.text = highlightFilter(version?.name, filter)
-        description.apply {
+        binding.name.text = highlightFilter(version?.name, filter)
+        binding.description.apply {
             text = highlightFilter(version?.descriptionToHtml, filter)
             visibility = if (version?.descriptionToHtml.isNullOrBlank()) GONE else VISIBLE
             BetterLinkMovementMethod.applyTo(this, itemView)
@@ -58,7 +54,7 @@ class VersionViewHolder(
     }
 
     fun renderProgress() {
-        size.text = version?.apkSizeBytesDisplay ?: UNKNOWN_SIZE
+        binding.size.text = version?.apkSizeBytesDisplay ?: UNKNOWN_SIZE
 
         val resourceId = when {
             version?.status == DOWNLOADING || version?.status == INSTALLING -> R.drawable.ic_cloud_sync_16dp
@@ -67,42 +63,46 @@ class VersionViewHolder(
             version?.hasApkRef() ?: false && version?.apkFileAvailable ?: false -> R.drawable.ic_cloud_check_16dp
             else -> R.drawable.ic_cloud_alert_16dp
         }
-        type.setImageResource(resourceId)
+        binding.type.setImageResource(resourceId)
 
         when (version?.status) {
             DEFAULT -> {
-                progress.progress = 0
-                progress.isIndeterminate = false
-                progress.visibility = if (version?.descriptionToHtml.isNullOrBlank()) GONE else INVISIBLE
-                timestamp.text = Utils.relativeTimeSpan(version?.timestamp)
+                binding.progress.progress = 0
+                binding.progress.isIndeterminate = false
+                binding.progress.visibility = if (version?.descriptionToHtml.isNullOrBlank()) GONE else INVISIBLE
+                binding.timestamp.text = Utils.relativeTimeSpan(version?.timestamp)
             }
+
             DOWNLOADING -> {
-                progress.progress = version?.progress ?: 0
-                progress.isIndeterminate = version?.progress == 0
-                progress.visibility = VISIBLE
-                timestamp.setText(R.string.item_version_downloading)
+                binding.progress.progress = version?.progress ?: 0
+                binding.progress.isIndeterminate = version?.progress == 0
+                binding.progress.visibility = VISIBLE
+                binding.timestamp.setText(R.string.item_version_downloading)
             }
+
             INSTALLING -> {
-                progress.progress = 0
-                progress.isIndeterminate = true
-                progress.visibility = VISIBLE
-                timestamp.setText(R.string.item_version_installing)
+                binding.progress.progress = 0
+                binding.progress.isIndeterminate = true
+                binding.progress.visibility = VISIBLE
+                binding.timestamp.setText(R.string.item_version_installing)
             }
+
             OPENING -> {
-                progress.progress = 0
-                progress.isIndeterminate = true
-                progress.visibility = VISIBLE
-                timestamp.setText(R.string.item_version_opening)
+                binding.progress.progress = 0
+                binding.progress.isIndeterminate = true
+                binding.progress.visibility = VISIBLE
+                binding.timestamp.setText(R.string.item_version_opening)
             }
+
             else -> {
-                progress.visibility = GONE
-                timestamp.text = null
+                binding.progress.visibility = GONE
+                binding.timestamp.text = null
             }
         }
     }
 
     fun unbind() {
-        BetterLinkMovementMethod.clear(description)
+        BetterLinkMovementMethod.clear(binding.description)
         version = null
     }
 

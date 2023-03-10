@@ -20,10 +20,10 @@ class Deeplink : AppCompatActivity() {
             return
         }
         val intent = VersionsActivity.intent(
-                context = this@Deeplink,
-                application = application,
-                highlightVersionKey = data.fragment,
-                unknown = true
+            context = this@Deeplink,
+            application = application,
+            highlightVersionKey = data.fragment,
+            unknown = true,
         )
         TaskStackBuilder.create(this@Deeplink).addNextIntentWithParentStack(intent).startActivities()
     }

@@ -19,17 +19,12 @@ import com.google.firebase.storage.StorageReference
 
 //region Firebase
 
-fun FirebaseStorage.with(reference: String): Any? {
-    try {
-        return getReference(reference)
-    } catch (e: Exception) {
-    }
-    try {
-        return getReferenceFromUrl(reference)
-    } catch (e: Exception) {
-    }
-    return null
-}
+fun FirebaseStorage.with(reference: String): Any? = runCatching {
+    getReference(reference)
+}.recoverCatching {
+    getReferenceFromUrl(reference)
+}.getOrNull()
+
 
 fun Version.getActiveDownloadTask(): FileDownloadTask? {
     val ref = apkRef ?: return null
@@ -64,42 +59,36 @@ fun FirebaseDatabase.analytics(): DatabaseReferenceForAnalytics = reference.chil
 
 fun DatabaseReferenceForAnalytics.downloaded(application: Application?, version: Version?) {
     child("downloads")
-            .child(application?.key ?: return)
-            .child(version?.key ?: return)
-            .child(Firebase.auth.currentUser?.uid ?: return)
-            .setValue(ServerValue.TIMESTAMP)
+        .child(application?.key ?: return)
+        .child(version?.key ?: return)
+        .child(Firebase.auth.currentUser?.uid ?: return)
+        .setValue(ServerValue.TIMESTAMP)
 }
 
 fun DatabaseReferenceForAnalytics.installed(application: Application?, version: Version?) {
     child("installs")
-            .child(application?.key ?: return)
-            .child(version?.key ?: return)
-            .child(Firebase.auth.currentUser?.uid ?: return)
-            .setValue(ServerValue.TIMESTAMP)
+        .child(application?.key ?: return)
+        .child(version?.key ?: return)
+        .child(Firebase.auth.currentUser?.uid ?: return)
+        .setValue(ServerValue.TIMESTAMP)
 }
 
 //endregion
 
 //region Intents
 
-fun Intent?.isSafe(context: Context): Boolean {
-    return this != null && resolveActivity(context.packageManager) != null
+fun Intent.isSafe(context: Context): Boolean = resolveActivity(context.packageManager) != null
+
+fun AppCompatActivity.safeStartActivity(intent: Intent): Boolean {
+    if (!intent.isSafe(this)) return false
+    startActivity(intent)
+    return true
 }
 
-fun AppCompatActivity.safeStartActivity(intent: Intent?): Boolean {
-    if (intent.isSafe(this)) {
-        startActivity(intent)
-        return true
-    }
-    return false
-}
-
-fun AppCompatActivity.safeStartActivityForResult(intent: Intent?, requestCode: Int): Boolean {
-    if (intent.isSafe(this)) {
-        startActivityForResult(intent, requestCode)
-        return true
-    }
-    return false
+fun AppCompatActivity.safeStartActivityForResult(intent: Intent, requestCode: Int): Boolean {
+    if (!intent.isSafe(this)) return false
+    startActivityForResult(intent, requestCode)
+    return true
 }
 
 //endregion
@@ -114,11 +103,11 @@ fun Application.findImageReference(): Any {
 }
 
 val DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS = RequestOptions()
-        .override(Target.SIZE_ORIGINAL)
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
-        .centerCrop()
-        .placeholder(R.drawable.item_application_icon_placeholder)
-        .autoClone()
+    .override(Target.SIZE_ORIGINAL)
+    .diskCacheStrategy(DiskCacheStrategy.ALL)
+    .centerCrop()
+    .placeholder(R.drawable.item_application_icon_placeholder)
+    .autoClone()
 
 fun Application.loadImageInto(imageView: ImageView, glide: RequestManager) {
     glide.load(findImageReference()).apply(DEFAULT_APPLICATION_IMAGE_REQUEST_OPTIONS.signature(ObjectKey(image.orEmpty()))).into(imageView)

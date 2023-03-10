@@ -36,12 +36,12 @@ class Firebase {
 
         val signInIntent by lazy {
             AuthUI.getInstance(app)
-                    .createSignInIntentBuilder()
-                    .setTheme(R.style.Theme_AppStore)
-                    .setAvailableProviders(Store.AUTH_PROVIDERS)
-                    .setIsSmartLockEnabled(Store.SMART_LOCK, true)
-                    .setLogo(R.drawable.ic_launcher_preview_window)
-                    .build()
+                .createSignInIntentBuilder()
+                .setTheme(R.style.Theme_AppStore)
+                .setAvailableProviders(Store.AUTH_PROVIDERS)
+                .setIsSmartLockEnabled(Store.SMART_LOCK, true)
+                .setLogo(R.drawable.ic_launcher_preview_window)
+                .build()
         }
 
         fun subscribeToStore() {
@@ -53,11 +53,14 @@ class Firebase {
         }
 
         fun logSelectedContent(application: Application?, version: Version) {
-            analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, Bundle().apply {
-                putString(FirebaseAnalytics.Param.ITEM_ID, "${version.name} (${version.key})")
-                putString(FirebaseAnalytics.Param.ITEM_NAME, "${application?.packageName} ${version.name} (${version.key})")
-                putString(FirebaseAnalytics.Param.CONTENT_TYPE, application?.packageName ?: "unknown")
-            })
+            analytics.logEvent(
+                FirebaseAnalytics.Event.SELECT_CONTENT,
+                Bundle().apply {
+                    putString(FirebaseAnalytics.Param.ITEM_ID, "${version.name} (${version.key})")
+                    putString(FirebaseAnalytics.Param.ITEM_NAME, "${application?.packageName} ${version.name} (${version.key})")
+                    putString(FirebaseAnalytics.Param.CONTENT_TYPE, application?.packageName ?: "unknown")
+                },
+            )
         }
 
     }

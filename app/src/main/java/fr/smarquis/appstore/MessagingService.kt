@@ -8,9 +8,7 @@ import com.google.firebase.messaging.RemoteMessage
 class MessagingService : FirebaseMessagingService() {
 
     companion object {
-
         private const val TAG = "MessagingService"
-
     }
 
     override fun onNewToken(token: String) {
@@ -30,23 +28,26 @@ class MessagingService : FirebaseMessagingService() {
     private fun onNewApplication(msg: RemoteMessage) {
         val data = msg.data
         val application = Application(
-                key = data["applicationKey"] ?: return,
-                name = data["applicationName"],
-                packageName = data["applicationPackageName"],
-                image = data["applicationImage"])
+            key = data["applicationKey"] ?: return,
+            name = data["applicationName"],
+            packageName = data["applicationPackageName"],
+            image = data["applicationImage"],
+        )
         Notifications.onNewApplication(this, application, msg)
     }
 
     private fun onNewVersion(msg: RemoteMessage) {
         val data = msg.data
         val application = Application(
-                key = data["applicationKey"] ?: return,
-                name = data["applicationName"],
-                packageName = data["applicationPackageName"],
-                image = data["applicationImage"])
+            key = data["applicationKey"] ?: return,
+            name = data["applicationName"],
+            packageName = data["applicationPackageName"],
+            image = data["applicationImage"],
+        )
         val version = Version(
-                key = data["versionKey"] ?: return,
-                name = data["versionName"])
+            key = data["versionKey"] ?: return,
+            name = data["versionName"],
+        )
         Notifications.onNewVersion(this, application, version, msg)
     }
 

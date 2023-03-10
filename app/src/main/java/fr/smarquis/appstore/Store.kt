@@ -23,8 +23,9 @@ class Store : android.app.Application() {
         val SMART_LOCK by lazy { !BuildConfig.DEBUG }
         val AUTH_PROVIDERS by lazy {
             listOf(
-                    AuthUI.IdpConfig.EmailBuilder().setRequireName(false).build(),
-                    AuthUI.IdpConfig.GoogleBuilder().build())
+                AuthUI.IdpConfig.EmailBuilder().setRequireName(false).build(),
+                AuthUI.IdpConfig.GoogleBuilder().build(),
+            )
         }
 
     }
@@ -42,10 +43,11 @@ class Store : android.app.Application() {
 
     private fun initEmojiCompat() {
         val fontRequest = FontRequest(
-                "com.google.android.gms.fonts",
-                "com.google.android.gms",
-                "Noto Color Emoji Compat",
-                R.array.com_google_android_gms_fonts_certs)
+            "com.google.android.gms.fonts",
+            "com.google.android.gms",
+            "Noto Color Emoji Compat",
+            R.array.com_google_android_gms_fonts_certs,
+        )
         EmojiCompat.init(FontRequestEmojiCompatConfig(applicationContext, fontRequest).setReplaceAll(true))
     }
 
@@ -71,38 +73,40 @@ class Store : android.app.Application() {
         val shortcuts by lazy { Shortcuts.instance(store) }
         val detectRemovedVersions = RemovedVersionsEventListener(store)
 
-        Firebase.database.applications().addChildEventListener(object : AbstractChildEventListener() {
+        Firebase.database.applications().addChildEventListener(
+            object : AbstractChildEventListener() {
 
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildKey: String?) {
-                Application.parse(snapshot)?.let {
-                    Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
-                    with(Firebase.database.versions(it.key.orEmpty())) {
-                        addChildEventListener(detectRemovedVersions)
-                        if (it.isMyself(store)) {
-                            // SingleValueEvent will be enough
-                            // since regular updates will still be delivered through notifications
-                            addListenerForSingleValueEvent(SelfUpdateEventListener(store, it))
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildKey: String?) {
+                    Application.parse(snapshot)?.let {
+                        Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
+                        with(Firebase.database.versions(it.key.orEmpty())) {
+                            addChildEventListener(detectRemovedVersions)
+                            if (it.isMyself(store)) {
+                                // SingleValueEvent will be enough
+                                // since regular updates will still be delivered through notifications
+                                addListenerForSingleValueEvent(SelfUpdateEventListener(store, it))
+                            }
                         }
                     }
                 }
-            }
 
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildKey: String?) {
-                Application.parse(snapshot)?.let {
-                    Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
-                    shortcuts.update(it)
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildKey: String?) {
+                    Application.parse(snapshot)?.let {
+                        Notifications.createOrUpdateNewVersionsNotificationChannel(store, it)
+                        shortcuts.update(it)
+                    }
                 }
-            }
 
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                Application.parse(snapshot)?.let {
-                    Notifications.deleteNewVersionsNotificationChannel(store, it)
-                    Firebase.database.versions(it.key.orEmpty()).removeEventListener(detectRemovedVersions)
-                    shortcuts.remove(it)
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    Application.parse(snapshot)?.let {
+                        Notifications.deleteNewVersionsNotificationChannel(store, it)
+                        Firebase.database.versions(it.key.orEmpty()).removeEventListener(detectRemovedVersions)
+                        shortcuts.remove(it)
+                    }
                 }
-            }
 
-        })
+            },
+        )
 
     }
 

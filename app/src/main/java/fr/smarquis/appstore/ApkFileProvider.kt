@@ -10,7 +10,7 @@ import android.util.Log
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileFilter
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class ApkFileProvider : FileProvider() {
@@ -18,9 +18,7 @@ class ApkFileProvider : FileProvider() {
     companion object {
 
         private const val TAG = "ApkFileProvider"
-
         private const val MIME_TYPE_APK = "application/vnd.android.package-archive"
-
         private const val FILE_EXTENSION_APK = ".apk"
 
         fun uri(file: File, context: Context): Uri = getUriForFile(context, "${context.packageName}.apk_provider", file)

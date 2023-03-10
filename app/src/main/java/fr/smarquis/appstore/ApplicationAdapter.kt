@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.NonNull
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -14,27 +13,29 @@ import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.bumptech.glide.RequestManager
 import com.firebase.ui.common.ChangeEventType
-import com.firebase.ui.common.ChangeEventType.*
+import com.firebase.ui.common.ChangeEventType.ADDED
+import com.firebase.ui.common.ChangeEventType.CHANGED
+import com.firebase.ui.common.ChangeEventType.MOVED
+import com.firebase.ui.common.ChangeEventType.REMOVED
 import com.firebase.ui.database.ChangeEventListener
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.Query
+import fr.smarquis.appstore.databinding.ItemApplicationBinding
 
 class ApplicationAdapter(
-        lifecycleOwner: LifecycleOwner,
-        query: Query,
-        private val callback: Callback,
-        private val glide: RequestManager,
-        private val preferences: SharedPreferences
+    lifecycleOwner: LifecycleOwner,
+    query: Query,
+    private val callback: Callback,
+    private val glide: RequestManager,
+    private val preferences: SharedPreferences,
 
-) : RecyclerView.Adapter<ApplicationViewHolder>(), LifecycleObserver, ChangeEventListener {
+    ) : RecyclerView.Adapter<ApplicationViewHolder>(), LifecycleObserver, ChangeEventListener {
 
     companion object {
-
         val PAYLOAD_PACKAGE_CHANGED = Any()
-
     }
 
     interface Callback {
@@ -82,14 +83,14 @@ class ApplicationAdapter(
         stableIds.clear()
     }
 
-    @NonNull
-    fun getItem(position: Int): Application = displayList[position]
+    private fun getItem(position: Int): Application = displayList[position]
 
     override fun getItemId(position: Int): Long = stableIds.getOrPut(getItem(position).key.orEmpty()) { stableIds.size.toLong() }
 
     override fun getItemCount(): Int = displayList.size()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder = ApplicationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_application, parent, false), callback, glide)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder =
+        ApplicationViewHolder(ItemApplicationBinding.inflate(LayoutInflater.from(parent.context), parent, false), callback, glide)
 
     override fun onBindViewHolder(holder: ApplicationViewHolder, position: Int) = holder.bind(getItem(position), filter)
 
@@ -122,6 +123,7 @@ class ApplicationAdapter(
                     displayList.add(application)
                 }
             }
+
             CHANGED -> {
                 val application = snapshots[newIndex]
                 val removedApplication = backupList.removeAt(newIndex)
@@ -133,6 +135,7 @@ class ApplicationAdapter(
                     displayList.removeItemAt(oldDisplayIndex)
                 }
             }
+
             MOVED -> {
                 val application = snapshots[newIndex]
                 val removedApplication = backupList.removeAt(oldIndex)
@@ -143,10 +146,12 @@ class ApplicationAdapter(
                     displayList.remove(removedApplication)
                 }
             }
+
             REMOVED -> {
                 val removedApplication = backupList.removeAt(newIndex)
                 displayList.remove(removedApplication)
             }
+
             else -> throw IllegalStateException("Incomplete case statement")
         }
     }

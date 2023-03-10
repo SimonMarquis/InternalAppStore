@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/contentLoadingProgressBar_versions"
+        android:id="@+id/progressVersions"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/includeHeader" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_versions"
+        android:id="@+id/versions"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -70,9 +70,9 @@
         android:visibility="invisible"
         app:elevation="@dimen/material_baseline_grid_1x"
         app:fabSize="mini"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView_versions"
+        app:layout_constraintBottom_toTopOf="@+id/versions"
         app:layout_constraintEnd_toEndOf="@+id/space_responsive_horizontal"
-        app:layout_constraintTop_toTopOf="@+id/recyclerView_versions"
+        app:layout_constraintTop_toTopOf="@+id/versions"
         tools:ignore="UnusedAttribute"
         tools:visibility="visible" />
 
