@@ -1,11 +1,7 @@
-name: 🔥 Firebase CI
+name: 🔥 Firebase Deploy
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 jobs:
   build_and_preview:
@@ -24,4 +20,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PUBLIC_APP_STORE }}'
           projectId: public-app-store
           entryPoint: firebase
-          channelId: 'preview-${{ github.sha }}'
+          channelId: live
