@@ -2,10 +2,9 @@ name: 🔥 Firebase Preview
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+    paths: 'firebase/**'
 
 jobs:
   build_and_preview:
