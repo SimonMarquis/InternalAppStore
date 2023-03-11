@@ -5,7 +5,7 @@
 <p align="center">
   Manage your own internal Android App Store.<br>
   <a href="https://public-app-store.web.app/"><strong>Web app</strong></a> • <a href="https://github.com/SimonMarquis/InternalAppStore/releases"><strong>Android app</strong></a><br>
-  <img src="https://travis-ci.com/SimonMarquis/InternalAppStore.svg?branch=master" alt="Build Status">
+  <a href="https://github.com/SimonMarquis/InternalAppStore/actions/workflows/android.yml"><img src="https://github.com/SimonMarquis/InternalAppStore/actions/workflows/android.yml/badge.svg" alt="🤖 Android CI"></a>
 </p>
 
 <br>
