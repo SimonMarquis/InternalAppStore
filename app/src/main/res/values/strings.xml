@@ -3,8 +3,8 @@
 
     <string name="app_name">App Store</string>
     <string name="deeplink_scheme">appstore</string>
-    <string name="deeplink_host">public-app-store.firebaseapp.com</string>
-    <string name="asset_statements" translatable="false">[{\"include\": \"https://public-app-store.firebaseapp.com/.well-known/assetlinks.json\"}]</string>
+    <string name="deeplink_host">public-app-store.web.app</string>
+    <string name="asset_statements" translatable="false">[{\"include\": \"https://public-app-store.web.app/.well-known/assetlinks.json\"}]</string>
 
     <!--region Applications-->
     <string name="applications_subtitle_anonymous">anonymous</string>

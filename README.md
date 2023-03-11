@@ -27,7 +27,7 @@
 
 ## Demo
 
-A public version of the web app is hosted on [public-app-store.firebaseapp.com](https://public-app-store.firebaseapp.com/).  
+A public version of the web app is hosted on [public-app-store.web.app](https://public-app-store.web.app).  
 The latest Android apk can also be downloaded [here](https://github.com/SimonMarquis/InternalAppStore/releases).
 
 ## Features

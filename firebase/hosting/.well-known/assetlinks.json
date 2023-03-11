@@ -5,7 +5,7 @@
         ],
         "target": {
             "namespace": "web",
-            "site": "https://public-app-store.firebaseapp.com"
+            "site": "https://public-app-store.web.app"
         }
     },
     {
