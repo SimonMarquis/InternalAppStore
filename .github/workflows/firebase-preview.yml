@@ -1,4 +1,4 @@
-name: 🔥 Firebase CI
+name: 🔥 Firebase Preview
 
 on:
   workflow_dispatch:
