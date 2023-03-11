@@ -7,7 +7,7 @@
       "name": "functions",
       "dependencies": {
         "firebase-admin": "^11.5.0",
-        "firebase-functions": "^4.0.0"
+        "firebase-functions": "^4.2.1"
       },
       "devDependencies": {
         "eslint": "^8.0.0",
