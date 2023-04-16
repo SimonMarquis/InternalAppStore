@@ -82,6 +82,7 @@ import fr.smarquis.appstore.databinding.ActivityVersionsBinding
 import java.lang.ref.WeakReference
 import java.util.concurrent.Executors
 import kotlin.math.hypot
+import com.google.android.material.R as MaterialR
 
 class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
@@ -809,10 +810,10 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     @SuppressLint("PrivateResource")
     fun Snackbar.customize(): Snackbar {
         with(view) {
-            ViewCompat.setElevation(this, context.resources.getDimension(R.dimen.design_snackbar_elevation))
-            (layoutParams as? ViewGroup.MarginLayoutParams)?.setMargins(context.resources.getDimensionPixelSize(R.dimen.mtrl_snackbar_margin))
-            setBackgroundResource(R.drawable.design_snackbar_background)
-            findViewById<TextView>(R.id.snackbar_text)?.maxLines = 2
+            ViewCompat.setElevation(this, context.resources.getDimension(MaterialR.dimen.design_snackbar_elevation))
+            (layoutParams as? ViewGroup.MarginLayoutParams)?.setMargins(context.resources.getDimensionPixelSize(MaterialR.dimen.mtrl_snackbar_margin))
+            setBackgroundResource(MaterialR.drawable.design_snackbar_background)
+            findViewById<TextView>(MaterialR.id.snackbar_text)?.maxLines = 2
         }
         return this
     }
@@ -838,7 +839,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         menuInflater.inflate(R.menu.menu_versions, menu)
         val searchItem = menu.findItem(R.id.menu_versions_search)
         searchView = searchItem.actionView as SearchView
-        searchView.findViewById<SearchView.SearchAutoComplete>(R.id.search_src_text).setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+        searchView.findViewById<SearchView.SearchAutoComplete>(MaterialR.id.search_src_text).setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
         searchView.setOnQueryTextListener(this)
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (!hasFocus && searchView.query.isNullOrBlank()) {

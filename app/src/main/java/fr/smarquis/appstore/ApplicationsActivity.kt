@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.android.material.R as MaterialR
 
 
 class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
@@ -270,7 +271,7 @@ class ApplicationsActivity : AppCompatActivity(), SearchView.OnQueryTextListener
         menuInflater.inflate(R.menu.menu_applications, menu)
         val searchItem = menu.findItem(R.id.menu_applications_search)
         searchView = searchItem.actionView as SearchView
-        searchView.findViewById<SearchView.SearchAutoComplete>(R.id.search_src_text).setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+        searchView.findViewById<SearchView.SearchAutoComplete>(MaterialR.id.search_src_text).setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
         searchView.setOnQueryTextListener(this)
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (!hasFocus && searchView.query.isNullOrBlank()) {
