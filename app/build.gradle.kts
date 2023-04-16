@@ -22,6 +22,7 @@ android {
         multiDexEnabled = true
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
     buildTypes {
