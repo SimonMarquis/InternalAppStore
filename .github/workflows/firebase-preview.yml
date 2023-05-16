@@ -17,7 +17,7 @@ jobs:
           node-version: 18
       - run: npm ci
         working-directory: firebase/functions
-      - uses: FirebaseExtended/action-hosting-deploy@4d0d0023f1d92b9b7d16dda64b3d7abd2c98974b # v0.7.0
+      - uses: FirebaseExtended/action-hosting-deploy@120e124148ab7016bec2374e5050f15051255ba2 # v0.7.1
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PUBLIC_APP_STORE }}'
