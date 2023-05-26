@@ -6,12 +6,7 @@ cardview = "1.0.0"
 constraintlayout = "2.1.4"
 coreKtx = "1.10.1"
 emoji = "1.1.0"
-firebase-analytics = "21.3.0"
-firebase-auth = "21.3.0"
-firebase-core = "21.1.1"
-firebase-database = "20.2.0"
-firebase-messaging = "23.1.2"
-firebase-storage = "20.1.0"
+firebase-bom = "32.0.0"
 firebase-ui-auth = "8.0.2"
 firebase-ui-database = "8.0.2"
 firebase-ui-storage = "8.0.2"
@@ -30,12 +25,12 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx"
 androidx-emoji = { module = "androidx.emoji:emoji", version.ref = "emoji" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 byteunits = { module = "com.jakewharton.byteunits:byteunits", version.ref = "byteunits" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics", version.ref = "firebase-analytics" }
-firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebase-auth" }
-firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "firebase-core" }
-firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebase-database" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebase-messaging" }
-firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebase-storage" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-database = { module = "com.google.firebase:firebase-database" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+firebase-storage = { module = "com.google.firebase:firebase-storage" }
 firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebase-ui-auth" }
 firebase-ui-database = { module = "com.firebaseui:firebase-ui-database", version.ref = "firebase-ui-database" }
 firebase-ui-storage = { module = "com.firebaseui:firebase-ui-storage", version.ref = "firebase-ui-storage" }
