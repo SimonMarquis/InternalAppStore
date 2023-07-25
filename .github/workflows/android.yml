@@ -21,7 +21,7 @@ jobs:
       - run: echo "$GOOGLE_SERVICES_JSON" | base64 --decode > app/google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      - uses: gradle/gradle-build-action@915a66c096a03101667f9df2e56c9efef558b165 # v2.6.1
+      - uses: gradle/gradle-build-action@a4cf152f482c7ca97ef56ead29bf08bcd953284c # v2.7.0
         with:
           arguments: check assembleRelease --stacktrace
           gradle-home-cache-cleanup: true
