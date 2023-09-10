@@ -12,11 +12,11 @@ val versionBuild = 0
 
 android {
     namespace = "fr.smarquis.appstore"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "fr.smarquis.appstore"
         minSdk = 19
-        targetSdk = 31
+        targetSdk = 34
         versionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         multiDexEnabled = true
