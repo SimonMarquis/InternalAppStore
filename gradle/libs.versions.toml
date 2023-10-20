@@ -14,7 +14,7 @@ glide = "4.16.0"
 google-android-material = "1.10.0"
 google-gms = "4.4.0"
 junit = "4.13.2"
-kotlin = "1.9.20-Beta"
+kotlin = "1.9.20-RC"
 recyclerview = "1.3.2"
 
 [libraries]
