@@ -25,7 +25,7 @@ jobs:
         with:
           arguments: check assembleRelease --stacktrace
           gradle-home-cache-cleanup: true
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: apk
           path: 'app/build/outputs/apk/release/*.apk'
