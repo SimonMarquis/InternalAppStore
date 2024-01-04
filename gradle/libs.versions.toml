@@ -1,5 +1,5 @@
 [versions]
-android-gradlePlugin = "8.2.0"
+android-gradlePlugin = "8.2.1"
 androidx-appcompat = "1.6.1"
 byteunits = "0.9.1"
 cardview = "1.0.0"
