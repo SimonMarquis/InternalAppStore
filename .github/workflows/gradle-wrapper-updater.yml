@@ -1,4 +1,4 @@
-name: Gradle Wrapper updater
+name: 🐘 Gradle Wrapper updater
 
 on:
   workflow_dispatch:
