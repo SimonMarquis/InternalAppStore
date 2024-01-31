@@ -23,8 +23,8 @@ jobs:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
       - uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
         with:
-          arguments: check assembleRelease --stacktrace
           gradle-home-cache-cleanup: true
+      - run: ./gradlew check assembleRelease --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: apk
