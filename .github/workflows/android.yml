@@ -13,7 +13,12 @@ permissions:
 jobs:
   build:
 
+    name: Android CI [useK2Uast=${{ matrix.useK2Uast }}]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        useK2Uast: [true, false]
 
     steps:
       - uses: actions/checkout@v4
@@ -28,8 +33,8 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
           add-job-summary-as-pr-comment: on-failure
-      - run: ./gradlew check assembleRelease --stacktrace
+      - run: ./gradlew check assembleRelease lintRelease -Pandroid.lint.useK2Uast=${{ matrix.useK2Uast }} -Pandroid.experimental.lint.version=8.4.0-alpha11 --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: apk
+          name: apk-${{ matrix.useK2Uast }}
           path: 'app/build/outputs/apk/release/*.apk'
