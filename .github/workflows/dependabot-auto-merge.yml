@@ -11,7 +11,7 @@ jobs:
     if: github.actor == 'dependabot[bot]'
     steps:
       - id: metadata
-        uses: dependabot/fetch-metadata@v1
+        uses: dependabot/fetch-metadata@v2
       - if: contains(fromJSON('["version-update:semver-minor", "version-update:semver-patch"]'), steps.metadata.outputs.update-type)
         run: gh pr merge --auto --merge "$PR_URL"
         env:
