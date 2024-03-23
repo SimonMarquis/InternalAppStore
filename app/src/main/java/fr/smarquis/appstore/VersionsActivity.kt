@@ -1,5 +1,6 @@
 package fr.smarquis.appstore
 
+import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.ActivityManager
@@ -407,7 +408,7 @@ class VersionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                         val end = if (activityTransitionFlag) radiusInvisible else radiusVisible
                         ViewAnimationUtils.createCircularReveal(header, center.left, center.top, start, end).apply {
                             duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-                            interpolator = if (activityTransitionFlag) DecelerateInterpolator(2F) else AccelerateInterpolator(2F)
+                            interpolator = if (activityTransitionFlag) DecelerateInterpolator(2F) as TimeInterpolator else AccelerateInterpolator(2F) as TimeInterpolator
                             addListener(
                                 onStart = { header.visibility = VISIBLE },
                                 onEnd = {
