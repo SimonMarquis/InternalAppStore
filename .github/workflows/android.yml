@@ -24,7 +24,7 @@ jobs:
       - run: echo "$GOOGLE_SERVICES_JSON" | base64 --decode > app/google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      - uses: gradle/actions/setup-gradle@e24011a3b5db78bd5ab798036042d9312002f252 # v3.2.0
+      - uses: gradle/actions/setup-gradle@1168cd3d07c1876a65e1724114de42ccbdfa7b78 # v3.2.1
         with:
           gradle-home-cache-cleanup: true
           add-job-summary-as-pr-comment: on-failure
