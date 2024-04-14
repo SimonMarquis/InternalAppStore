@@ -26,6 +26,7 @@ jobs:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
       - uses: gradle/actions/setup-gradle@6cec5d49d4d6d4bb982fbed7047db31ea6d38f11 # v3.3.0
         with:
+          validate-wrappers: true
           gradle-home-cache-cleanup: true
           add-job-summary-as-pr-comment: on-failure
       - run: ./gradlew check assembleRelease --stacktrace
