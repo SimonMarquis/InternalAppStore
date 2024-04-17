@@ -13,7 +13,7 @@ updates:
     registries: "*"
     labels: [ ]
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "firebase/functions"
     schedule:
       interval: "daily"
 registries:
