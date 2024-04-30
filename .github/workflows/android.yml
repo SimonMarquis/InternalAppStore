@@ -33,7 +33,7 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
           add-job-summary-as-pr-comment: on-failure
-      - run: ./gradlew check assembleRelease lintRelease -Pandroid.lint.useK2Uast=${{ matrix.useK2Uast }} -Pandroid.experimental.lint.version=8.5.0-alpha06 --stacktrace
+      - run: ./gradlew check assembleRelease lintRelease -Pandroid.lint.useK2Uast=${{ matrix.useK2Uast }} -Pandroid.experimental.lint.version=8.5.0-alpha07 --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: apk-${{ matrix.useK2Uast }}
