@@ -12,10 +12,6 @@ updates:
       interval: "daily"
     registries: "*"
     labels: [ ]
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
 registries:
   maven-google:
     type: "maven-repository"

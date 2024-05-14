@@ -29,8 +29,9 @@ jobs:
       - run: echo "$GOOGLE_SERVICES_JSON" | base64 --decode > app/google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      - uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+      - uses: gradle/actions/setup-gradle@db19848a5fa7950289d3668fb053140cf3028d43 # v3.3.2
         with:
+          validate-wrappers: true
           gradle-home-cache-cleanup: true
           add-job-summary-as-pr-comment: on-failure
       - run: ./gradlew check assembleRelease lintRelease -Pandroid.lint.useK2Uast=${{ matrix.useK2Uast }} -Pandroid.experimental.lint.version=8.6.0-alpha01 --stacktrace
