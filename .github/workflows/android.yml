@@ -9,7 +9,7 @@ on:
 
 permissions:
   pull-requests: write
-  
+
 jobs:
   build:
 
