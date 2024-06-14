@@ -1,6 +1,6 @@
 [versions]
 android-gradlePlugin = "8.5.0"
-androidx-appcompat = "1.6.1"
+androidx-appcompat = "1.7.0"
 byteunits = "0.9.1"
 cardview = "1.0.0"
 constraintlayout = "2.1.4"
